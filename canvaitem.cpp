@@ -1,5 +1,5 @@
 #include "canvaitem.h"
-
+#include <QUrl>
 canvaItem::canvaItem(const QIcon &icon,const QString &text,const QString &path) : QListWidgetItem(icon,text)
 {
     this->text = text;
@@ -13,3 +13,5 @@ QString canvaItem::getText(){
 QString canvaItem::getPath(){
     return pathToFile;
 }
+
+

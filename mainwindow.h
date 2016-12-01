@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QListWidget>
+#include "Config/configholder.h"
 namespace Ui {
 class MainWindow;
 }
@@ -16,8 +17,12 @@ public:
     ~MainWindow();
 private slots:
     void openCanvas(QListWidgetItem *);
+    void on_actionOuvrir_triggered();
+
 private:
     Ui::MainWindow *ui;
+
+    void createUIFromConfig(const ConfigHolder& conf);
 };
 
 #endif // MAINWINDOW_H

@@ -4,7 +4,9 @@
 #include <QIcon>
 #include <QListWidgetItem>
 #include <QString>
-class canvaItem : public QListWidgetItem
+#include <QObject>
+#include "filedownloader.h"
+class canvaItem : public QListWidgetItem, public QObject
 {
 public:
     canvaItem(const QIcon &icon,const QString &text,const QString &path);

@@ -6,8 +6,8 @@ formTableau::formTableau(QWidget *parent, canvaItem *item) :
 {
     ui->setupUi(this);
     ui->leTitle->setText(item->getText());
-    QPixmap pix(item->getPath());
-    pix = pix.scaled(ui->lbPix->rect().size(),Qt::KeepAspectRatio);
+    QPixmap pix(item->icon().pixmap(ui->lbPix->rect().size()));
+    //pix = pix.scaled(ui->lbPix->rect().size(),);
     ui->lbPix->setPixmap(pix);
     ui->lvListeModele->addItem("modele1");
     ui->lvListeModele->addItem("modele2");

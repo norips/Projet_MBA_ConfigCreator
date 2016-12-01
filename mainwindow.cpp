@@ -1,8 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QtDebug>
+#include <QFileDialog>
+#include <QDir>
 #include "formtableau.h"
 #include "canvaitem.h"
+#include "Config/configholder.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -31,4 +34,30 @@ void MainWindow::openCanvas(QListWidgetItem *item)
     qDebug() << itemC->getText();
     formTableau* tab = new formTableau(0,itemC);
     tab->show();
+}
+
+void MainWindow::on_actionOuvrir_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+        tr("Open Configuration"), QDir::currentPath(), tr("Configuration Files (*.json)"));
+    ConfigHolder hold;
+    hold.LoadFromJSONFile(fileName);
+    createUIFromConfig(hold);
+}
+
+void MainWindow::createUIFromConfig(const ConfigHolder &conf){
+    FileDownloader *fileD = NULL;
+    QString base = "img/";
+    QVector<Canva> canvas = conf.getCanvas();
+    ui->lvTableaux->clear();
+    foreach (const Canva& c, canvas) {
+        QEventLoop pause;
+        fileD = new FileDownloader(QUrl(c.getURL()),base + c.getName());
+        connect(fileD, SIGNAL (downloaded()), &pause, SLOT (quit()));
+        pause.exec();
+        QImage img;
+        img.loadFromData(fileD->downloadedData());
+        ui->lvTableaux->addItem(new canvaItem(QIcon(QPixmap::fromImage(img)),c.getName(),base + c.getName()));
+        delete fileD;
+    }
 }
