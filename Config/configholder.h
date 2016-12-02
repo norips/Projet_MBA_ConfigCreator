@@ -8,9 +8,9 @@ class ConfigHolder
 public:
     ConfigHolder();
     void LoadFromJSONFile(QString& filepath);
-    QVector<Canva> getCanvas() const;
+    QVector<canvaItem*> getCanvas() const;
 private:
-    QVector<Canva> canvas;
+    QVector<canvaItem*> canvas;
 };
 
 #endif // CONFIGHOLDER_H

@@ -5,16 +5,24 @@
 #include <QListWidgetItem>
 #include <QString>
 #include <QObject>
+#include <QPixmap>
 #include "filedownloader.h"
+#include "Config/modelitem.h"
 class canvaItem : public QListWidgetItem, public QObject
 {
 public:
-    canvaItem(const QIcon &icon,const QString &text,const QString &path);
+    canvaItem(const QPixmap &img,const QString &text,const QString &path);
     QString getText();
     QString getPath();
+    void addModel(modelItem* m);
+    QVector<modelItem*> getItems();
+    void setPix(const QPixmap& pix);
+    QPixmap getPix() const;
 private:
     QString text;
     QString pathToFile;
+    QPixmap img;
+    QVector<modelItem*> items;
 };
 
 #endif // CANVAITEM_H

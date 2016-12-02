@@ -18,14 +18,18 @@ SOURCES += main.cpp\
     canvaitem.cpp \
     Config/configholder.cpp \
     Config/canva.cpp \
-    filedownloader.cpp
+    filedownloader.cpp \
+    Config/modelitem.cpp \
+    Config/texture.cpp
 
 HEADERS  += mainwindow.h \
     formtableau.h \
     canvaitem.h \
     Config/configholder.h \
     Config/canva.h \
-    filedownloader.h
+    filedownloader.h \
+    Config/modelitem.h \
+    Config/texture.h
 
 FORMS    += mainwindow.ui \
     formtableau.ui
