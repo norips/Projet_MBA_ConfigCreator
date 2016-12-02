@@ -6,11 +6,13 @@
 class ConfigHolder
 {
 public:
-    ConfigHolder();
+    static ConfigHolder& Instance();
     void LoadFromJSONFile(QString& filepath);
-    QVector<canvaItem*> getCanvas() const;
+    QVector<Canva*> getCanvas() const;
 private:
-    QVector<canvaItem*> canvas;
+    ConfigHolder();
+    QVector<Canva*> canvas;
+    static ConfigHolder m_instance;
 };
 
 #endif // CONFIGHOLDER_H

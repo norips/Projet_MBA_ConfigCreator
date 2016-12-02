@@ -2,7 +2,7 @@
 #define FORMTABLEAU_H
 
 #include <QWidget>
-#include "canvaitem.h"
+#include "Config/canva.h"
 namespace Ui {
     class formTableau;
 }
@@ -13,7 +13,7 @@ public:
     explicit formTableau(QWidget *parent = 0,canvaItem *tab=NULL);
 private:
     Ui::formTableau *ui;
-    canvaItem *canva;
+    Canva *canva;
 signals:
 
 public slots:

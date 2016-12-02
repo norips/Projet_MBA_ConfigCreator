@@ -1,21 +1,37 @@
 #include "canva.h"
 #include "filedownloader.h"
 
-Canva::Canva(QString& name,QString& url)
+int Canva::s_id = 0;
+Canva::Canva(const QPixmap &img,const QString &text,const QString &path)
 {
-    this->name = name;
-    this->url = url;
+    this->img = img;
+    this->name = text;
+    pathToFile = path;
+    this->id = Canva::s_id++;
 }
-Canva::Canva() {
-    this->name = "null";
-    this->url = "null";
+
+void Canva::addModel(Model *m){
+    items.append(m);
 }
-QString Canva::info() const{
-    return name + url;
+
+QVector<Model*> Canva::getItems(){
+    return items;
 }
-QString Canva::getURL() const{
-    return url;
+
+
+void Canva::setPix(const QPixmap& pix){
+    img = pix;
 }
-QString Canva::getName() const{
+
+QPixmap Canva::getPix() const{
+    return img;
+}
+
+canvaItem* Canva::toItem(){
+    canvaItem* c = new canvaItem(QIcon(img),name,id);
+    return c;
+}
+
+QString Canva::getName(){
     return name;
 }

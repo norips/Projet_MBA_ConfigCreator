@@ -16,12 +16,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lvTableaux->setResizeMode(QListWidget::Adjust);
     ui->lvTableaux->setDragEnabled(false);
     connect(ui->lvTableaux, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(openCanvas(QListWidgetItem*)));
-    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/003-022.jpg"),"003-022.jpg","../img/003-022.jpg"));
-    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/e102.jpg"),"e102.jpg","../img/e102.jpg"));
-    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/pinball.jpg"),"pinball.jpg","../img/pinball.jpg"));
-    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/tournesol.jpg"),"tournesol.jpg","../img/tournesol.jpg"));
-    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/tournesol2.jpg"),"tournesol2.jpg","../img/tournesol2.jpg"));
-    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/plus.png"),"Nouveau","../img/plus.png"));
+//    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/003-022.jpg"),"003-022.jpg","../img/003-022.jpg"));
+//    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/e102.jpg"),"e102.jpg","../img/e102.jpg"));
+//    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/pinball.jpg"),"pinball.jpg","../img/pinball.jpg"));
+//    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/tournesol.jpg"),"tournesol.jpg","../img/tournesol.jpg"));
+//    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/tournesol2.jpg"),"tournesol2.jpg","../img/tournesol2.jpg"));
+    ui->lvTableaux->addItem(new QListWidgetItem(QIcon(QPixmap("../img/plus.png")),"Nouveau"));
 }
 
 MainWindow::~MainWindow()
@@ -41,15 +41,15 @@ void MainWindow::on_actionOuvrir_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
         tr("Open Configuration"), QDir::currentPath(), tr("Configuration Files (*.json)"));
-    ConfigHolder hold;
+    ConfigHolder& hold = ConfigHolder::Instance();
     hold.LoadFromJSONFile(fileName);
     createUIFromConfig(hold);
 }
 
 void MainWindow::createUIFromConfig(const ConfigHolder &conf){
-    QVector<canvaItem*> canvas = conf.getCanvas();
+    QVector<Canva*> canvas = conf.getCanvas();
     ui->lvTableaux->clear();
-    foreach (canvaItem *c, canvas) {
-        ui->lvTableaux->addItem(c);
+    foreach (Canva *c, canvas) {
+        ui->lvTableaux->addItem(c->toItem());
     }
 }

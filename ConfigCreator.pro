@@ -20,7 +20,9 @@ SOURCES += main.cpp\
     Config/canva.cpp \
     filedownloader.cpp \
     Config/modelitem.cpp \
-    Config/texture.cpp
+    Config/texture.cpp \
+    dialogmodel.cpp \
+    Config/model.cpp
 
 HEADERS  += mainwindow.h \
     formtableau.h \
@@ -29,7 +31,10 @@ HEADERS  += mainwindow.h \
     Config/canva.h \
     filedownloader.h \
     Config/modelitem.h \
-    Config/texture.h
+    Config/texture.h \
+    dialogmodel.h \
+    Config/model.h
 
 FORMS    += mainwindow.ui \
-    formtableau.ui
+    formtableau.ui \
+    dialogmodel.ui

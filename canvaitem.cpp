@@ -1,10 +1,9 @@
 #include "canvaitem.h"
 #include <QUrl>
-canvaItem::canvaItem(const QPixmap &img,const QString &text,const QString &path) : QListWidgetItem(QIcon(img),text)
+canvaItem::canvaItem(const QIcon &img,const QString &text,int parentId) : QListWidgetItem(img,text)
 {
-    this->img = img;
+    parID = parentId;
     this->text = text;
-    pathToFile = path;
 }
 
 QString canvaItem::getText(){
@@ -30,4 +29,8 @@ void canvaItem::setPix(const QPixmap& pix){
 
 QPixmap canvaItem::getPix() const{
     return img;
+}
+
+int canvaItem::getParentID(){
+    return parID;
 }

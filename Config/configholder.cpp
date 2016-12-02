@@ -5,11 +5,19 @@
 #include <QJsonValue>
 #include <QFile>
 #include <QDebug>
-#include "modelitem.h"
 #include <QEventLoop>
+
+#include "canva.h"
+#include "model.h"
+
+ConfigHolder ConfigHolder::m_instance=ConfigHolder();
 ConfigHolder::ConfigHolder()
 {
 
+}
+
+ConfigHolder& ConfigHolder::Instance(){
+    return m_instance;
 }
 
 void ConfigHolder::LoadFromJSONFile(QString &filepath){
@@ -32,14 +40,14 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
         pause.exec();
         QImage img;
         img.loadFromData(fileD->downloadedData());
-        canvaItem *c = new canvaItem(QPixmap::fromImage(img),name,base + name);
+        Canva *c = new Canva(QPixmap::fromImage(img),name,base + name);
         delete fileD;
 
         QJsonArray models = obj["models"].toArray();
         foreach (const QJsonValue &mod, models) {
            QJsonObject mobObj = mod.toObject();
            QString modName = mobObj["name"].toString();
-           modelItem *m = new modelItem(modName);
+           Model *m = new Model(modName);
            c->addModel(m);
         }
         canvas.append(c);
@@ -48,6 +56,6 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
 
 }
 
-QVector<canvaItem*> ConfigHolder::getCanvas() const {
+QVector<Canva*> ConfigHolder::getCanvas() const {
     return canvas;
 }

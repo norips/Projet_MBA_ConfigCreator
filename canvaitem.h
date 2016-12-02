@@ -11,14 +11,18 @@
 class canvaItem : public QListWidgetItem, public QObject
 {
 public:
-    canvaItem(const QPixmap &img,const QString &text,const QString &path);
+    canvaItem(const QIcon &img,const QString &text,int parentID);
     QString getText();
     QString getPath();
+
+    int getParentID();
+
     void addModel(modelItem* m);
     QVector<modelItem*> getItems();
     void setPix(const QPixmap& pix);
     QPixmap getPix() const;
 private:
+    int parID;
     QString text;
     QString pathToFile;
     QPixmap img;
