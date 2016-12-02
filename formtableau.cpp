@@ -12,7 +12,7 @@ formTableau::formTableau(QWidget *parent, canvaItem *item) :
     ui->lbPix->setPixmap(pix);
     QVector<modelItem*> items = item->getItems();
     foreach (modelItem* m, items) {
-       ui->lvListeModele->addItem(m);
+       ui->lvListeModele->addItem(new modelItem(*m));
     }
     canva = item;
 }
