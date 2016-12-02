@@ -3,20 +3,20 @@
 
 #include <QListWidgetItem>
 #include <QVector>
-#include "texture.h"
+#include <Config/model.h>
+class Model;
 class modelItem : public QListWidgetItem
 {
 public:
-    modelItem(const QString& text);
+    modelItem(const QString& text,Model* m);
     QString getName();
+    int getCanvaID();
+    Model* getModel();
 private:
-    QVector<texture *> textures;
+    int canvaID;
+    int modID;
     QString name;
-    QString type;
-    QString tlc;
-    QString trc;
-    QString blc;
-    QString brc;
+    Model* model;
 
 };
 

@@ -19,6 +19,7 @@ signals:
 public slots:
 private slots:
     void on_pbPath_released();
+    void on_pbMod_released();
 };
 
 #endif // FORMTABLEAU_H

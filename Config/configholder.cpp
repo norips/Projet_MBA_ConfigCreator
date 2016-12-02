@@ -44,10 +44,16 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
         delete fileD;
 
         QJsonArray models = obj["models"].toArray();
+        int modInd = 0;
         foreach (const QJsonValue &mod, models) {
-           QJsonObject mobObj = mod.toObject();
-           QString modName = mobObj["name"].toString();
-           Model *m = new Model(modName);
+           QJsonObject modObj = mod.toObject();
+           QString modName = modObj["name"].toString();
+           Model *m = new Model(modName,modInd++);
+           m->tlc = modObj["tlc"].toString();
+           m->trc = modObj["trc"].toString();
+           m->blc = modObj["blc"].toString();
+           m->brc = modObj["brc"].toString();
+           m->type = modObj["type"].toString();
            c->addModel(m);
         }
         canvas.append(c);

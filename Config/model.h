@@ -3,22 +3,26 @@
 
 #include <QString>
 #include <QVector>
+#include <QPixmap>
 #include "texture.h"
-#include "Config/modelitem.h"
+class modelItem;
 class Model
 {
 public:
-    Model(QString& name);
+    Model(QString& name,int id);
     modelItem* toItem();
-
-private:
-    QVector<texture *> textures;
+    void addTexture(QPixmap*);
     QString name;
     QString type;
     QString tlc;
     QString trc;
     QString blc;
     QString brc;
+
+private:
+    static int s_id;
+    int id;
+    QVector<QPixmap *> textures;
 };
 
 #endif // MODEL_H
