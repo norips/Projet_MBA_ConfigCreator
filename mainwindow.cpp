@@ -21,7 +21,10 @@ MainWindow::MainWindow(QWidget *parent) :
 //    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/pinball.jpg"),"pinball.jpg","../img/pinball.jpg"));
 //    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/tournesol.jpg"),"tournesol.jpg","../img/tournesol.jpg"));
 //    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/tournesol2.jpg"),"tournesol2.jpg","../img/tournesol2.jpg"));
-    ui->lvTableaux->addItem(new QListWidgetItem(QIcon(QPixmap("../img/plus.png")),"Nouveau"));
+//    ui->lvTableaux->addItem(new QListWidgetItem(QIcon(QPixmap("../img/plus.png")),"Nouveau"));
+    ConfigHolder& hold = ConfigHolder::Instance();
+    hold.init();
+    createUIFromConfig(hold);
 }
 
 MainWindow::~MainWindow()
@@ -33,8 +36,15 @@ void MainWindow::openCanvas(QListWidgetItem *item)
 {
     canvaItem *itemC = (canvaItem*)item;
     qDebug() << itemC->getText();
-    formTableau* tab = new formTableau(0,itemC);
-    tab->show();
+    formTableau *tab = new formTableau(0,itemC);
+    tab->exec();
+    reDraw();
+}
+
+void MainWindow::reDraw(){
+    qDebug() << "redraw" << endl;
+    ConfigHolder& hold = ConfigHolder::Instance();
+    createUIFromConfig(hold);
 }
 
 void MainWindow::on_actionOuvrir_triggered()
@@ -52,4 +62,5 @@ void MainWindow::createUIFromConfig(const ConfigHolder &conf){
     foreach (Canva *c, canvas) {
         ui->lvTableaux->addItem(c->toItem());
     }
+    ui->lvTableaux->repaint();
 }

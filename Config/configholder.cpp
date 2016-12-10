@@ -65,3 +65,11 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
 QVector<Canva*> ConfigHolder::getCanvas() const {
     return canvas;
 }
+/**
+ * @brief ConfigHolder::init
+ * Init an empty config
+ */
+void ConfigHolder::init() {
+    canvas.clear();
+    canvas.append(new Canva(QPixmap("../img/plus.png"),"Nouveau",""));
+}

@@ -18,7 +18,7 @@ public:
 private slots:
     void openCanvas(QListWidgetItem *);
     void on_actionOuvrir_triggered();
-
+    void reDraw();
 private:
     Ui::MainWindow *ui;
 

@@ -4,8 +4,10 @@
 #include <QFileDialog>
 #include "Config/configholder.h"
 #include "dialogmodel.h"
+#include <QWidget>
+#include <QList>
 formTableau::formTableau(QWidget *parent, canvaItem *item) :
-    QWidget(parent),
+    QDialog(parent),
     ui(new Ui::formTableau)
 {
     ui->setupUi(this);

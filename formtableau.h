@@ -1,12 +1,12 @@
 #ifndef FORMTABLEAU_H
 #define FORMTABLEAU_H
 
-#include <QWidget>
+#include <QDialog>
 #include "Config/canva.h"
 namespace Ui {
     class formTableau;
 }
-class formTableau : public QWidget
+class formTableau : public QDialog
 {
     Q_OBJECT
 public:

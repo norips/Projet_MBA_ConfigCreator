@@ -9,6 +9,7 @@ public:
     static ConfigHolder& Instance();
     void LoadFromJSONFile(QString& filepath);
     QVector<Canva*> getCanvas() const;
+    void init();
 private:
     ConfigHolder();
     QVector<Canva*> canvas;
