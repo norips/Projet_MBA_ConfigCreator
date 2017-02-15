@@ -36,6 +36,7 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
         QString url = obj["url"].toString();
         QEventLoop pause;
         fileD = new FileDownloader(QUrl(url),base + name + ".jpg");
+        qDebug() << "URL : " << url << endl;
         QObject::connect(fileD, SIGNAL (downloaded()), &pause, SLOT (quit()));
         pause.exec();
         QImage img;
