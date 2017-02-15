@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/tournesol2.jpg"),"tournesol2.jpg","../img/tournesol2.jpg"));
 //    ui->lvTableaux->addItem(new QListWidgetItem(QIcon(QPixmap("../img/plus.png")),"Nouveau"));
     ConfigHolder& hold = ConfigHolder::Instance();
-    hold.init();
+    hold.addEmpty();
     createUIFromConfig(hold);
 }
 
@@ -35,9 +35,13 @@ MainWindow::~MainWindow()
 void MainWindow::openCanvas(QListWidgetItem *item)
 {
     canvaItem *itemC = (canvaItem*)item;
-    qDebug() << itemC->getText();
-    formTableau *tab = new formTableau(0,itemC);
-    tab->exec();
+    if(itemC->getText() == "Nouveau"){
+        ConfigHolder::Instance().addEmpty();
+        createUIFromConfig(ConfigHolder::Instance());
+    } else {
+        formTableau *tab = new formTableau(0,itemC);
+        tab->exec();
+    }
     reDraw();
 }
 

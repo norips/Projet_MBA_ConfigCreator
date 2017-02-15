@@ -36,5 +36,16 @@ void formTableau::on_pbMod_released()
     if(ui->lvListeModele->selectedItems().size()<1) return;
     modelItem *m = (modelItem*) ui->lvListeModele->selectedItems().at(0);
     DialogModel* dialog = new DialogModel(0,m);
+    dialog->exec();
+}
+
+void formTableau::on_pbAdd_clicked()
+{
+    QString name = "Nouveau";
+    Model *m = new Model(name,canva->getItems().size());
+    canva->addModel(m);
+    modelItem* mi = m->toItem();
+    ui->lvListeModele->addItem(mi);
+    DialogModel* dialog = new DialogModel(0,mi);
     dialog->show();
 }

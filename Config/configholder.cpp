@@ -13,7 +13,7 @@
 ConfigHolder ConfigHolder::m_instance=ConfigHolder();
 ConfigHolder::ConfigHolder()
 {
-
+    first = true;
 }
 
 ConfigHolder& ConfigHolder::Instance(){
@@ -67,9 +67,13 @@ QVector<Canva*> ConfigHolder::getCanvas() const {
 }
 /**
  * @brief ConfigHolder::init
- * Init an empty config
+ * Add an empty canva
  */
-void ConfigHolder::init() {
-    canvas.clear();
-    canvas.append(new Canva(QPixmap("../img/plus.png"),"Nouveau",""));
+void ConfigHolder::addEmpty() {
+    if(first){
+        canvas.append(new Canva(QPixmap("../img/plus.png"),"Nouveau",""));
+        first = false;
+    } else {
+        canvas.append(new Canva(QPixmap("../img/mba.png"),"Nouveau+",""));
+    }
 }
