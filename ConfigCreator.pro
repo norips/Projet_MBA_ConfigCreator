@@ -22,7 +22,10 @@ SOURCES += main.cpp\
     Config/modelitem.cpp \
     Config/texture.cpp \
     dialogmodel.cpp \
-    Config/model.cpp
+    Config/model.cpp \
+    Config/textureimg.cpp \
+    Config/texturetxt.cpp \
+    Config/configexporter.cpp
 
 HEADERS  += mainwindow.h \
     formtableau.h \
@@ -33,7 +36,10 @@ HEADERS  += mainwindow.h \
     Config/modelitem.h \
     Config/texture.h \
     dialogmodel.h \
-    Config/model.h
+    Config/model.h \
+    Config/textureimg.h \
+    Config/texturetxt.h \
+    Config/configexporter.h
 
 FORMS    += mainwindow.ui \
     formtableau.ui \

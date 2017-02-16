@@ -2,12 +2,16 @@
 #define TEXTURE_H
 
 #include <QString>
-class texture
+class Texture
 {
 public:
-    texture();
+    enum XEnumType {
+        TEXT = 0,
+        IMG = 1
+    };
+    Texture();
+    virtual int getType() = 0;
 private:
-    QString path;
 };
 
 #endif // TEXTURE_H

@@ -2,6 +2,8 @@
 #include "ui_dialogmodel.h"
 #include "Config/modelitem.h"
 #include "Config/configholder.h"
+#include "Config/texture.h"
+#include "Config/textureimg.h"
 #include <QDebug>
 #include <QFileDialog>
 DialogModel::DialogModel(QWidget *parent,modelItem* m) :
@@ -16,6 +18,10 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m) :
     ui->leBlc->setText(model->blc);
     ui->leBrc->setText(model->brc);
     ui->leName->setText(model->name);
+    if(model->getTextures().size() > 0 && (model->getTextures().at(0))->getType() == Texture::IMG) {
+        TextureIMG *timg = dynamic_cast<TextureIMG *>(model->getTextures().at(0));
+        ui->lbTexture->setPixmap(timg->getData());
+    }
 
 }
 
@@ -39,8 +45,9 @@ void DialogModel::on_buttonBox_accepted()
         model->blc = blc;
         model->brc = brc;
         model->name = ui->leName->text();
-        QPixmap *pix = new QPixmap(QPixmap::fromImage(QImage(ui->lePath->text())));
-        model->addTexture(pix);
+        QPixmap pix = QPixmap::fromImage(QImage(ui->lePath->text()));
+        TextureIMG *timg = new TextureIMG(pix);
+        model->addTexture(timg);
         this->hide();
     } else {
         qDebug() << "Invalid" << endl;

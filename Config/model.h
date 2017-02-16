@@ -11,7 +11,8 @@ class Model
 public:
     Model(QString& name,int id);
     modelItem* toItem();
-    void addTexture(QPixmap*);
+    void addTexture(Texture*);
+    QVector<Texture *> getTextures();
     QString name;
     QString type;
     QString tlc;
@@ -22,7 +23,7 @@ public:
 private:
     static int s_id;
     int id;
-    QVector<QPixmap *> textures;
+    QVector<Texture *> textures;
 };
 
 #endif // MODEL_H

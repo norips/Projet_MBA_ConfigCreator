@@ -1,6 +1,6 @@
 #include "texture.h"
 
-texture::texture()
+Texture::Texture()
 {
 
 }

@@ -14,7 +14,10 @@ modelItem* Model::toItem(){
     return m;
 }
 
-void Model::addTexture(QPixmap *pix){
-    textures.clear();
-    textures.append(pix);
+void Model::addTexture(Texture *tex){
+    textures.append(tex);
+}
+
+QVector<Texture *> Model::getTextures() {
+    return textures;
 }
