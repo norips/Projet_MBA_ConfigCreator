@@ -6,6 +6,7 @@
 #include "formtableau.h"
 #include "canvaitem.h"
 #include "Config/configholder.h"
+#include "Config/dropboxexporter.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -15,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lvTableaux->setIconSize(QSize(150,150));
     ui->lvTableaux->setResizeMode(QListWidget::Adjust);
     ui->lvTableaux->setDragEnabled(false);
+
     connect(ui->lvTableaux, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(openCanvas(QListWidgetItem*)));
 //    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/003-022.jpg"),"003-022.jpg","../img/003-022.jpg"));
 //    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/e102.jpg"),"e102.jpg","../img/e102.jpg"));
@@ -67,4 +69,13 @@ void MainWindow::createUIFromConfig(const ConfigHolder &conf){
         ui->lvTableaux->addItem(c->toItem());
     }
     ui->lvTableaux->repaint();
+}
+
+void MainWindow::on_actionEnregistrer_triggered()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+        tr("Save Configuration"), QDir::currentPath(), tr("Configuration Files (*.json)"));
+    ConfigHolder& hold = ConfigHolder::Instance();
+    DropboxExporter exp;
+    hold.ExportToJSONFile(fileName,exp);
 }
