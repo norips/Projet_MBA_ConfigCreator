@@ -1,9 +1,10 @@
 #ifndef CANVA_H
 #define CANVA_H
 #include <QVector>
+#include <QObject>
 #include "model.h"
 #include "canvaitem.h"
-#include <QObject>
+#include "feature.h"
 
 class Canva
 {
@@ -18,6 +19,9 @@ public:
     canvaItem* toItem();
     bool modified();
     void setModified(bool);
+    Feature* getFeature();
+    void setFeature(Feature *f);
+
 private:
     static int s_id;
     int id;
@@ -25,6 +29,7 @@ private:
     QString pathToFile;
     QPixmap img;
     QVector<Model*> items;
+    Feature *feature;
     bool mod;
 };
 

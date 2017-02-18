@@ -8,6 +8,7 @@ Canva::Canva(const QPixmap &img,const QString &text,const QString &path)
     this->name = text;
     pathToFile = path;
     this->id = Canva::s_id++;
+    feature = NULL;
 }
 
 void Canva::addModel(Model *m){
@@ -42,3 +43,16 @@ void Canva::setModified(bool val) {
 bool Canva::modified(){
     return mod;
 }
+
+
+Feature* Canva::getFeature() {
+    return feature;
+}
+
+void Canva::setFeature(Feature *f) {
+    feature = f;
+}
+
+
+
+
