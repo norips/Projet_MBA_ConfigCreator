@@ -57,9 +57,11 @@ void MainWindow::on_actionOuvrir_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
         tr("Open Configuration"), QDir::currentPath(), tr("Configuration Files (*.json)"));
-    ConfigHolder& hold = ConfigHolder::Instance();
-    hold.LoadFromJSONFile(fileName);
-    createUIFromConfig(hold);
+    if(fileName!=NULL) {
+        ConfigHolder& hold = ConfigHolder::Instance();
+        hold.LoadFromJSONFile(fileName);
+        createUIFromConfig(hold);
+    }
 }
 
 void MainWindow::createUIFromConfig(const ConfigHolder &conf){
@@ -75,7 +77,9 @@ void MainWindow::on_actionEnregistrer_triggered()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
         tr("Save Configuration"), QDir::currentPath(), tr("Configuration Files (*.json)"));
-    ConfigHolder& hold = ConfigHolder::Instance();
-    DropboxExporter exp;
-    hold.ExportToJSONFile(fileName,exp);
+    if(fileName!=NULL) {
+        ConfigHolder& hold = ConfigHolder::Instance();
+        DropboxExporter exp;
+        hold.ExportToJSONFile(fileName,exp);
+    }
 }

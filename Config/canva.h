@@ -16,6 +16,8 @@ public:
     void setPix(const QPixmap& pix);
     QPixmap getPix() const;
     canvaItem* toItem();
+    bool modified();
+    void setModified(bool);
 private:
     static int s_id;
     int id;
@@ -23,6 +25,7 @@ private:
     QString pathToFile;
     QPixmap img;
     QVector<Model*> items;
+    bool mod;
 };
 
 #endif // CANVA_H

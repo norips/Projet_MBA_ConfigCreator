@@ -11,7 +11,10 @@ public:
     };
     Texture();
     virtual int getType() = 0;
+    bool modified();
+    void setModified(bool);
 private:
+    bool mod;
 };
 
 #endif // TEXTURE_H

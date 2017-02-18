@@ -8,7 +8,7 @@ class DropboxExporter : public ConfigExporter
 {
 public:
     DropboxExporter();
-    QString upload(QByteArray &payload);
+    QString upload(const QByteArray &payload);
 };
 
 #endif // DROPBOXEXPORTER_H

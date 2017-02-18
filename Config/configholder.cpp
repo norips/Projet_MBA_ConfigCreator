@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <QEventLoop>
 #include <QBuffer>
+#include <QProcess>
+#include <QDir>
 
 #include "canva.h"
 #include "model.h"
@@ -73,39 +75,77 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
                    QImage img;
                    img.loadFromData(fileD->downloadedData());
                    QPixmap pix = QPixmap::fromImage(img);
-                   m->addTexture(new TextureIMG(pix));
+                   TextureIMG *tmp = new TextureIMG(pix);
+                   tmp->setModified(false);
+                   m->addTexture(tmp);
                } else if(m->type.compare("texte") == 0 ) {
-                   m->addTexture(new TextureTXT(tobj["texte"].toString()));
+                   TextureTXT *tmp = new TextureTXT(tobj["texte"].toString());
+                   tmp->setModified(false);
+                   m->addTexture(tmp);
                }
 
            }
+           m->setModified(false);
            c->addModel(m);
         }
+        c->setModified(false);
         canvas.append(c);
     }
 
 
 }
-
 void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter &cex) {
     QFile file(filepath);
     file.open(QIODevice::WriteOnly | QIODevice::Text);
-
+    QString base = "../tmp/";
     QJsonDocument doc;
     QJsonArray canvas;
+    bool pass=true;
     foreach(Canva *v, getCanvas()){
+        if(pass) {
+            pass = false;
+            continue;
+
+        }
         QJsonObject canva;
         canva["name"] = v->getName();
         QJsonObject feature;
-        feature["name"] = v->getName().trimmed();
+        feature["name"] = v->getName().remove(QRegExp("[ \"'_-]"));
         QJsonArray files;
-        for(int i = 0; i < 3; i++) {
-            QJsonObject file;
-            file["name"] = v->getName().trimmed() + i + ".file";
-            file["path"] = "http://google.fr/";
-            file["MD5"] = QString("0000") + i + QString("0000");
-            files.append(file);
+
+        if(v->modified()) {
+            QString trimName = v->getName().remove(QRegExp("[ \"'_-]"));
+            QString filename = base + trimName +".jpg";
+            qDebug() << "Filename : " + filename;
+            QFile file(filename);
+            file.open(QIODevice::WriteOnly);
+            v->getPix().save(&file, "JPG");
+            QProcess *process = new QProcess();
+            QString prog = "../bin/genTexData " + filename + " -level=2 -leveli=1 -dpi=100 -min_dpi=20 -max_dpi=100";
+            process->start(prog);
+            process->waitForFinished(-1); //Timeout 20min
+            qDebug() << "Code : " + process->exitCode();
+            QString ext[] = {"iset","fset3","fset"};
+            for(int i = 0; i < 3; i++) {
+                QJsonObject file;
+                QFile filup(base + trimName + "." + ext[i]);
+                filup.open(QFile::ReadOnly);
+                QCryptographicHash hash(QCryptographicHash::Md5);
+                QByteArray strHash;
+                if (hash.addData(&filup)) {
+                    strHash = hash.result();
+                }
+                file["name"] = trimName + "." + ext[i];
+                file["path"] = cex.upload(filup.readAll());
+                file["MD5"] = QString(strHash.toHex());
+                files.append(file);
+            }
         }
+
+
+
+
+
         feature["files"] = files;
         canva["feature"] = feature;
         QJsonArray models;

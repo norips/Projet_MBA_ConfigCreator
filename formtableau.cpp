@@ -26,6 +26,7 @@ void formTableau::on_pbPath_released()
         tr("Open image"), QDir::currentPath(), tr("Images(*.jpg *.jpeg)"));
     if(fileName != NULL) {
         canva->setPix(QPixmap(fileName));
+        canva->setModified(true);
         ui->lbPix->setPixmap(canva->getPix().scaled(ui->lbPix->rect().size(),Qt::KeepAspectRatio));
     }
 }

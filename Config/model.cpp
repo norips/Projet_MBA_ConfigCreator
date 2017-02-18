@@ -21,3 +21,10 @@ void Model::addTexture(Texture *tex){
 QVector<Texture *> Model::getTextures() {
     return textures;
 }
+void Model::setModified(bool val) {
+    mod = val;
+}
+
+bool Model::modified(){
+    return mod;
+}

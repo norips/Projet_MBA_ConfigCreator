@@ -19,11 +19,14 @@ public:
     QString trc;
     QString blc;
     QString brc;
+    bool modified();
+    void setModified(bool);
 
 private:
     static int s_id;
     int id;
     QVector<Texture *> textures;
+    bool mod;
 };
 
 #endif // MODEL_H

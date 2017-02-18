@@ -35,3 +35,10 @@ canvaItem* Canva::toItem(){
 QString Canva::getName(){
     return name;
 }
+void Canva::setModified(bool val) {
+    mod = val;
+}
+
+bool Canva::modified(){
+    return mod;
+}

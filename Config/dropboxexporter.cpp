@@ -6,6 +6,6 @@ DropboxExporter::DropboxExporter()
 
 }
 //TODO
-QString DropboxExporter::upload(QByteArray &payload) {
+QString DropboxExporter::upload(const QByteArray &payload) {
     return "NOT IMPLEMENTED";
 }
