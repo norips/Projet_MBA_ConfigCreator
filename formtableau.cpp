@@ -47,6 +47,6 @@ void formTableau::on_pbAdd_clicked()
     canva->addModel(m);
     modelItem* mi = m->toItem();
     ui->lvListeModele->addItem(mi);
-    DialogModel* dialog = new DialogModel(0,mi);
+    DialogModel* dialog = new DialogModel(0,mi,canva);
     dialog->show();
 }

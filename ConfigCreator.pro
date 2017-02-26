@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     Config/configexporter.cpp \
     Config/dropboxexporter.cpp \
     Config/feature.cpp \
-    Config/file.cpp
+    Config/file.cpp \
+Config/widget.cpp
 
 HEADERS  += mainwindow.h \
     formtableau.h \
@@ -45,7 +46,8 @@ HEADERS  += mainwindow.h \
     Config/configexporter.h \
     Config/dropboxexporter.h \
     Config/feature.h \
-    Config/file.h
+    Config/file.h \
+Config/widget.h
 
 FORMS    += mainwindow.ui \
     formtableau.ui \
