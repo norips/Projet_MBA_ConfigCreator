@@ -4,11 +4,29 @@
 #include "configexporter.h"
 #include <QString>
 #include <QByteArray>
-class DropboxExporter : public ConfigExporter
+#include <QNetworkReply>
+class DropboxExporter : public QObject,  public ConfigExporter
 {
+    Q_OBJECT
 public:
     DropboxExporter();
-    QString upload(const QByteArray &payload);
+    ~DropboxExporter();
+    QString upload(const QString fileName, const QByteArray &payload);
+
+
+private slots:
+    void replyFinished(QNetworkReply*);
+
+private:
+    QString path;
+    QNetworkAccessManager *manager;
+    bool first = true;
+    QString apiKey = "xxYPEC7HMMAAAAAAAAAAG8o1JTnQRgXNT7-Kfq1dXaOYTVo4LVpGqe6Vf3AfFXCu";
+
+
+
+
+
 };
 
 #endif // DROPBOXEXPORTER_H

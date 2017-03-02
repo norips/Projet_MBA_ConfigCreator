@@ -158,7 +158,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter &cex) {
                     strHash = hash.result();
                 }
                 file["name"] = trimName + "." + ext[i];
-                file["path"] = cex.upload(filup.readAll());
+                file["path"] = cex.upload(QString(trimName + "." + ext[i]),filup.readAll());
                 file["MD5"] = QString(strHash.toHex());
                 files.append(file);
             }
@@ -219,7 +219,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter &cex) {
                     strHash = hash.result();
                     QString tmpName = m->name.remove(QRegExp("[ \"'_-]")) + "%1" + ".png";
                     tex["name"] = tmpName.arg(++indexTex);
-                    tex["path"] = cex.upload(bArray);
+                    tex["path"] = cex.upload(tmpName.arg(indexTex),bArray);
                     tex["MD5"] = QString(strHash.toHex());
                     textures.append(tex);
                 }
