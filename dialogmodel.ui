@@ -101,6 +101,9 @@
    </widget>
   </widget>
   <widget class="QWidget" name="zoneSelection" native="true">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -147,8 +150,6 @@
     </property>
    </widget>
   </widget>
-  <zorder>zoneSelection</zorder>
-  <zorder>groupBox</zorder>
  </widget>
  <resources/>
  <connections>

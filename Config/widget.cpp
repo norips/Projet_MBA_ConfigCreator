@@ -38,7 +38,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
 {
     qDebug() << "MousePressEvent : "<< e << endl;
 
-    if (e->button()==Qt::LeftButton)
+    if (e->button()==Qt::RightButton)
     {
         if (selectionRect.contains(e->pos())) contextMenu.exec(this->mapToGlobal(e->pos()));
     }
