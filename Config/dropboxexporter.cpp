@@ -6,14 +6,22 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QJsonDocument>
 #include <QJsonObject>
+
 DropboxExporter::DropboxExporter() : QObject()
 {
     manager = new QNetworkAccessManager(this);
-        connect(manager, SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(replyFinished(QNetworkReply*)));
+    connect(manager, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(replyFinished(QNetworkReply*)));
+
+    /* connect the QHttp.requestFinished() Signal to the QEventLoop.quit() Slot */
+    connect(this, SIGNAL(urlRetrieved()), &pause, SLOT(quit()));
+
 
 }
 //TODO
+
+
+
 
 DropboxExporter::~DropboxExporter()
 {
@@ -23,40 +31,41 @@ DropboxExporter::~DropboxExporter()
 QString DropboxExporter::upload(const QString fileName, const QByteArray &payload) {
 
     QNetworkRequest nr(QUrl("https://content.dropboxapi.com/2/files/upload"));
-            nr.setRawHeader("Authorization",(tr("Bearer ") + apiKey).toUtf8());
-            QString dropboxarg;
-            dropboxarg.append("{\"path\": \"/");
-            dropboxarg.append(fileName);
-            dropboxarg.append("\",\"mode\": \"overwrite\",\"mute\": false}");
-            nr.setRawHeader("Dropbox-API-Arg",dropboxarg.toUtf8());
-            nr.setRawHeader("Content-Type","application/octet-stream");
-            manager->post(nr, payload);
+    nr.setRawHeader("Authorization",(tr("Bearer ") + apiKey).toUtf8());
+    QString dropboxarg;
+    dropboxarg.append("{\"path\": \"/");
+    dropboxarg.append(fileName);
+    dropboxarg.append("\",\"mode\": \"overwrite\",\"mute\": false}");
+    nr.setRawHeader("Dropbox-API-Arg",dropboxarg.toUtf8());
+    nr.setRawHeader("Content-Type","application/octet-stream");
+    manager->post(nr, payload);
 
-
-    return "NOT IMPLEMENTED";
+    /* Execute the QEventLoop - it will quit when the above finished due to the connect() */
+    pause.exec();
+    return path;
 }
 
 
 
 void DropboxExporter::replyFinished(QNetworkReply *nr) {
     if(first){
-    QByteArray output = nr->readAll();
-    qInfo(output);
-    QJsonDocument doc = QJsonDocument::fromJson(output);
-    QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
+        QByteArray output = nr->readAll();
+        qInfo(output);
+        QJsonDocument doc = QJsonDocument::fromJson(output);
+        QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
 
 
-    QNetworkRequest nr(QUrl("https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings"));
-    nr.setRawHeader("Authorization",(tr("Bearer ") + apiKey).toUtf8());
-    QString dropboxarg;
-    dropboxarg.append("{\"path\": \"");
-    QJsonObject jsonObject = doc.object();
-    QString pathDrop = jsonObject["path_display"].toString();
-    dropboxarg.append(pathDrop);
-    dropboxarg.append("\",\"settings\": {\"requested_visibility\": \"public\"}}");
-    nr.setRawHeader("Content-Type","application/json");
-    manager->post(nr, dropboxarg.toUtf8());
-    first = false;
+        QNetworkRequest nr(QUrl("https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings"));
+        nr.setRawHeader("Authorization",(tr("Bearer ") + apiKey).toUtf8());
+        QString dropboxarg;
+        dropboxarg.append("{\"path\": \"");
+        QJsonObject jsonObject = doc.object();
+        QString pathDrop = jsonObject["path_display"].toString();
+        dropboxarg.append(pathDrop);
+        dropboxarg.append("\",\"settings\": {\"requested_visibility\": \"public\"}}");
+        nr.setRawHeader("Content-Type","application/json");
+        manager->post(nr, dropboxarg.toUtf8());
+        first = false;
     } else {
         QByteArray output = nr->readAll();
         QJsonDocument doc = QJsonDocument::fromJson(output);
@@ -67,6 +76,8 @@ void DropboxExporter::replyFinished(QNetworkReply *nr) {
         QString url = doc.object()["url"].toString();
         url[url.size()-1] = '1';
         tex.append(url);
-        // url contient url du fichier uploadé
+        path = url; // url contient url du fichier uploadé
+
+        emit urlRetrieved();
     }
 }
