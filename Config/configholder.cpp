@@ -146,7 +146,6 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter &cex) {
             QString prog = "../bin/genTexData " + filename + " -level=2 -leveli=1 -dpi=100 -min_dpi=20 -max_dpi=100";
             process->start(prog);
             process->waitForFinished(-1); //Timeout 20min
-            qDebug() << "Code : " + process->exitCode();
             QString ext[] = {"iset","fset3","fset"};
             for(int i = 0; i < 3; i++) {
                 QJsonObject file;
@@ -158,6 +157,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter &cex) {
                     strHash = hash.result();
                 }
                 file["name"] = trimName + "." + ext[i];
+                filup.seek(0);
                 file["path"] = cex.upload(QString(trimName + "." + ext[i]),filup.readAll());
                 file["MD5"] = QString(strHash.toHex());
                 files.append(file);

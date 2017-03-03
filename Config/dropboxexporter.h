@@ -23,7 +23,9 @@ private:
     QEventLoop pause;
     QNetworkAccessManager *manager;
     bool first = true;
+    bool secondFirst = true;
     QString apiKey = "xxYPEC7HMMAAAAAAAAAAG8o1JTnQRgXNT7-Kfq1dXaOYTVo4LVpGqe6Vf3AfFXCu";
+    QString fileId;
 
 signals:
     void urlRetrieved();

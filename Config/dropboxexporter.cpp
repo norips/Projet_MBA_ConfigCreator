@@ -6,6 +6,7 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 
 DropboxExporter::DropboxExporter() : QObject()
 {
@@ -42,6 +43,7 @@ QString DropboxExporter::upload(const QString fileName, const QByteArray &payloa
 
     /* Execute the QEventLoop - it will quit when the above finished due to the connect() */
     pause.exec();
+    first = true;
     return path;
 }
 
@@ -54,12 +56,12 @@ void DropboxExporter::replyFinished(QNetworkReply *nr) {
         QJsonDocument doc = QJsonDocument::fromJson(output);
         QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
 
-
         QNetworkRequest nr(QUrl("https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings"));
         nr.setRawHeader("Authorization",(tr("Bearer ") + apiKey).toUtf8());
         QString dropboxarg;
         dropboxarg.append("{\"path\": \"");
         QJsonObject jsonObject = doc.object();
+        fileId = jsonObject["id"].toString();
         QString pathDrop = jsonObject["path_display"].toString();
         dropboxarg.append(pathDrop);
         dropboxarg.append("\",\"settings\": {\"requested_visibility\": \"public\"}}");
@@ -68,16 +70,43 @@ void DropboxExporter::replyFinished(QNetworkReply *nr) {
         first = false;
     } else {
         QByteArray output = nr->readAll();
-        QJsonDocument doc = QJsonDocument::fromJson(output);
-        QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
-        QString tex;
-        tex.append(formattedJsonString);
-        tex.append("URL:\n");
-        QString url = doc.object()["url"].toString();
-        url[url.size()-1] = '1';
-        tex.append(url);
-        path = url; // url contient url du fichier uploadé
+        qInfo(output);
+        if(nr->attribute(QNetworkRequest::HttpStatusCodeAttribute) != 200) {
+            qDebug() << "Error while retrieving url, assuming already existing link" << endl;
+            QNetworkRequest nr(QUrl("https://api.dropboxapi.com/2/sharing/list_shared_links"));
+            nr.setRawHeader("Authorization",(tr("Bearer ") + apiKey).toUtf8());
+            QString dropboxarg;
+            dropboxarg.append("{\"path\": \"");
+            dropboxarg.append(fileId);
+            dropboxarg.append("\",\"direct_only\": true}");
+            nr.setRawHeader("Content-Type","application/json");
+            manager->post(nr, dropboxarg.toUtf8());
+            secondFirst = false;
+        } else if(secondFirst) {
+            QJsonDocument doc = QJsonDocument::fromJson(output);
+            QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
+            QString tex;
+            tex.append(formattedJsonString);
+            tex.append("URL:\n");
+            QString url = doc.object()["url"].toString();
+            url[url.size()-1] = '1';
+            tex.append(url);
+            path = url; // url contient url du fichier uploadé
 
-        emit urlRetrieved();
+            emit urlRetrieved();
+        } else {
+            //Read url from links array
+            QJsonDocument doc = QJsonDocument::fromJson(output);
+            QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
+            QString tex;
+            tex.append(formattedJsonString);
+            QJsonArray links = doc.object()["links"].toArray();
+            QString url = links.at(0).toObject()["url"].toString();
+            url[url.size()-1] = '1';
+            tex.append(url);
+            path = url; // url contient url du fichier uploadé
+
+            emit urlRetrieved();
+        }
     }
 }
