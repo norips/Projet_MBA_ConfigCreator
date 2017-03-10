@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QGroupBox>
 #include <QMenu>
+#include <QRubberBand>
 #include "mainwindow.h"
 
 
@@ -20,7 +21,6 @@ public:
     ~Widget();
 
 public:
-    void paintEvent(QPaintEvent *e);
     void mousePressEvent(QMouseEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
@@ -31,24 +31,14 @@ public:
 private:
     QWidget *toto;
 
-    bool selectionStarted;
-    QRect selectionRect;
-    QMenu contextMenu;
+    QRubberBand* rubberBand;
+    bool move_rubberBand;
+    bool selection_start;
+    QPoint rubberBand_offset;
+    QPoint origin;
 
     QImage image;
     QPixmap imageobject;
-
-    int newPenWidth;
-    QColor newPenColor;
-    bool modified;
-    bool scribbling;
-
-    QPoint firstPoint, secondPoint;
-    void drawFirstPoint(const QPoint);
-    void drawSecondPoint(const QPoint);
-
-public slots:
-    void saveSlot();
 
 
 };

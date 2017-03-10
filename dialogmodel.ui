@@ -100,20 +100,14 @@
     </property>
    </widget>
   </widget>
-  <widget class="QWidget" name="zoneSelection" native="true">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
+  <widget class="Widget" name="widget" native="true">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>821</width>
-     <height>421</height>
+     <x>10</x>
+     <y>20</y>
+     <width>831</width>
+     <height>391</height>
     </rect>
-   </property>
-   <property name="cursor">
-    <cursorShape>CrossCursor</cursorShape>
    </property>
    <property name="mouseTracking">
     <bool>true</bool>
@@ -121,8 +115,8 @@
    <widget class="QLabel" name="lbpixmap">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>90</y>
+      <x>330</x>
+      <y>100</y>
       <width>200</width>
       <height>200</height>
      </rect>
@@ -151,6 +145,14 @@
    </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Widget</class>
+   <extends>QWidget</extends>
+   <header>Config/widget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

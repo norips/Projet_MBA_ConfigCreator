@@ -28,7 +28,6 @@ public:
     Ui::DialogModel *ui;
     Model *model;
     Canva *canva;
-    Widget *widget;
 };
 
 #endif // DIALOGMODEL_H

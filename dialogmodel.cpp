@@ -16,18 +16,12 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
     ui->setupUi(this);
     model = m->getModel();
 
-    ui->zoneSelection=new Widget(this);
-    ui->zoneSelection->grabMouse();
-
     ui->leName->setText(m->getName());
 
     canva = c;
 
     ui->lbpixmap->setPixmap(canva->getPix().scaled(ui->lbpixmap->rect().size(),Qt::KeepAspectRatio));
 
-    //ui->zoneSelection->setMouseTracking(true);
-
-    ui->zoneSelection->setStyleSheet("border: 1px solid black;");
     foreach(Texture *t, model->getTextures()){
             /*if((model->getTextures().at(0))->getType() == Texture::IMG && model->getTextures().size() > 0) {
                 TextureIMG *timg = dynamic_cast<TextureIMG *>(model->getTextures().at(0));
@@ -46,12 +40,17 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
 
 DialogModel::~DialogModel()
 {
+    this->releaseMouse();
+    //delete widget;
     delete ui;
 }
 
 void DialogModel::on_buttonBox_accepted()
 {
-    QRect rect = widget->getRectSelection();
+    Widget * widg = dynamic_cast<Widget*>(ui->groupBox);
+    QRect rect = widg->getRectSelection();
+    qDebug() << "rectangle" << rect << endl;
+    /*QRect rect = widget->getRectSelection();
     QString text ;
 
     int xtlc,ytlc;
@@ -80,6 +79,7 @@ void DialogModel::on_buttonBox_accepted()
         this->hide();
     } else {
         qDebug() << "Selection Nulle" << endl;
-    }
+    }*/
+    //this->releaseMouse();
     this->hide();
 }

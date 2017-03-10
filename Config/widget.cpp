@@ -5,15 +5,16 @@
 #include <QAction>
 #include <QFileDialog>
 #include <iostream>
+#include <Qt>
+#include <QGraphicsView>
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
     toto = parent;
-    selectionStarted=false;
 
-    QAction *saveAction=contextMenu.addAction("Save");
-    connect(saveAction,SIGNAL(triggered()),this,SLOT(saveSlot()));
+    rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
+
 }
 
 Widget::~Widget()
@@ -21,63 +22,48 @@ Widget::~Widget()
 
 }
 
-void Widget::paintEvent(QPaintEvent *e)
-{
-    qDebug() << "PaintEvent : "<< e << endl;
-    QWidget::paintEvent(e);
-
-    QPainter painter(this);
-
-
-    painter.setPen(QPen(QBrush(QColor(0,0,0,180)),1,Qt::DashLine));
-    painter.setBrush(QBrush(QColor(255,255,255,120)));
-    painter.drawRect(selectionRect);
-}
 
 void Widget::mousePressEvent(QMouseEvent *e)
 {
     qDebug() << "MousePressEvent : "<< e << endl;
 
-    if (e->button()==Qt::RightButton)
-    {
-        if (selectionRect.contains(e->pos())) contextMenu.exec(this->mapToGlobal(e->pos()));
-    }
-    else
-    {
-        selectionStarted=true;
-        selectionRect.setTopLeft(e->pos());
-        selectionRect.setBottomRight(e->pos());
-    }
+   if (e->button()==Qt::LeftButton)
+   {
+        if (rubberBand->geometry().contains(e->pos())){
+            move_rubberBand = true ;
+            rubberBand_offset = e->pos() - rubberBand->pos();
+        }
+        else{
+            selection_start = true;
+            origin = e->pos();
+            //rubberBand->show();
+        }
+   }
 }
 
 void Widget::mouseMoveEvent(QMouseEvent *e)
 {
     qDebug() << "MouseMoveEnvent : "<< e << endl;
 
-    if (selectionStarted)
-    {
-        selectionRect.setBottomRight(e->pos());
-        repaint();
-    }
+    if(move_rubberBand)
+        rubberBand->move(e->pos() - rubberBand_offset);
+    else
+        if(selection_start){
+            rubberBand->setGeometry(QRect(origin,e->pos()));
+            rubberBand->show();
+        }
 }
 
 void Widget::mouseReleaseEvent(QMouseEvent *e)
 {
     qDebug() << "MouseReleaseEvent : "<< e << endl;
+    qDebug() << "rectangle :" << rubberBand->geometry() << endl;
 
-    selectionStarted=false;
-}
-
-void Widget::saveSlot()
-{
-
-    QString fileName = QFileDialog::getSaveFileName(this, QObject::tr("Save File"),
-                                            "/home",
-                                            QObject::tr("Images (*.jpg)"));
-
-    //toto->sauverRectangle (&selectionRect,fileName);
+    move_rubberBand = false;
+    selection_start = false;
+    rubberBand->show();
 }
 
 QRect Widget::getRectSelection(){
-    return this->selectionRect;
+    return rubberBand->geometry();
 }
