@@ -28,6 +28,9 @@ public:
     Ui::DialogModel *ui;
     Model *model;
     Canva *canva;
+
+    double ratioX;
+    double ratioY;
 };
 
 #endif // DIALOGMODEL_H

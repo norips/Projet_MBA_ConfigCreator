@@ -36,7 +36,7 @@ void formTableau::on_pbMod_released()
 {
     if(ui->lvListeModele->selectedItems().size()<1) return;
     modelItem *m = (modelItem*) ui->lvListeModele->selectedItems().at(0);
-    DialogModel* dialog = new DialogModel(0,m);
+    DialogModel* dialog = new DialogModel(0,m,canva);
     dialog->exec();
 }
 

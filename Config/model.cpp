@@ -7,6 +7,10 @@ Model::Model(QString& name,int id)
 {
     this->name = name;
     this->id = id;
+    this->tlc = "";
+    this->blc = "";
+    this->trc = "";
+    this->brc = "";
 }
 
 modelItem* Model::toItem(){

@@ -31,7 +31,54 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
             if(t->getType() == Texture::TEXT){
                 TextureTXT *ttext = dynamic_cast<TextureTXT*>(t);
                 ui->teText->setText(ttext->getData());
+                break;
             }
+    }
+    bool landscape = canva->getPix().width() > canva->getPix().height();
+
+    float displayedHeight;
+    float displayedWidth;
+
+    if (landscape){
+        displayedHeight = ui->lbpixmap->height() * canva->getPix().height()/canva->getPix().width();
+        displayedWidth =  ui->lbpixmap->width();
+    } else {
+        displayedHeight = ui->lbpixmap->height();
+        displayedWidth =  ui->lbpixmap->width() * canva->getPix().width()/canva->getPix().height();
+    }
+    ratioX = (double) 100.0/displayedWidth;
+    ratioY = (double) 100.0/displayedHeight;
+    if( !model->tlc.isEmpty() && !model->trc.isEmpty() && !model->blc.isEmpty() && !model->brc.isEmpty()) {
+        QStringList lTLC = model->tlc.split(",");
+        double tlcX = lTLC.at(0).toDouble() / ratioX;
+        double tlcY = lTLC.at(1).toDouble() / ratioY;
+        tlcY = -tlcY;
+
+        QStringList lTRC = model->trc.split(",");
+        double trcX = lTRC.at(0).toDouble() / ratioX;
+        double trcY = lTRC.at(1).toDouble() / ratioY;
+        trcY = -trcY;
+
+        QStringList lBLC = model->blc.split(",");
+        double blcX = lBLC.at(0).toDouble() / ratioX;
+        double blcY = lBLC.at(1).toDouble() / ratioY;
+        blcY = -blcY;
+
+        QStringList lBRC = model->brc.split(",");
+        double brcX = lBRC.at(0).toDouble() / ratioX;
+        double brcY = lBRC.at(1).toDouble() / ratioY;
+        brcY = -brcY;
+
+        tlcX += (ui->lbpixmap->x() ) ;
+        tlcY += (ui->lbpixmap->y() + ui->lbpixmap->height()) ;
+        qDebug() << tlcX << "," << tlcY << endl;
+        qDebug() << brcX << "," << brcY << endl;
+
+        brcX += (ui->lbpixmap->x() ) ;
+        brcY += (ui->lbpixmap->y() + ui->lbpixmap->height());
+        ui->widget->getRubberBand()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
+        ui->widget->getRubberBand()->show();
+
     }
 
 }
@@ -67,20 +114,6 @@ void DialogModel::on_buttonBox_accepted()
         lbWidth = ui->lbpixmap->width();
         lbHeight = ui->lbpixmap->height();
 
-        bool landscape = canva->getPix().width() > canva->getPix().height();
-
-        float displayedHeight;
-        float displayedWidth;
-
-        if (landscape){
-            displayedHeight = ui->lbpixmap->height() * canva->getPix().height()/canva->getPix().width();
-            displayedWidth =  ui->lbpixmap->width();
-        } else {
-            displayedHeight = ui->lbpixmap->height();
-            displayedWidth =  ui->lbpixmap->width() * canva->getPix().width()/canva->getPix().height();
-        }
-        double ratioX = (double) 100.0/displayedWidth;
-        double ratioY = (double) 100.0/displayedHeight;
 
         QPoint tlc(lbX,lbY);
         QPoint trc(lbX+lbWidth,lbY);

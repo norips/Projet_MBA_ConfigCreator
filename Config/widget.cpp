@@ -67,3 +67,7 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
 QRect Widget::getRectSelection(){
     return rubberBand->geometry();
 }
+
+QRubberBand* Widget::getRubberBand() {
+    return rubberBand;
+}

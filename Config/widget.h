@@ -25,7 +25,7 @@ public:
     void mouseMoveEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
     QRect getRectSelection();
-
+    QRubberBand* getRubberBand();
 
 
 private:

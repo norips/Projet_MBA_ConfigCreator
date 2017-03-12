@@ -83,7 +83,6 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
            m->trc = modObj["trc"].toString();
            m->blc = modObj["blc"].toString();
            m->brc = modObj["brc"].toString();
-           m->type = modObj["type"].toString();
            QJsonArray textures = modObj["textures"].toArray();
            foreach (const QJsonValue &t, textures) {
                QJsonObject tobj = t.toObject();
