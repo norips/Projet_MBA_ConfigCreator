@@ -191,7 +191,6 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter &cex) {
         foreach(Model *m, v->getItems()){
             QJsonObject model;
             model["name"] = m->name;
-            model["type"] = "texte";
             model["tlc"] = m->tlc;
             model["trc"] = m->trc;
             model["blc"] = m->blc;
@@ -203,12 +202,14 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter &cex) {
                     TextureTXT *ttxt =  dynamic_cast<TextureTXT *>(t);
                     QJsonObject tex;
                     tex["text"] = ttxt->getData();
+                    tex["type"] = "texte";
                     textures.append(tex);
                 }
                 if(t->getType() == Texture::IMG) {
                     TextureIMG *timg =  dynamic_cast<TextureIMG *>(t);
                     QJsonObject tex;
                     tex["name"] = "test";
+                    tex["type"] = "image";
                     QByteArray bArray;
                     QBuffer buffer(&bArray);
                     buffer.open(QIODevice::WriteOnly);

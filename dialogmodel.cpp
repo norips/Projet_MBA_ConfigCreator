@@ -47,30 +47,73 @@ DialogModel::~DialogModel()
 
 void DialogModel::on_buttonBox_accepted()
 {
-    Widget * widg = dynamic_cast<Widget*>(ui->groupBox);
-    QRect rect = widg->getRectSelection();
+    Widget *widget = ui->widget;
+    QRect rect = widget->getRectSelection();
     qDebug() << "rectangle" << rect << endl;
-    /*QRect rect = widget->getRectSelection();
     QString text ;
 
-    int xtlc,ytlc;
-    int xtrc, ytrc;
-    int xblc, yblc;
-    int xbrc, ybrc;
 
     if(rect.height() !=0 && rect.width() != 0){
         qDebug() << "Valid" << endl;
         text = ui->lbText->text();
         int x =0, y=0, width, height;
         rect.getRect(&x,&y,&width,&height);
-        xtlc = x ; ytlc = y;
-        xtrc = x+width; ytrc = y;
-        xblc= x; yblc = y+height;
-        xbrc = x + width; ybrc = y+height;
-        model->tlc.append((QString::number(xtlc))).append(",").append(QString::number(ytlc)).append(",0");
-        model->trc.append((QString::number(xtrc))).append(",").append(QString::number(ytrc)).append(",0");
-        model->blc.append((QString::number(xblc))).append(",").append(QString::number(yblc)).append(",0");
-        model->brc.append((QString::number(xbrc))).append(",").append(QString::number(ybrc)).append(",0");
+        QPoint xtlc(x ,  y);
+        QPoint xtrc(x+width,  y);
+        QPoint xblc(x, y+height);
+        QPoint xbrc(x + width,y+height);
+        int lbX=0, lbY=0, lbWidth, lbHeight;
+        ui->lbpixmap->geometry().getRect(&lbX,&lbY,&lbWidth,&lbHeight);
+        lbWidth = ui->lbpixmap->width();
+        lbHeight = ui->lbpixmap->height();
+
+        bool landscape = canva->getPix().width() > canva->getPix().height();
+
+        float displayedHeight;
+        float displayedWidth;
+
+        if (landscape){
+            displayedHeight = ui->lbpixmap->height() * canva->getPix().height()/canva->getPix().width();
+            displayedWidth =  ui->lbpixmap->width();
+        } else {
+            displayedHeight = ui->lbpixmap->height();
+            displayedWidth =  ui->lbpixmap->width() * canva->getPix().width()/canva->getPix().height();
+        }
+        double ratioX = (double) 100.0/displayedWidth;
+        double ratioY = (double) 100.0/displayedHeight;
+
+        QPoint tlc(lbX,lbY);
+        QPoint trc(lbX+lbWidth,lbY);
+        QPoint blc(lbX,lbY+lbHeight);
+        QPoint brc(lbX+lbWidth,lbY+lbHeight);
+
+
+        qDebug() << "tlc : " << xtlc-blc << endl;
+        qDebug() << "trc : " << xtrc-blc << endl;
+        qDebug() << "blc : " << xblc-blc << endl;
+        qDebug() << "brc : " << xbrc-blc << endl;
+        QPoint relTLC = xtlc-blc;
+        QPoint relTRC = xtrc-blc;
+        QPoint relBLC = xblc-blc;
+        QPoint relBRC = xbrc-blc;
+        double confTLCx = (double) relTLC.x() * ratioX;
+        double confTLCy = (double) relTLC.y() * ratioY;
+        double confTRCx = (double) relTRC.x() * ratioX;
+        double confTRCy = (double) relTRC.y() * ratioY;
+        double confBLCx = (double) relBLC.x() * ratioX;
+        double confBLCy = (double) relBLC.y() * ratioY;
+        double confBRCx = (double) relBRC.x() * ratioX;
+        double confBRCy = (double) relBRC.y() * ratioY;
+        qDebug() << "######CONFIG VALUE#########" << endl;
+        qDebug() << "RATIO X : " << ratioX << "," << ",RATIO Y :" << ratioY << endl;
+        qDebug() << "TLC : " << confTLCx << "," << confTLCy << endl;
+        qDebug() << "TRC : " << confTRCx << "," << confTRCy << endl;
+        qDebug() << "BLC : " << confBLCx << "," << confBLCy << endl;
+        qDebug() << "BRC : " << confBRCx << "," << confBRCy << endl;
+        model->tlc.append((QString::number(confTLCx))).append(",").append(QString::number(-confTLCy)).append(",0");
+        model->trc.append((QString::number(confTRCx))).append(",").append(QString::number(-confTRCy)).append(",0");
+        model->blc.append((QString::number(confBLCx))).append(",").append(QString::number(-confBLCy)).append(",0");
+        model->brc.append((QString::number(confBRCx))).append(",").append(QString::number(-confBRCy)).append(",0");
         model->name = ui->leName->text();
         TextureTXT * ttext = new TextureTXT(text);
         model->addTexture(ttext);
@@ -79,7 +122,7 @@ void DialogModel::on_buttonBox_accepted()
         this->hide();
     } else {
         qDebug() << "Selection Nulle" << endl;
-    }*/
+    }
     //this->releaseMouse();
     this->hide();
 }
