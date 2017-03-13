@@ -7,6 +7,7 @@ ThreadExport::ThreadExport(QString filename, ConfigHolder* holder)
 }
 
 void ThreadExport::run() {
+    //Quick and dirty hack to remove error, QNetworkAccessManager used in DropboxExporter need to be created inside the same thread as this->run()
     this->exporter = new DropboxExporter();
     qDebug() << "Thread start" << endl;
     holder->ExportToJSONFile(filename,exporter);
