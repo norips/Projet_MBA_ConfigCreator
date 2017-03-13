@@ -24,7 +24,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    void createUIFromConfig(const ConfigHolder& conf);
+    void createUIFromConfig(const ConfigHolder* conf);
 };
 
 #endif // MAINWINDOW_H

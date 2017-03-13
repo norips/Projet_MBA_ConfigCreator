@@ -11,7 +11,7 @@ formTableau::formTableau(QWidget *parent, canvaItem *item) :
     ui(new Ui::formTableau)
 {
     ui->setupUi(this);
-    canva = ConfigHolder::Instance().getCanvas().at(item->getID());
+    canva = ConfigHolder::Instance()->getCanvas().at(item->getID());
     ui->leTitle->setText(canva->getName());
     ui->lbPix->setPixmap(canva->getPix().scaled(ui->lbPix->rect().size(),Qt::KeepAspectRatio));
     QVector<Model*> items = canva->getItems();

@@ -3,14 +3,14 @@
 FileDownloader::FileDownloader(QUrl imageUrl,QString fileName, QObject *parent) :
  QObject(parent)
 {
+    m_WebCtrl = new QNetworkAccessManager();
  connect(
-  &m_WebCtrl, SIGNAL (finished(QNetworkReply*)),
+  m_WebCtrl, SIGNAL (finished(QNetworkReply*)),
   this, SLOT (fileDownloaded(QNetworkReply*))
   );
-
  QNetworkRequest request(imageUrl);
  m_fileName = fileName;
- m_WebCtrl.get(request);
+ m_WebCtrl->get(request);
 }
 
 FileDownloader::~FileDownloader() { }

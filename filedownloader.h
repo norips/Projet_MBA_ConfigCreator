@@ -22,7 +22,7 @@ class FileDownloader : public QObject
   void fileDownloaded(QNetworkReply* pReply);
 
  private:
-  QNetworkAccessManager m_WebCtrl;
+  QNetworkAccessManager *m_WebCtrl;
   QByteArray m_DownloadedData;
   QString m_fileName;
 };

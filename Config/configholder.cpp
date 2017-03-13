@@ -17,13 +17,15 @@
 #include "textureimg.h"
 #include "configexporter.h"
 
-ConfigHolder ConfigHolder::m_instance=ConfigHolder();
-ConfigHolder::ConfigHolder()
+ConfigHolder* ConfigHolder::m_instance=0;
+ConfigHolder::ConfigHolder( QObject* parent=0 ) : QObject( parent )
 {
     first = true;
 }
 
-ConfigHolder& ConfigHolder::Instance(){
+ConfigHolder* ConfigHolder::Instance( QObject* parent ){
+    if( !m_instance )
+        m_instance = new ConfigHolder( parent );
     return m_instance;
 }
 
@@ -115,7 +117,7 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
 
 
 }
-void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter &cex) {
+void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
     QFile file(filepath);
     file.open(QIODevice::WriteOnly | QIODevice::Text);
     QString base = "../tmp/";
@@ -142,7 +144,11 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter &cex) {
             file.open(QIODevice::WriteOnly);
             v->getPix().save(&file, "JPG");
             QProcess *process = new QProcess();
+#ifdef Q_OS_WIN
+            QString prog = "../bin/genTexData.exe " + filename + " -level=2 -leveli=1 -dpi=100 -min_dpi=20 -max_dpi=100";
+#else
             QString prog = "../bin/genTexData " + filename + " -level=2 -leveli=1 -dpi=100 -min_dpi=20 -max_dpi=100";
+#endif
             process->start(prog);
             process->waitForFinished(-1); //Timeout 20min
             QString ext[] = {"iset","fset3","fset"};
@@ -157,7 +163,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter &cex) {
                 }
                 file["name"] = trimName + "." + ext[i];
                 filup.seek(0);
-                file["path"] = cex.upload(QString(trimName + "." + ext[i]),filup.readAll());
+                file["path"] = cex->upload(QString(trimName + "." + ext[i]),filup.readAll());
                 file["MD5"] = QString(strHash.toHex());
                 files.append(file);
             }
@@ -219,7 +225,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter &cex) {
                     strHash = hash.result();
                     QString tmpName = m->name.remove(QRegExp("[ \"'_-]")) + "%1" + ".png";
                     tex["name"] = tmpName.arg(++indexTex);
-                    tex["path"] = cex.upload(tmpName.arg(indexTex),bArray);
+                    tex["path"] = cex->upload(tmpName.arg(indexTex),bArray);
                     tex["MD5"] = QString(strHash.toHex());
                     textures.append(tex);
                 }
@@ -234,6 +240,8 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter &cex) {
     canvasRoot["canvas"] = canvas;
     doc.setObject(canvasRoot);
     file.write(doc.toJson());
+    int NO_ERROR = 0;
+    emit configExported(NO_ERROR);
 }
 
 QVector<Canva*> ConfigHolder::getCanvas() const {
