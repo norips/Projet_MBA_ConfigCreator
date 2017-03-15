@@ -18,6 +18,7 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
 
     connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(ui->pushButton, SIGNAL(released()),this,SLOT(openFile()));
+    connect(ui->pushButton_2, SIGNAL(released()),this,SLOT(openFile2()));
     ui->leName->setText(m->getName());
 
     canva = c;
@@ -165,6 +166,13 @@ void DialogModel::openFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),"/",tr("Image Files (*.png *.jpg *.bmp)"));
     ui->lineEdit->insert(fileName);
+    qDebug() << "FILE" << fileName;
+}
+
+void DialogModel::openFile2()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),"/",tr("Image Files (*.mp4 )"));
+    ui->lineEdit_2->insert(fileName);
     qDebug() << "FILE" << fileName;
 }
 
