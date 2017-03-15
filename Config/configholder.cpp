@@ -18,7 +18,7 @@
 #include "configexporter.h"
 
 ConfigHolder* ConfigHolder::m_instance=0;
-ConfigHolder::ConfigHolder( QObject* parent=0 ) : QObject( parent )
+ConfigHolder::ConfigHolder( QObject* parent ) : QObject( parent )
 {
     first = true;
 }

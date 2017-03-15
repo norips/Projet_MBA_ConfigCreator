@@ -105,7 +105,7 @@ void DialogModel::on_buttonBox_accepted()
 
     if(rect.height() !=0 && rect.width() != 0){
         qDebug() << "Valid" << endl;
-        text = ui->lbText->text();
+        text = ui->teText->toPlainText();
         int x =0, y=0, width, height;
         rect.getRect(&x,&y,&width,&height);
         QPoint xtlc(x ,  y);

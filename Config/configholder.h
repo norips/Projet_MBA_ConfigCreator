@@ -15,7 +15,7 @@ public:
     QVector<Canva*> getCanvas() const;
     void addEmpty();
 private:
-    ConfigHolder( QObject* parent);
+    ConfigHolder( QObject* parent=0);
     QVector<Canva*> canvas;
     static ConfigHolder* m_instance;
     bool first;
