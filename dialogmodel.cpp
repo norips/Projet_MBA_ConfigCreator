@@ -15,8 +15,9 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
 {
     ui->setupUi(this);
     model = m->getModel();
-    connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
 
+    connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    connect(ui->pushButton, SIGNAL(released()),this,SLOT(openFile()));
     ui->leName->setText(m->getName());
 
     canva = c;
@@ -157,18 +158,13 @@ void DialogModel::on_buttonBox_accepted()
     } else {
         qDebug() << "Selection Nulle" << endl;
     }
-    //QString choix;
-    //ui->comboBox->currentIndexChanged(choix);
-    //qDebug() << "comboBox1" << choix;
-
-    //this->releaseMouse();
     this->hide();
 }
 
-/*QString DialogModel::recuperation(QString rec)
+void DialogModel::openFile()
 {
-    ui->comboBox->currentIndexChanged(rec);
-    qDebug() << "comboBox" << rec;
-    return rec;
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),"/",tr("Image Files (*.png *.jpg *.bmp)"));
+    ui->lineEdit->insert(fileName);
+    qDebug() << "FILE" << fileName;
+}
 
-}*/
