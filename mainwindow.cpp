@@ -43,7 +43,7 @@ void MainWindow::openCanvas(QListWidgetItem *item)
         ConfigHolder::Instance()->addEmpty();
         createUIFromConfig(ConfigHolder::Instance());
     } else {
-        formTableau *tab = new formTableau(0,itemC);
+        formTableau *tab = new formTableau(this,itemC);
         tab->exec();
     }
     reDraw();
