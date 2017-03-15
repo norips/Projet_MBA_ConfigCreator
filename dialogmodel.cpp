@@ -15,7 +15,7 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
 {
     ui->setupUi(this);
     model = m->getModel();
-    //connect(ui->comboBox, SIGNAL(currentIndexChanged(QString)),this,SLOT(recuperation(QString)));
+    connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
 
     ui->leName->setText(m->getName());
 
