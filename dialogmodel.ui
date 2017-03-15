@@ -40,8 +40,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>50</y>
+      <x>60</x>
+      <y>10</y>
       <width>131</width>
       <height>23</height>
      </rect>
@@ -50,8 +50,8 @@
    <widget class="QLabel" name="lbName">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>20</y>
+      <x>10</x>
+      <y>-10</y>
       <width>51</width>
       <height>71</height>
      </rect>
@@ -79,8 +79,8 @@
    <widget class="QTextEdit" name="teText">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>30</y>
+      <x>320</x>
+      <y>20</y>
       <width>281</width>
       <height>111</height>
      </rect>
@@ -89,14 +89,63 @@
    <widget class="QLabel" name="lbText">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>70</y>
+      <x>210</x>
+      <y>10</y>
       <width>121</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>Text à afficher :</string>
+     <string>Texte à afficher :</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>60</y>
+      <width>104</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="mouseTracking">
+     <bool>false</bool>
+    </property>
+    <item>
+     <property name="text">
+      <string>...</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Texte</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Image</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Vidéo</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="lbName_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>51</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Type:</string>
     </property>
    </widget>
   </widget>
@@ -104,7 +153,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>20</y>
+     <y>-10</y>
      <width>831</width>
      <height>391</height>
     </rect>

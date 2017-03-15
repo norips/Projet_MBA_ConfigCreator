@@ -15,6 +15,7 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
 {
     ui->setupUi(this);
     model = m->getModel();
+    //connect(ui->comboBox, SIGNAL(currentIndexChanged(QString)),this,SLOT(recuperation(QString)));
 
     ui->leName->setText(m->getName());
 
@@ -23,11 +24,11 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
     ui->lbpixmap->setPixmap(canva->getPix().scaled(ui->lbpixmap->rect().size(),Qt::KeepAspectRatio));
 
     foreach(Texture *t, model->getTextures()){
-            /*if((model->getTextures().at(0))->getType() == Texture::IMG && model->getTextures().size() > 0) {
+        if((model->getTextures().at(0))->getType() == Texture::IMG && model->getTextures().size() > 0) {
                 TextureIMG *timg = dynamic_cast<TextureIMG *>(model->getTextures().at(0));
-                ui->lbTexture->setPixmap(timg->getData());
+                ui->lbText->setPixmap(timg->getData());
             }
-        else*/
+        else
             if(t->getType() == Texture::TEXT){
                 TextureTXT *ttext = dynamic_cast<TextureTXT*>(t);
                 ui->teText->setText(ttext->getData());
@@ -156,6 +157,18 @@ void DialogModel::on_buttonBox_accepted()
     } else {
         qDebug() << "Selection Nulle" << endl;
     }
+    //QString choix;
+    //ui->comboBox->currentIndexChanged(choix);
+    //qDebug() << "comboBox1" << choix;
+
     //this->releaseMouse();
     this->hide();
 }
+
+/*QString DialogModel::recuperation(QString rec)
+{
+    ui->comboBox->currentIndexChanged(rec);
+    qDebug() << "comboBox" << rec;
+    return rec;
+
+}*/
