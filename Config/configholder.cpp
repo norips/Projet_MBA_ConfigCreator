@@ -42,27 +42,29 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
         QJsonObject obj = v.toObject();
         qDebug() << obj["name"] << endl;
         QString name = obj["name"].toString();
-        QString url = obj["url"].toString();
-        QEventLoop pause;
-        fileD = new FileDownloader(QUrl(url),base + name + ".jpg");
-        qDebug() << "URL : " << url << endl;
-        QObject::connect(fileD, SIGNAL (downloaded()), &pause, SLOT (quit()));
-        pause.exec();
-        QImage img;
-        img.loadFromData(fileD->downloadedData());
-        Canva *c = new Canva(QPixmap::fromImage(img),name,base + name);
+        Canva *c = new Canva(QPixmap(),name,base + name);
+
         QJsonObject features = obj["feature"].toObject();
         QJsonArray featureFiles = features["files"].toArray();
         if(featureFiles.size()<3) {
             //Error
         }
         Feature *feature = new Feature(name);
+        QEventLoop pause;
         foreach(const QJsonValue &jfilev, featureFiles) {
             QJsonObject jfileo = jfilev.toObject();
             File f(jfileo["name"].toString(),jfileo["path"].toString(),jfileo["MD5"].toString());
             qDebug() << f.getName();
             if(f.getName().endsWith(".iset")) {
                 feature->setIset(f);
+                QString url = f.getPath();
+                fileD = new FileDownloader(QUrl(url),base + name + ".jpg");
+                qDebug() << "URL : " << url << endl;
+                QObject::connect(fileD, SIGNAL (downloaded()), &pause, SLOT (quit()));
+                pause.exec();
+                QImage img;
+                img.loadFromData(fileD->downloadedData().remove(0,4));
+                c->setPix(QPixmap::fromImage(img));
             }
             if(f.getName().endsWith(".fset")) {
                 feature->setFset(f);
@@ -89,7 +91,7 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
            foreach (const QJsonValue &t, textures) {
                QJsonObject tobj = t.toObject();
                if(m->type.compare("image") == 0) {
-                   url = tobj["path"].toString();
+                   QString url = tobj["path"].toString();
                    name = tobj["name"].toString();
                    fileD = new FileDownloader(QUrl(url),base + name);
                    qDebug() << "URL : " << url << endl;
