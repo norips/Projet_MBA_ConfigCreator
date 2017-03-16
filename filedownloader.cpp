@@ -16,6 +16,18 @@ FileDownloader::FileDownloader(QUrl imageUrl,QString fileName, QObject *parent) 
 FileDownloader::~FileDownloader() { }
 
 void FileDownloader::fileDownloaded(QNetworkReply* pReply) {
+    if(pReply->error()) {
+        qDebug() << pReply->errorString() << endl;
+    }
+    int statusCode = pReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if(statusCode == 302)
+    {
+        QUrl newUrl = pReply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
+        qDebug() << "redirected from to " + newUrl.toString();
+        QNetworkRequest newRequest(newUrl);
+        m_WebCtrl->get(newRequest);
+        return;
+    }
     m_DownloadedData = QByteArray(pReply->readAll());
     //emit a signal
     QFile file(m_fileName);
