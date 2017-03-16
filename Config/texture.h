@@ -2,7 +2,9 @@
 #define TEXTURE_H
 
 #include <QString>
-class Texture
+#include "modified.h"
+
+class Texture: public Modified
 {
 public:
     enum XEnumType {
@@ -11,10 +13,6 @@ public:
     };
     Texture();
     virtual int getType() = 0;
-    bool modified();
-    void setModified(bool);
-private:
-    bool mod;
 };
 
 #endif // TEXTURE_H

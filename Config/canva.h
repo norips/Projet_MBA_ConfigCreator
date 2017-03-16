@@ -5,8 +5,9 @@
 #include "model.h"
 #include "canvaitem.h"
 #include "feature.h"
+#include "modified.h"
 
-class Canva
+class Canva: public Modified
 {
 public:
     Canva(const QPixmap &img,const QString &name,const QString &path);
@@ -17,8 +18,6 @@ public:
     void setPix(const QPixmap& pix);
     QPixmap getPix() const;
     canvaItem* toItem();
-    bool modified();
-    void setModified(bool);
     Feature* getFeature();
     void setFeature(Feature *f);
 
@@ -30,7 +29,6 @@ private:
     QPixmap img;
     QVector<Model*> items;
     Feature *feature;
-    bool mod;
 };
 
 #endif // CANVA_H

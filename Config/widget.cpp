@@ -14,7 +14,7 @@ Widget::Widget(QWidget *parent)
     toto = parent;
 
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
-
+    move_rubberBand=false;
 }
 
 Widget::~Widget()
