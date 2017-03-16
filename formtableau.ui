@@ -26,7 +26,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Différentes données du tableau</string>
   </property>
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
@@ -87,7 +87,7 @@
      <x>10</x>
      <y>10</y>
      <width>581</width>
-     <height>191</height>
+     <height>204</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_3">
