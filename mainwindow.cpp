@@ -95,3 +95,16 @@ void MainWindow::on_actionEnregistrer_triggered()
         t->start();
     }
 }
+
+void MainWindow::on_leSearch_textChanged(const QString &arg1)
+{
+    ui->lvTableaux->clear();
+    QVector<Canva*> canvas = ConfigHolder::Instance()->getCanvas();
+    ui->lvTableaux->clear();
+    foreach (Canva *c, canvas) {
+        if(c->getName().contains(arg1)) {
+            ui->lvTableaux->addItem(c->toItem());
+        }
+    }
+    ui->lvTableaux->repaint();
+}

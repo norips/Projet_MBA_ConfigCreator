@@ -21,6 +21,8 @@ private slots:
     void reDraw();
     void on_actionEnregistrer_triggered();
 
+    void on_leSearch_textChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 
