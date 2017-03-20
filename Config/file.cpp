@@ -7,6 +7,12 @@ File::File(QString _name,QString _path,QString _MD5)
     MD5=_MD5;
 }
 
+File::File(){
+    name="";
+    path="";
+    MD5="";
+}
+
 QString File::getName() {
     return name;
 }

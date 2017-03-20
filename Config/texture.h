@@ -13,6 +13,7 @@ public:
     };
     Texture();
     virtual int getType() = 0;
+private:
 };
 
 #endif // TEXTURE_H

@@ -100,7 +100,8 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
                    QImage img;
                    img.loadFromData(fileD->downloadedData());
                    QPixmap pix = QPixmap::fromImage(img);
-                   TextureIMG *tmp = new TextureIMG(pix);
+                   QString md5 = tobj["name"].toString();
+                   TextureIMG *tmp = new TextureIMG(pix,url,md5);
                    tmp->setModified(false);
                    m->addTexture(tmp);
                } else if(m->type.compare("texte") == 0 ) {
@@ -153,6 +154,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
         QJsonArray files;
 
         if(v->modified()) {
+            v->setModified(false);
             feature["name"] = v->getName().remove(QRegExp("[ \"'_-]"));
             QString trimName = v->getName().remove(QRegExp("[ \"'_-]"));
             baseFolder = trimName;
@@ -221,31 +223,52 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
             QJsonArray textures;
             int indexTex = 0;
             foreach(Texture *t, m->getTextures()){
-                if(t->getType() == Texture::TEXT) {
-                    TextureTXT *ttxt =  dynamic_cast<TextureTXT *>(t);
-                    QJsonObject tex;
-                    tex["text"] = ttxt->getData();
-                    tex["type"] = "texte";
-                    textures.append(tex);
-                }
-                if(t->getType() == Texture::IMG) {
-                    TextureIMG *timg =  dynamic_cast<TextureIMG *>(t);
-                    QJsonObject tex;
-                    tex["name"] = "test";
-                    tex["type"] = "image";
-                    QByteArray bArray;
-                    QBuffer buffer(&bArray);
-                    buffer.open(QIODevice::WriteOnly);
-                    timg->getData().save(&buffer, "PNG");
-                    QCryptographicHash hash(QCryptographicHash::Md5);
-                    QByteArray strHash;
-                    hash.addData(bArray);
-                    strHash = hash.result();
-                    QString tmpName = m->name.remove(QRegExp("[ \"'_-]")) + "%1" + ".png";
-                    tex["name"] = tmpName.arg(++indexTex);
-                    tex["path"] = cex->upload(baseFolder + "/" + tmpName.arg(indexTex),bArray);
-                    tex["MD5"] = QString(strHash.toHex());
-                    textures.append(tex);
+                if(t->modified()) {
+                    t->setModified(false);
+                    if(t->getType() == Texture::TEXT) {
+                        TextureTXT *ttxt =  dynamic_cast<TextureTXT *>(t);
+                        QJsonObject tex;
+                        tex["text"] = ttxt->getData();
+                        tex["type"] = "texte";
+                        textures.append(tex);
+                    }
+                    if(t->getType() == Texture::IMG) {
+                        TextureIMG *timg =  dynamic_cast<TextureIMG *>(t);
+                        QJsonObject tex;
+                        tex["name"] = "test";
+                        tex["type"] = "image";
+                        QByteArray bArray;
+                        QBuffer buffer(&bArray);
+                        buffer.open(QIODevice::WriteOnly);
+                        timg->getData().save(&buffer, "PNG");
+                        QCryptographicHash hash(QCryptographicHash::Md5);
+                        QByteArray strHash;
+                        hash.addData(bArray);
+                        strHash = hash.result();
+                        QString tmpName = m->name.remove(QRegExp("[ \"'_-]")) + "%1" + ".png";
+                        tex["name"] = tmpName.arg(++indexTex);
+                        tex["path"] = cex->upload(baseFolder + "/" + tmpName.arg(indexTex),bArray);
+                        tex["MD5"] = QString(strHash.toHex());
+                        textures.append(tex);
+                    }
+                } else {
+                    if(t->getType() == Texture::TEXT) {
+                        TextureTXT *ttxt =  dynamic_cast<TextureTXT *>(t);
+                        QJsonObject tex;
+                        tex["text"] = ttxt->getData();
+                        tex["type"] = "texte";
+                        textures.append(tex);
+                    }
+                    if(t->getType() == Texture::IMG) {
+                        TextureIMG *timg =  dynamic_cast<TextureIMG *>(t);
+                        QJsonObject tex;
+                        tex["type"] = "image";
+                        QString tmpName = m->name.remove(QRegExp("[ \"'_-]")) + "%1" + ".png";
+                        tex["name"] = tmpName.arg(++indexTex);
+                        tex["path"] = timg->getUrl();
+                        tex["MD5"] =  timg->getMD5();
+                        textures.append(tex);
+                    }
                 }
             }
             model["textures"] = textures;

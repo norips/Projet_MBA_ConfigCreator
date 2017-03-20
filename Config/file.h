@@ -6,6 +6,7 @@ class File
 {
 public:
     File(QString name,QString path,QString MD5);
+    File();
     QString getName();
 
     QString getPath();
