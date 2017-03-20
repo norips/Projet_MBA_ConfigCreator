@@ -13,6 +13,7 @@ public:
     Canva(const QPixmap &img,const QString &name,const QString &path);
     Canva();
     QString getName();
+    void setName(QString &name);
     void addModel(Model* m);
     QVector<Model*> getItems();
     void setPix(const QPixmap& pix);

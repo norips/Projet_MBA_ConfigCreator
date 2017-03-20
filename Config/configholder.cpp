@@ -74,7 +74,7 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
             }
         }
         c->setFeature(feature);
-
+        c->setModified(false);
         delete fileD;
 
         QJsonArray models = obj["models"].toArray();
@@ -126,12 +126,27 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
     QJsonDocument doc;
     QJsonArray canvas;
     bool pass=true;
+    QHash<QString,QString> tmpHash;
+    //No canva with same name
+    foreach(Canva *v, getCanvas()){
+        QString name = tmpHash[v->getName()];
+        int i = 0;
+        while(!name.isNull()) {
+            QString newName = v->getName() + QString::number(i++);
+            v->setName(newName);
+            name = tmpHash[v->getName()];
+            qDebug() << "Name : " + v->getName();
+        }
+        tmpHash.insert(v->getName(),"None");
+
+    }
     foreach(Canva *v, getCanvas()){
         if(pass) {
             pass = false;
             continue;
 
         }
+        QString baseFolder;
         QJsonObject canva;
         canva["name"] = v->getName();
         QJsonObject feature;
@@ -140,6 +155,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
         if(v->modified()) {
             feature["name"] = v->getName().remove(QRegExp("[ \"'_-]"));
             QString trimName = v->getName().remove(QRegExp("[ \"'_-]"));
+            baseFolder = trimName;
             QString filename = base + trimName +".jpg";
             qDebug() << "Filename : " + filename;
             QFile file(filename);
@@ -165,7 +181,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                 }
                 file["name"] = trimName + "." + ext[i];
                 filup.seek(0);
-                file["path"] = cex->upload(QString(trimName + "." + ext[i]),filup.readAll());
+                file["path"] = cex->upload(QString(baseFolder + "/" + trimName + "." + ext[i]),filup.readAll());
                 file["MD5"] = QString(strHash.toHex());
                 files.append(file);
             }
@@ -227,7 +243,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                     strHash = hash.result();
                     QString tmpName = m->name.remove(QRegExp("[ \"'_-]")) + "%1" + ".png";
                     tex["name"] = tmpName.arg(++indexTex);
-                    tex["path"] = cex->upload(tmpName.arg(indexTex),bArray);
+                    tex["path"] = cex->upload(baseFolder + "/" + tmpName.arg(indexTex),bArray);
                     tex["MD5"] = QString(strHash.toHex());
                     textures.append(tex);
                 }
@@ -255,9 +271,12 @@ QVector<Canva*> ConfigHolder::getCanvas() const {
  */
 void ConfigHolder::addEmpty() {
     if(first){
-        canvas.append(new Canva(QPixmap("../img/plus.png"),"Nouveau",""));
+        Canva *c = new Canva(QPixmap("../img/plus.png"),"Nouveau","");
+        canvas.append(c);
         first = false;
     } else {
-        canvas.append(new Canva(QPixmap("../img/mba.png"),"Nouveau+",""));
+        Canva *c = new Canva(QPixmap("../img/mba.png"),"Nouveau+","");
+        c->setModified(true);
+        canvas.append(c);
     }
 }

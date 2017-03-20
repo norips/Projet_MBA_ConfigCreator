@@ -37,6 +37,10 @@ QString Canva::getName(){
     return name;
 }
 
+void Canva::setName(QString &name){
+    this->name = name;
+}
+
 
 Feature* Canva::getFeature() {
     return feature;
