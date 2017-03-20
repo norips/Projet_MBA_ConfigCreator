@@ -15,7 +15,6 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
 {
     ui->setupUi(this);
     model = m->getModel();
-
     connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(ui->pushButton, SIGNAL(released()),this,SLOT(openFile()));
     connect(ui->pushButton_2, SIGNAL(released()),this,SLOT(openFile2()));
@@ -23,7 +22,6 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
 
     canva = c;
 
-    ui->lbpixmap->setPixmap(canva->getPix().scaled(ui->lbpixmap->rect().size(),Qt::KeepAspectRatio));
 
     foreach(Texture *t, model->getTextures()){
         if((model->getTextures().at(0))->getType() == Texture::IMG && model->getTextures().size() > 0) {
@@ -42,13 +40,28 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
     float displayedHeight;
     float displayedWidth;
 
+    QRect geo = ui->lbpixmap->geometry();
     if (landscape){
         displayedHeight = ui->lbpixmap->height() * canva->getPix().height()/canva->getPix().width();
         displayedWidth =  ui->lbpixmap->width();
+
+        ui->lbpixmap->setFixedHeight(displayedHeight);
+        ui->lbpixmap->setFixedWidth(displayedWidth);
+        ui->lbpixmap->setPixmap(canva->getPix().scaled(ui->lbpixmap->maximumWidth(),displayedHeight,Qt::KeepAspectRatio));
+        geo.translate(0,displayedHeight);
+        qDebug() << "Land";
     } else {
         displayedHeight = ui->lbpixmap->height();
         displayedWidth =  ui->lbpixmap->width() * canva->getPix().width()/canva->getPix().height();
+
+        ui->lbpixmap->setFixedHeight(displayedHeight);
+        ui->lbpixmap->setFixedWidth(displayedWidth);
+        ui->lbpixmap->setPixmap(canva->getPix().scaled(displayedWidth,ui->lbpixmap->maximumHeight(),Qt::KeepAspectRatio));
+        geo.translate(displayedWidth/2,0);
     }
+    ui->lbpixmap->setGeometry(geo);
+
+    qDebug()<< "width = " << ui->lbpixmap->width() << " height = " << ui->lbpixmap->height() << endl;
     ratioX = (double) 100.0/displayedWidth;
     ratioY = (double) 100.0/displayedHeight;
 
