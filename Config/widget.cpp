@@ -15,6 +15,7 @@ Widget::Widget(QWidget *parent)
 
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
     move_rubberBand=false;
+    selection_start=false;
 }
 
 Widget::~Widget()

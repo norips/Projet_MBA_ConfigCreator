@@ -51,6 +51,8 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
     }
     ratioX = (double) 100.0/displayedWidth;
     ratioY = (double) 100.0/displayedHeight;
+
+    //Load it
     if( !model->tlc.isEmpty() && !model->trc.isEmpty() && !model->blc.isEmpty() && !model->brc.isEmpty()) {
         QStringList lTLC = model->tlc.split(",");
         double tlcX = lTLC.at(0).toDouble() / ratioX;
