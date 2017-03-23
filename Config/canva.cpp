@@ -15,7 +15,7 @@ void Canva::addModel(Model *m){
     items.append(m);
 }
 
-QVector<Model*> Canva::getItems(){
+QVector<Model*>& Canva::getItems(){
     return items;
 }
 

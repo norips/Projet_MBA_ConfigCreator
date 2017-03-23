@@ -73,12 +73,12 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
         tlcY = -tlcY;
 
         QStringList lTRC = model->trc.split(",");
-        double trcX = lTRC.at(0).toDouble() / ratioX;
+       // double trcX = lTRC.at(0).toDouble() / ratioX;
         double trcY = lTRC.at(1).toDouble() / ratioY;
         trcY = -trcY;
 
         QStringList lBLC = model->blc.split(",");
-        double blcX = lBLC.at(0).toDouble() / ratioX;
+        //double blcX = lBLC.at(0).toDouble() / ratioX;
         double blcY = lBLC.at(1).toDouble() / ratioY;
         blcY = -blcY;
 

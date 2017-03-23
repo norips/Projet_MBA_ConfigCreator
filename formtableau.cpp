@@ -50,3 +50,33 @@ void formTableau::on_pbAdd_clicked()
     DialogModel* dialog = new DialogModel(this,mi,canva);
     dialog->show();
 }
+
+void formTableau::on_pushButton_released()
+{
+    QString name_tableau = ui->leTitle->text();
+    canva->setName(name_tableau);
+
+    this->close();
+
+}
+
+void formTableau::on_pbDel_released()
+{
+    if(ui->lvListeModele->selectedItems().size()<1) return;
+
+    QModelIndexList indexes = ui->lvListeModele->selectionModel()->selectedIndexes();
+    qDebug() << ui->lvListeModele->selectionModel()->selectedIndexes().at(0).row() << endl;
+
+    std::vector<int> indexList;
+    foreach(QModelIndex index, indexes)
+    {
+        indexList.push_back(index.row());
+    }
+    int pos_to_suppress = indexList.at(0);
+    qDebug() << pos_to_suppress << endl;
+    canva->getItems().remove(pos_to_suppress);
+    ui->lvListeModele->removeItemWidget(ui->lvListeModele->selectedItems().at(0));
+    ui->lvListeModele->repaint();
+
+
+}

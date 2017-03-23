@@ -15,7 +15,7 @@ public:
     QString getName();
     void setName(QString &name);
     void addModel(Model* m);
-    QVector<Model*> getItems();
+    QVector<Model*>& getItems();
     void setPix(const QPixmap& pix);
     QPixmap getPix() const;
     canvaItem* toItem();
