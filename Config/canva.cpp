@@ -51,5 +51,8 @@ void Canva::setFeature(Feature *f) {
 }
 
 
-
+void Canva::updateId(int id){
+    this->id = id;
+    s_id = id+1;
+}
 

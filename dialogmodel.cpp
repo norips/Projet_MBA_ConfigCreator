@@ -57,7 +57,6 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
         ui->lbpixmap->setFixedHeight(displayedHeight);
         ui->lbpixmap->setFixedWidth(displayedWidth);
         ui->lbpixmap->setPixmap(canva->getPix().scaled(displayedWidth,ui->lbpixmap->maximumHeight(),Qt::KeepAspectRatio));
-        geo.translate(displayedWidth/2,0);
     }
     ui->lbpixmap->setGeometry(geo);
 
@@ -92,7 +91,7 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
         qDebug() << tlcX << "," << tlcY << endl;
         qDebug() << brcX << "," << brcY << endl;
 
-        brcX += (ui->lbpixmap->x() ) ;
+        brcX += (ui->lbpixmap->x()) ;
         brcY += (ui->lbpixmap->y() + ui->lbpixmap->height());
         ui->widget->getRubberBand()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
         ui->widget->getRubberBand()->show();

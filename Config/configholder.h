@@ -13,6 +13,7 @@ public:
     void LoadFromJSONFile(QString& filepath);
     void ExportToJSONFile(QString& filepath,ConfigExporter* cex);
     QVector<Canva*> getCanvas() const;
+    void delCanva(int i) ;
     void addEmpty();
 private:
     ConfigHolder( QObject* parent=0);

@@ -59,6 +59,13 @@
          </property>
         </spacer>
        </item>
+       <item>
+        <widget class="QPushButton" name="pbSupCanva">
+         <property name="text">
+          <string>Supprimer</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>
@@ -83,7 +90,7 @@
      <x>0</x>
      <y>0</y>
      <width>997</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="nativeMenuBar">
@@ -91,7 +98,7 @@
    </property>
    <widget class="QMenu" name="menuFichier">
     <property name="title">
-     <string>Fichier</string>
+     <string>F&amp;ichier</string>
     </property>
     <addaction name="actionOuvrir"/>
     <addaction name="actionEnregistrer"/>
@@ -109,12 +116,12 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOuvrir">
    <property name="text">
-    <string>Ouvrir</string>
+    <string>&amp;Ouvrir</string>
    </property>
   </action>
   <action name="actionEnregistrer">
    <property name="text">
-    <string>Enregistrer</string>
+    <string>&amp;Enregistrer</string>
    </property>
   </action>
  </widget>

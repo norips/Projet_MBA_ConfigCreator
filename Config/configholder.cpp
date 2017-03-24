@@ -303,3 +303,7 @@ void ConfigHolder::addEmpty() {
         canvas.append(c);
     }
 }
+
+void ConfigHolder::delCanva(int i){
+    canvas.remove(i);
+}

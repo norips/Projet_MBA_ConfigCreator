@@ -21,6 +21,7 @@ public:
     canvaItem* toItem();
     Feature* getFeature();
     void setFeature(Feature *f);
+    void updateId(int id);
 
 private:
     static int s_id;
