@@ -108,3 +108,23 @@ void MainWindow::on_leSearch_textChanged(const QString &arg1)
     }
     ui->lvTableaux->repaint();
 }
+
+void MainWindow::on_pbSupCanva_released()
+{
+    if(ui->lvTableaux->selectedItems().size()<1) return;
+
+    if(ui->lvTableaux->selectionModel()->selectedIndexes().at(0).row() == 0) return;
+
+    QModelIndexList indexes = ui->lvTableaux->selectionModel()->selectedIndexes();
+    int pos_to_suppress = ui->lvTableaux->selectionModel()->selectedIndexes().at(0).row();
+
+    ConfigHolder* hold = ConfigHolder::Instance();
+    hold->delCanva(pos_to_suppress);
+    QVector<Canva*> canvas = ConfigHolder::Instance()->getCanvas();
+    ui->lvTableaux->clear();
+    foreach (Canva *c, canvas) {
+            ui->lvTableaux->addItem(c->toItem());
+    }
+    ui->lvTableaux->repaint();
+
+}
