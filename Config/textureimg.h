@@ -12,9 +12,12 @@ public:
     QString getUrl();
     QString getMD5();
     QPixmap getData();
+    QString getLocalPath();
+    void setLocalPath(QString path);
 private:
     QPixmap pix;
     File f;
+    QString localPath;
 };
 
 #endif // TEXTUREIMG_H

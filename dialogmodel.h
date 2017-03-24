@@ -26,10 +26,11 @@ private slots:
     void openFile2();
 
 
-public:
+private:
     Ui::DialogModel *ui;
     Model *model;
     Canva *canva;
+    Texture *t;
 
     double ratioX;
     double ratioY;
