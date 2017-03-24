@@ -122,8 +122,11 @@ void MainWindow::on_pbSupCanva_released()
     hold->delCanva(pos_to_suppress);
     QVector<Canva*> canvas = ConfigHolder::Instance()->getCanvas();
     ui->lvTableaux->clear();
+    int i =0;
     foreach (Canva *c, canvas) {
-            ui->lvTableaux->addItem(c->toItem());
+        c->updateId(i);
+        ui->lvTableaux->addItem(c->toItem());
+        ++i;
     }
     ui->lvTableaux->repaint();
 
