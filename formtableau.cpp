@@ -6,6 +6,9 @@
 #include "dialogmodel.h"
 #include <QWidget>
 #include <QList>
+#include <QDialogButtonBox>
+#include <QPushButton>
+
 formTableau::formTableau(QWidget *parent, canvaItem *item) :
     QDialog(parent),
     ui(new Ui::formTableau)
@@ -18,6 +21,12 @@ formTableau::formTableau(QWidget *parent, canvaItem *item) :
     foreach (Model* m, items) {
        ui->lvListeModele->addItem(m->toItem());
     }
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(this);
+    buttonBox->addButton("Enregistrer",QDialogButtonBox::AcceptRole);
+    buttonBox->addButton("Quitter",QDialogButtonBox::RejectRole);
+    ui->verticalLayout_4->addWidget(buttonBox);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
 void formTableau::on_pbPath_released()

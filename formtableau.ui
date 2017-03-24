@@ -54,6 +54,9 @@
       <widget class="QListWidget" name="lvListeModele"/>
      </item>
      <item>
+      <layout class="QVBoxLayout" name="verticalLayout_7"/>
+     </item>
+     <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QPushButton" name="pbAdd">
@@ -213,18 +216,16 @@
     </item>
    </layout>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>420</y>
-     <width>131</width>
-     <height>31</height>
+     <x>390</x>
+     <y>410</y>
+     <width>201</width>
+     <height>51</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Enregistrer</string>
-   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_4"/>
   </widget>
  </widget>
  <resources/>
