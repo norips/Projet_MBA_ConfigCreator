@@ -67,16 +67,13 @@ void formTableau::on_pbDel_released()
     QModelIndexList indexes = ui->lvListeModele->selectionModel()->selectedIndexes();
     qDebug() << ui->lvListeModele->selectionModel()->selectedIndexes().at(0).row() << endl;
 
-    std::vector<int> indexList;
-    foreach(QModelIndex index, indexes)
-    {
-        indexList.push_back(index.row());
-    }
-    int pos_to_suppress = indexList.at(0);
-    qDebug() << pos_to_suppress << endl;
+    int pos_to_suppress = ui->lvListeModele->selectionModel()->selectedIndexes().at(0).row();
     canva->getItems().remove(pos_to_suppress);
-    ui->lvListeModele->removeItemWidget(ui->lvListeModele->selectedItems().at(0));
-    ui->lvListeModele->repaint();
+    ui->lvListeModele->clear();
 
+    QVector<Model*> items = canva->getItems();
+    foreach (Model* m, items) {
+       ui->lvListeModele->addItem(m->toItem());
+    }
 
 }
