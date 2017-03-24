@@ -83,6 +83,7 @@ void formTableau::on_pbDel_released()
     QVector<Model*> items = canva->getItems();
     foreach (Model* m, items) {
        ui->lvListeModele->addItem(m->toItem());
+
     }
 
 }

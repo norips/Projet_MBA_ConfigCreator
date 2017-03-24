@@ -178,15 +178,19 @@ void DialogModel::on_buttonBox_accepted()
 
 void DialogModel::openFile()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),"/",tr("Image Files (*.png *.jpg *.bmp)"));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),"/",tr("Image Files (*.png *.jpg *.bmp *.jpeg"));
     ui->lineEdit->insert(fileName);
+    // t.setLocalPath(fileName);
+
     qDebug() << "FILE" << fileName;
 }
 
 void DialogModel::openFile2()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),"/",tr("Image Files (*.mp4 )"));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une vidéo"),"/",tr("Image Files (*.mp4 )"));
     ui->lineEdit_2->insert(fileName);
+    // t.setLocalPath(fileName);
+
     qDebug() << "FILE" << fileName;
 }
 
