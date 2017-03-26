@@ -25,8 +25,11 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
 
     canva = c;
 
-
+    int indTex=0;
+    qDebug() << "Texture";
     foreach(Texture *t, model->getTextures()){
+        qDebug() << "Texture" + QString::number(indTex);
+        ui->TextureList->addItem("Texture" + QString::number(++indTex));
         if((model->getTextures().at(0))->getType() == Texture::IMG && model->getTextures().size() > 0) {
                 TextureIMG *timg = dynamic_cast<TextureIMG *>(model->getTextures().at(0));
                 ui->lbText->setPixmap(timg->getData());

@@ -89,8 +89,9 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
            m->brc = modObj["brc"].toString();
            QJsonArray textures = modObj["textures"].toArray();
            foreach (const QJsonValue &t, textures) {
+               qDebug() << "Texture found" << endl;
                QJsonObject tobj = t.toObject();
-               if(m->type.compare("image") == 0) {
+               if(tobj["type"].toString().compare("image") == 0) {
                    QString url = tobj["path"].toString();
                    name = tobj["name"].toString();
                    fileD = new FileDownloader(QUrl(url),base + name);
@@ -104,10 +105,12 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
                    TextureIMG *tmp = new TextureIMG(pix,url,md5);
                    tmp->setModified(false);
                    m->addTexture(tmp);
-               } else if(m->type.compare("texte") == 0 ) {
+                   qDebug() << "Texture added" << endl;
+               } else if(tobj["type"].toString().compare("texte") == 0 ) {
                    TextureTXT *tmp = new TextureTXT(tobj["texte"].toString());
                    tmp->setModified(false);
                    m->addTexture(tmp);
+                   qDebug() << "Texture added" << endl;
                }
 
            }
