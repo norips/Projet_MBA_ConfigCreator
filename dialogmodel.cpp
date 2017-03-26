@@ -15,7 +15,8 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
 {
     ui->setupUi(this);
     model = m->getModel();
-    connect(ui->pushButton_3,SIGNAL(pressed()),this,SLOT(test()));
+    firstTime = true;
+    connect(ui->pushButton_3,SIGNAL(pressed()),this,SLOT(buttonPlus()));
     connect(ui->pushButton_4,SIGNAL(pressed()),this,SLOT(buttonMoins()));
     connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(ui->pushButton, SIGNAL(released()),this,SLOT(openFile()));
@@ -205,7 +206,7 @@ void DialogModel::openFile2()
     qDebug() << "FILE" << fileName;
 }
 
-void DialogModel::test()
+void DialogModel::buttonPlus()
 {
     ui->comboBox->setEnabled(true);
     ui->leName->setEnabled(true);
@@ -216,19 +217,25 @@ void DialogModel::test()
 }
 
 void DialogModel::buttonMoins(){
+
     if(ui->TextureList->selectedItems().size()<1) return;
 
     QModelIndexList indexes = ui->TextureList->selectionModel()->selectedIndexes();
-    qDebug() << ui->TextureList->selectionModel()->selectedIndexes().at(0).row() << endl;
+    qDebug() << "TEST1" << ui->TextureList->selectionModel()->selectedIndexes().at(0).row() << endl;
 
     int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
-    canva->getItems().remove(pos_to_suppress);
+    if (firstTime == true)
+        canva->getItems().remove(pos_to_suppress+1);
+    else
+        canva->getItems().remove(pos_to_suppress);
+
     ui->TextureList->clear();
 
     QVector<Model*> items = canva->getItems();
     foreach (Model* m, items) {
        ui->TextureList->addItem(m->toItem());
-
     }
+    firstTime =false;
+
 }
 

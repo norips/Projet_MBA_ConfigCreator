@@ -23,7 +23,7 @@ private slots:
     void on_buttonBox_accepted();
     void openFile();
     void openFile2();
-    void test();
+    void buttonPlus();
     void buttonMoins();
 
 private:
@@ -32,6 +32,7 @@ private:
     Canva *canva;
     Texture *t;
 
+    bool firstTime;
     double ratioX;
     double ratioY;
 };
