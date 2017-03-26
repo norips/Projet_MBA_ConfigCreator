@@ -19,11 +19,11 @@ public:
     explicit DialogModel(QWidget *parent = 0,modelItem* m = NULL, Canva *c = NULL);
     ~DialogModel();
 
-
 private slots:
     void on_buttonBox_accepted();
     void openFile();
     void openFile2();
+    void test();
 
 
 private:

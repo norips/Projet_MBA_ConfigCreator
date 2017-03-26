@@ -15,6 +15,7 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
 {
     ui->setupUi(this);
     model = m->getModel();
+    connect(ui->pushButton_3,SIGNAL(pressed()),this,SLOT(test()));
     connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(ui->pushButton, SIGNAL(released()),this,SLOT(openFile()));
     connect(ui->pushButton_2, SIGNAL(released()),this,SLOT(openFile2()));
@@ -111,6 +112,12 @@ DialogModel::~DialogModel()
 
 void DialogModel::on_buttonBox_accepted()
 {
+    QString texture = ui->leName->text();
+    Model *m = new Model(texture,canva->getItems().size());
+    canva->addModel(m);
+    modelItem* mi = m->toItem();
+    ui->TextureList->addItem(mi);
+
     Widget *widget = ui->widget;
     QRect rect = widget->getRectSelection();
     qDebug() << "rectangle" << rect << endl;
@@ -169,11 +176,11 @@ void DialogModel::on_buttonBox_accepted()
         model->addTexture(ttext);
         //TextureIMG *timg = new TextureIMG(canva->getPix());
         //model->addTexture(timg);
-        this->hide();
+        //this->hide();
     } else {
         qDebug() << "Selection Nulle" << endl;
     }
-    this->hide();
+    //this->hide();
 }
 
 void DialogModel::openFile()
@@ -192,5 +199,15 @@ void DialogModel::openFile2()
     // t.setLocalPath(fileName);
 
     qDebug() << "FILE" << fileName;
+}
+
+void DialogModel::test()
+{
+    ui->comboBox->setEnabled(true);
+    ui->leName->setEnabled(true);
+    ui->lbName_2->setEnabled(true);
+    ui->lbName->setEnabled(true);
+    ui->stackedWidget->setEnabled(true);
+
 }
 
