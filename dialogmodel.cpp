@@ -16,6 +16,7 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
     ui->setupUi(this);
     model = m->getModel();
     connect(ui->pushButton_3,SIGNAL(pressed()),this,SLOT(test()));
+    connect(ui->pushButton_4,SIGNAL(pressed()),this,SLOT(buttonMoins()));
     connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(ui->pushButton, SIGNAL(released()),this,SLOT(openFile()));
     connect(ui->pushButton_2, SIGNAL(released()),this,SLOT(openFile2()));
@@ -118,6 +119,9 @@ void DialogModel::on_buttonBox_accepted()
     modelItem* mi = m->toItem();
     ui->TextureList->addItem(mi);
 
+    QString rename = "";
+    ui->leName->setText(rename);
+
     Widget *widget = ui->widget;
     QRect rect = widget->getRectSelection();
     qDebug() << "rectangle" << rect << endl;
@@ -209,5 +213,22 @@ void DialogModel::test()
     ui->lbName->setEnabled(true);
     ui->stackedWidget->setEnabled(true);
 
+}
+
+void DialogModel::buttonMoins(){
+    if(ui->TextureList->selectedItems().size()<1) return;
+
+    QModelIndexList indexes = ui->TextureList->selectionModel()->selectedIndexes();
+    qDebug() << ui->TextureList->selectionModel()->selectedIndexes().at(0).row() << endl;
+
+    int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+    canva->getItems().remove(pos_to_suppress);
+    ui->TextureList->clear();
+
+    QVector<Model*> items = canva->getItems();
+    foreach (Model* m, items) {
+       ui->TextureList->addItem(m->toItem());
+
+    }
 }
 

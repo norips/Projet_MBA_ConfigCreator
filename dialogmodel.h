@@ -24,7 +24,7 @@ private slots:
     void openFile();
     void openFile2();
     void test();
-
+    void buttonMoins();
 
 private:
     Ui::DialogModel *ui;
