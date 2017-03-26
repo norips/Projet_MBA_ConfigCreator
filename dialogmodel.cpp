@@ -125,6 +125,11 @@ void DialogModel::on_buttonBox_accepted()
 
     QString rename = "";
     ui->leName->setText(rename);
+    ui->comboBox->setEnabled(false);
+    ui->leName->setEnabled(false);
+    ui->lbName_2->setEnabled(false);
+    ui->lbName->setEnabled(false);
+    ui->stackedWidget->setEnabled(false);
 
     Widget *widget = ui->widget;
     QRect rect = widget->getRectSelection();
@@ -223,15 +228,12 @@ void DialogModel::buttonMoins(){
 
     if(ui->TextureList->selectedItems().size()<1) return;
 
-    QModelIndexList indexes = ui->TextureList->selectionModel()->selectedIndexes();
-    qDebug() << "TEST1" << ui->TextureList->selectionModel()->selectedIndexes().at(0).row() << endl;
-
     int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
-    if (firstTime == true)
+    if (firstTime == true){
         canva->getItems().remove(pos_to_suppress+1);
-    else
+    }else{
         canva->getItems().remove(pos_to_suppress);
-
+    }
     ui->TextureList->clear();
 
     QVector<Model*> items = canva->getItems();
