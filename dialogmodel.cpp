@@ -204,6 +204,7 @@ void DialogModel::openFile()
         Texture* tImage = new TextureIMG(map);
         model->getTextures().insert(pos_to_suppress,tImage);
         ui->lineEdit->insert(fileName);
+        model->setModified(true);
     }
     // t.setLocalPath(fileName);
 }
@@ -263,8 +264,14 @@ void DialogModel::changetext(){
 
     //TODO
     //verifier texture est un texte
-    //mettre a jour le texte
-    /*text = ui->teText->toPlainText();
+
+    QString text = ui->teText->toPlainText();
     TextureTXT * ttext = new TextureTXT(text);
-    model->addTexture(ttext);*/
+
+    int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+    model->getTextures().remove(pos_to_suppress);
+
+    model->getTextures().insert(pos_to_suppress,ttext);
+    model->setModified(true);
+
 }
