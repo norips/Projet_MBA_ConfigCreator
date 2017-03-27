@@ -265,8 +265,6 @@ void DialogModel::itemActivated(QListWidgetItem* i){
 }
 
 void DialogModel::changetext(){
-    //TODO
-    //verifier texture est un texte
 
     QString text = ui->teText->toPlainText();
     TextureTXT * ttext = new TextureTXT(text);
@@ -275,5 +273,4 @@ void DialogModel::changetext(){
     model->getTextures().remove(pos_to_suppress);
     model->getTextures().insert(pos_to_suppress,ttext);
     model->setModified(true);
-
 }
