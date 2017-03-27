@@ -254,14 +254,17 @@ void DialogModel::itemActivated(QListWidgetItem* i){
     ui->lbName_2->setEnabled(true);
     ui->stackedWidget->setEnabled(true);
 
-    //TODO
-    //Vider le texte et le charger depuis la texture de type TXT
+    int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+    if (model->getTextures().value(pos)->getType() == 0){
+        Texture* t = model->getTextures().value(pos);
+        TextureTXT* test = (TextureTXT*) t;
+        QString textTexture =test->getData();
+        ui->teText->setText(textTexture);
+    }
+
 }
 
 void DialogModel::changetext(){
-
-    qDebug() << "Passe text" <<  ui->teText->toPlainText() << endl;
-
     //TODO
     //verifier texture est un texte
 
@@ -270,7 +273,6 @@ void DialogModel::changetext(){
 
     int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
     model->getTextures().remove(pos_to_suppress);
-
     model->getTextures().insert(pos_to_suppress,ttext);
     model->setModified(true);
 
