@@ -22,7 +22,7 @@ void Model::addTexture(Texture *tex){
     textures.append(tex);
 }
 
-QVector<Texture *> Model::getTextures() {
+QVector<Texture *>& Model::getTextures() {
     return textures;
 }
 void Model::setModified(bool val) {

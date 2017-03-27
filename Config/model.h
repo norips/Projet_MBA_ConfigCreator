@@ -12,7 +12,7 @@ public:
     Model(QString& name,int id);
     modelItem* toItem();
     void addTexture(Texture*);
-    QVector<Texture *> getTextures();
+    QVector<Texture *>& getTextures();
     QString name;
     QString type;
     QString tlc;

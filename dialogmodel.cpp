@@ -15,13 +15,14 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
 {
     ui->setupUi(this);
     model = m->getModel();
-    firstTime = true;
+
+    connect(ui->TextureList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated(QListWidgetItem*)));
     connect(ui->pushButton_3,SIGNAL(pressed()),this,SLOT(buttonPlus()));
     connect(ui->pushButton_4,SIGNAL(pressed()),this,SLOT(buttonMoins()));
     connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(ui->pushButton, SIGNAL(released()),this,SLOT(openFile()));
     connect(ui->pushButton_2, SIGNAL(released()),this,SLOT(openFile2()));
-    ui->leName->setText(m->getName());
+    connect(ui->teText,SIGNAL(textChanged()),this,SLOT(changetext()));
 
     canva = c;
 
@@ -30,7 +31,7 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
     foreach(Texture *t, model->getTextures()){
         qDebug() << "Texture" + QString::number(indTex);
         ui->TextureList->addItem("Texture" + QString::number(++indTex));
-        if((model->getTextures().at(0))->getType() == Texture::IMG && model->getTextures().size() > 0) {
+       /* if((model->getTextures().at(0))->getType() == Texture::IMG && model->getTextures().size() > 0) {
                 TextureIMG *timg = dynamic_cast<TextureIMG *>(model->getTextures().at(0));
                 ui->lbText->setPixmap(timg->getData());
             }
@@ -40,6 +41,7 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
                 ui->teText->setText(ttext->getData());
                 break;
             }
+            */
     }
     bool landscape = canva->getPix().width() > canva->getPix().height();
 
@@ -117,18 +119,10 @@ DialogModel::~DialogModel()
 
 void DialogModel::on_buttonBox_accepted()
 {
-    QString texture = ui->leName->text();
-    Model *m = new Model(texture,canva->getItems().size());
-    canva->addModel(m);
-    modelItem* mi = m->toItem();
-    ui->TextureList->addItem(mi);
 
-    QString rename = "";
-    ui->leName->setText(rename);
+
     ui->comboBox->setEnabled(false);
-    ui->leName->setEnabled(false);
     ui->lbName_2->setEnabled(false);
-    ui->lbName->setEnabled(false);
     ui->stackedWidget->setEnabled(false);
 
     Widget *widget = ui->widget;
@@ -139,7 +133,6 @@ void DialogModel::on_buttonBox_accepted()
 
     if(rect.height() !=0 && rect.width() != 0){
         qDebug() << "Valid" << endl;
-        text = ui->teText->toPlainText();
         int x =0, y=0, width, height;
         rect.getRect(&x,&y,&width,&height);
         QPoint xtlc(x ,  y);
@@ -184,21 +177,21 @@ void DialogModel::on_buttonBox_accepted()
         model->trc.append((QString::number(confTRCx))).append(",").append(QString::number(-confTRCy)).append(",0");
         model->blc.append((QString::number(confBLCx))).append(",").append(QString::number(-confBLCy)).append(",0");
         model->brc.append((QString::number(confBRCx))).append(",").append(QString::number(-confBRCy)).append(",0");
-        model->name = ui->leName->text();
-        TextureTXT * ttext = new TextureTXT(text);
-        model->addTexture(ttext);
         //TextureIMG *timg = new TextureIMG(canva->getPix());
         //model->addTexture(timg);
-        //this->hide();
+        this->hide();
     } else {
         qDebug() << "Selection Nulle" << endl;
     }
-    //this->hide();
+    this->hide();
 }
 
 void DialogModel::openFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),"/",tr("Image Files (*.png *.jpg *.bmp *.jpeg"));
+    //TODO
+    //je teste si la personne a fait OK
+    //si oui je change en texture IMAGE et je charge l'image
     ui->lineEdit->insert(fileName);
     // t.setLocalPath(fileName);
 
@@ -216,12 +209,17 @@ void DialogModel::openFile2()
 
 void DialogModel::buttonPlus()
 {
-    ui->comboBox->setEnabled(true);
-    ui->leName->setEnabled(true);
-    ui->lbName_2->setEnabled(true);
-    ui->lbName->setEnabled(true);
-    ui->stackedWidget->setEnabled(true);
+    QString texture = "test";
+    Texture *m = new TextureTXT("");
+    model->addTexture(m);
 
+    ui->TextureList->clear();
+
+    QVector<Texture*> items = model->getTextures();
+    int i = 1;
+    foreach (Texture* m, items) {
+       ui->TextureList->addItem("Texture " + QString::number(i++));
+    }
 }
 
 void DialogModel::buttonMoins(){
@@ -229,18 +227,38 @@ void DialogModel::buttonMoins(){
     if(ui->TextureList->selectedItems().size()<1) return;
 
     int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
-    if (firstTime == true){
-        canva->getItems().remove(pos_to_suppress+1);
-    }else{
-        canva->getItems().remove(pos_to_suppress);
-    }
+
+    model->getTextures().remove(pos_to_suppress);
+
     ui->TextureList->clear();
 
-    QVector<Model*> items = canva->getItems();
-    foreach (Model* m, items) {
-       ui->TextureList->addItem(m->toItem());
+    QVector<Texture*> items = model->getTextures();
+    int i = 1;
+    foreach (Texture* m, items) {
+       ui->TextureList->addItem("Texture " + QString::number(i++));
     }
-    firstTime =false;
+
 
 }
 
+void DialogModel::itemActivated(QListWidgetItem* i){
+
+    ui->comboBox->setEnabled(true);
+    ui->lbName_2->setEnabled(true);
+    ui->stackedWidget->setEnabled(true);
+
+    //TODO
+    //Vider le texte et le charger depuis la texture de type TXT
+}
+
+void DialogModel::changetext(){
+
+    qDebug() << "Passe text" <<  ui->teText->toPlainText() << endl;
+
+    //TODO
+    //verifier texture est un texte
+    //mettre a jour le texte
+    /*text = ui->teText->toPlainText();
+    TextureTXT * ttext = new TextureTXT(text);
+    model->addTexture(ttext);*/
+}

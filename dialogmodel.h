@@ -25,6 +25,8 @@ private slots:
     void openFile2();
     void buttonPlus();
     void buttonMoins();
+    void itemActivated(QListWidgetItem*);
+    void changetext();
 
 private:
     Ui::DialogModel *ui;
@@ -32,7 +34,6 @@ private:
     Canva *canva;
     Texture *t;
 
-    bool firstTime;
     double ratioX;
     double ratioY;
 };
