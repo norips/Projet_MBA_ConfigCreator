@@ -7,6 +7,7 @@
 #include "Config/texturetxt.h"
 #include <QDebug>
 #include <QFileDialog>
+#include <QImageReader>
 #include <QPainter>
 
 DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
@@ -43,8 +44,8 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
             }
             */
     }
-    bool landscape = canva->getPix().width() > canva->getPix().height();
 
+    bool landscape = canva->getPix().width() > canva->getPix().height();
     float displayedHeight;
     float displayedWidth;
 
@@ -189,13 +190,22 @@ void DialogModel::on_buttonBox_accepted()
 void DialogModel::openFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),"/",tr("Image Files (*.png *.jpg *.bmp *.jpeg"));
-    //TODO
-    //je teste si la personne a fait OK
-    //si oui je change en texture IMAGE et je charge l'image
-    ui->lineEdit->insert(fileName);
-    // t.setLocalPath(fileName);
 
-    qDebug() << "FILE" << fileName;
+    if (fileName != NULL){
+
+        int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+        model->getTextures().remove(pos_to_suppress);
+
+        QImageReader *reader = new QImageReader();
+        reader->setFileName(fileName);
+        QImage image =reader->read();
+        QPixmap map=QPixmap::fromImage(image);
+
+        Texture* tImage = new TextureIMG(map);
+        model->getTextures().insert(pos_to_suppress,tImage);
+        ui->lineEdit->insert(fileName);
+    }
+    // t.setLocalPath(fileName);
 }
 
 void DialogModel::openFile2()
@@ -209,7 +219,6 @@ void DialogModel::openFile2()
 
 void DialogModel::buttonPlus()
 {
-    QString texture = "test";
     Texture *m = new TextureTXT("");
     model->addTexture(m);
 
@@ -227,11 +236,8 @@ void DialogModel::buttonMoins(){
     if(ui->TextureList->selectedItems().size()<1) return;
 
     int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
-
     model->getTextures().remove(pos_to_suppress);
-
     ui->TextureList->clear();
-
     QVector<Texture*> items = model->getTextures();
     int i = 1;
     foreach (Texture* m, items) {
