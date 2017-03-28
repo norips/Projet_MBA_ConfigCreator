@@ -44,6 +44,7 @@ QString DropboxExporter::upload(const QString fileName, const QByteArray &payloa
     /* Execute the QEventLoop - it will quit when the above finished due to the connect() */
     pause.exec();
     first = true;
+
     return path;
 }
 
@@ -68,6 +69,7 @@ void DropboxExporter::replyFinished(QNetworkReply *nr) {
         nr.setRawHeader("Content-Type","application/json");
         manager->post(nr, dropboxarg.toUtf8());
         first = false;
+        secondFirst = true;
     } else {
         QByteArray output = nr->readAll();
         qInfo(output);

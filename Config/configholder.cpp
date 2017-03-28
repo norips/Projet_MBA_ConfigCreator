@@ -227,6 +227,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
             int indexTex = 0;
             foreach(Texture *t, m->getTextures()){
                 if(t->modified()) {
+                    qDebug() << "Modified texture" << endl;
                     t->setModified(false);
                     if(t->getType() == Texture::TEXT) {
                         TextureTXT *ttxt =  dynamic_cast<TextureTXT *>(t);
@@ -238,8 +239,6 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                     if(t->getType() == Texture::IMG) {
                         TextureIMG *timg =  dynamic_cast<TextureIMG *>(t);
                         QJsonObject tex;
-                        tex["name"] = "test";
-                        tex["type"] = "image";
                         QByteArray bArray;
                         QBuffer buffer(&bArray);
                         buffer.open(QIODevice::WriteOnly);
@@ -250,7 +249,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                         strHash = hash.result();
                         QString tmpName = m->name.remove(QRegExp("[ \"'_-]")) + "%1" + ".png";
                         tex["name"] = tmpName.arg(++indexTex);
-                        tex["path"] = cex->upload(baseFolder + "/" + tmpName.arg(indexTex),bArray);
+                        tex["path"] = QString(cex->upload(baseFolder + "/" + tmpName.arg(indexTex),bArray));
                         tex["MD5"] = QString(strHash.toHex());
                         textures.append(tex);
                     }

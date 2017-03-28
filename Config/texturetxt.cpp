@@ -1,6 +1,6 @@
 #include "texturetxt.h"
 
-TextureTXT::TextureTXT(QString texte)
+TextureTXT::TextureTXT(QString texte) : Texture()
 {
     this->texte = texte;
 }

@@ -1,7 +1,7 @@
 #include "modified.h"
 
 Modified::Modified()
-{   mod = false;
+{   mod = true;
 }
 
 bool Modified::modified() {

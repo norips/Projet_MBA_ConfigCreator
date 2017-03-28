@@ -25,7 +25,7 @@ formTableau::formTableau(QWidget *parent, canvaItem *item) :
     buttonBox->addButton("Enregistrer",QDialogButtonBox::AcceptRole);
     buttonBox->addButton("Quitter",QDialogButtonBox::RejectRole);
     ui->verticalLayout_4->addWidget(buttonBox);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(on_pushButton_released()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 

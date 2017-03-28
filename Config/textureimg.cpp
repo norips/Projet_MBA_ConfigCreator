@@ -1,6 +1,6 @@
 #include "textureimg.h"
 
-TextureIMG::TextureIMG(QPixmap &pix)
+TextureIMG::TextureIMG(QPixmap &pix) : Texture()
 {
     this->pix = pix;
 }
