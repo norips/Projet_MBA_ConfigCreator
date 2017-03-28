@@ -107,10 +107,10 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
                    m->addTexture(tmp);
                    qDebug() << "Texture added" << endl;
                } else if(tobj["type"].toString().compare("texte") == 0 ) {
-                   TextureTXT *tmp = new TextureTXT(tobj["texte"].toString());
+                   TextureTXT *tmp = new TextureTXT(tobj["text"].toString());
                    tmp->setModified(false);
                    m->addTexture(tmp);
-                   qDebug() << "Texture added" << endl;
+                   qDebug() << "Texture added :" << tobj["text"].toString() << endl;
                }
 
            }

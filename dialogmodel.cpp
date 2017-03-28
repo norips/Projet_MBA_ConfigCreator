@@ -30,8 +30,8 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
     int indTex=0;
     qDebug() << "Texture";
     foreach(Texture *t, model->getTextures()){
-        qDebug() << "Texture" + QString::number(indTex);
-        ui->TextureList->addItem("Texture" + QString::number(++indTex));
+        qDebug() << "Texture " + QString::number(indTex);
+        ui->TextureList->addItem("Texture " + QString::number(++indTex));
        /* if((model->getTextures().at(0))->getType() == Texture::IMG && model->getTextures().size() > 0) {
                 TextureIMG *timg = dynamic_cast<TextureIMG *>(model->getTextures().at(0));
                 ui->lbText->setPixmap(timg->getData());
@@ -255,10 +255,11 @@ void DialogModel::itemActivated(QListWidgetItem* i){
     ui->stackedWidget->setEnabled(true);
 
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
-    if (model->getTextures().value(pos)->getType() == 0){
+    if (model->getTextures().value(pos)->getType() == Texture::TEXT){
         Texture* t = model->getTextures().value(pos);
         TextureTXT* test = (TextureTXT*) t;
-        QString textTexture =test->getData();
+        QString textTexture = test->getData();
+        qDebug() << "Texte texture = " << textTexture << endl;
         ui->teText->setText(textTexture);
     }
 
