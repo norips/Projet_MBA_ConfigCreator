@@ -189,7 +189,7 @@ void DialogModel::on_buttonBox_accepted()
 
 void DialogModel::openFile()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),"/",tr("Image Files (*.png *.jpg *.bmp *.jpeg"));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),"/",tr("Image Files (*.png  *.jpg *.bmp *.jpeg)"));
 
     if (fileName != NULL){
 
@@ -261,6 +261,11 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         QString textTexture = test->getData();
         qDebug() << "Texte texture = " << textTexture << endl;
         ui->teText->setText(textTexture);
+        ui->stackedWidget->setCurrentIndex(0);
+        ui->comboBox->setCurrentIndex(0);
+    } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
+        ui->stackedWidget->setCurrentIndex(1);
+        ui->comboBox->setCurrentIndex(1);
     }
 
 }
