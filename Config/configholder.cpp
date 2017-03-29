@@ -251,6 +251,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                         tex["name"] = tmpName.arg(++indexTex);
                         tex["path"] = QString(cex->upload(baseFolder + "/" + tmpName.arg(indexTex),bArray));
                         tex["MD5"] = QString(strHash.toHex());
+                        tex["type"] = "image";
                         textures.append(tex);
                     }
                 } else {
