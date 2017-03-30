@@ -16,7 +16,7 @@ class DialogModel : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogModel(QWidget *parent = 0,modelItem* m = NULL, Canva *c = NULL);
+    explicit DialogModel(QWidget *parent = 0, canvaItem *item = NULL, Canva *c = NULL);
     ~DialogModel();
 
 private slots:
@@ -26,6 +26,9 @@ private slots:
     void buttonPlus();
     void buttonMoins();
     void itemActivated(QListWidgetItem*);
+    void buttonPlus1();
+    void buttonMoins1();
+    void itemActivated1(QListWidgetItem*);
     void changetext();
 
 private:
@@ -33,6 +36,7 @@ private:
     Model *model;
     Canva *canva;
     Texture *t;
+    modelItem *mo;
 
     double ratioX;
     double ratioY;

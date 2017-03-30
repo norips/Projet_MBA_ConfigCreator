@@ -14,6 +14,8 @@ public:
 private:
     Ui::formTableau *ui;
     Canva *canva;
+    canvaItem * i;
+
 signals:
 
 public slots:

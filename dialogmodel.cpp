@@ -10,12 +10,16 @@
 #include <QImageReader>
 #include <QPainter>
 
-DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
+DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     QDialog(parent),
     ui(new Ui::DialogModel)
 {
     ui->setupUi(this);
-    model = m->getModel();
+
+
+    connect(ui->ModelList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated1(QListWidgetItem*)));
+    connect(ui->pushButton_6,SIGNAL(pressed()),this,SLOT(buttonPlus1()));
+    connect(ui->pushButton_5,SIGNAL(pressed()),this,SLOT(buttonMoins1()));
 
     connect(ui->TextureList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated(QListWidgetItem*)));
     connect(ui->pushButton_3,SIGNAL(pressed()),this,SLOT(buttonPlus()));
@@ -25,24 +29,10 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
     connect(ui->pushButton_2, SIGNAL(released()),this,SLOT(openFile2()));
     connect(ui->teText,SIGNAL(textChanged()),this,SLOT(changetext()));
 
-    canva = c;
-
-    int indTex=0;
-    qDebug() << "Texture";
-    foreach(Texture *t, model->getTextures()){
-        qDebug() << "Texture " + QString::number(indTex);
-        ui->TextureList->addItem("Texture " + QString::number(++indTex));
-       /* if((model->getTextures().at(0))->getType() == Texture::IMG && model->getTextures().size() > 0) {
-                TextureIMG *timg = dynamic_cast<TextureIMG *>(model->getTextures().at(0));
-                ui->lbText->setPixmap(timg->getData());
-            }
-        else
-            if(t->getType() == Texture::TEXT){
-                TextureTXT *ttext = dynamic_cast<TextureTXT*>(t);
-                ui->teText->setText(ttext->getData());
-                break;
-            }
-            */
+    canva = ConfigHolder::Instance()->getCanvas().at(item->getID());
+    QVector<Model*> items = canva->getItems();
+    foreach (Model* m, items) {
+       ui->ModelList->addItem(m->toItem());
     }
 
     bool landscape = canva->getPix().width() > canva->getPix().height();
@@ -72,41 +62,6 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
     qDebug()<< "width = " << ui->lbpixmap->width() << " height = " << ui->lbpixmap->height() << endl;
     ratioX = (double) 100.0/displayedWidth;
     ratioY = (double) 100.0/displayedHeight;
-
-    //Load it
-    if( !model->tlc.isEmpty() && !model->trc.isEmpty() && !model->blc.isEmpty() && !model->brc.isEmpty()) {
-        QStringList lTLC = model->tlc.split(",");
-        double tlcX = lTLC.at(0).toDouble() / ratioX;
-        double tlcY = lTLC.at(1).toDouble() / ratioY;
-        tlcY = -tlcY;
-
-        QStringList lTRC = model->trc.split(",");
-       // double trcX = lTRC.at(0).toDouble() / ratioX;
-        double trcY = lTRC.at(1).toDouble() / ratioY;
-        trcY = -trcY;
-
-        QStringList lBLC = model->blc.split(",");
-        //double blcX = lBLC.at(0).toDouble() / ratioX;
-        double blcY = lBLC.at(1).toDouble() / ratioY;
-        blcY = -blcY;
-
-        QStringList lBRC = model->brc.split(",");
-        double brcX = lBRC.at(0).toDouble() / ratioX;
-        double brcY = lBRC.at(1).toDouble() / ratioY;
-        brcY = -brcY;
-
-        tlcX += (ui->lbpixmap->x() ) ;
-        tlcY += (ui->lbpixmap->y() + ui->lbpixmap->height()) ;
-        qDebug() << tlcX << "," << tlcY << endl;
-        qDebug() << brcX << "," << brcY << endl;
-
-        brcX += (ui->lbpixmap->x()) ;
-        brcY += (ui->lbpixmap->y() + ui->lbpixmap->height());
-        ui->widget->getRubberBand()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
-        ui->widget->getRubberBand()->show();
-
-    }
-
 }
 
 
@@ -123,7 +78,6 @@ void DialogModel::on_buttonBox_accepted()
 
 
     ui->comboBox->setEnabled(false);
-    ui->lbName_2->setEnabled(false);
     ui->stackedWidget->setEnabled(false);
 
     Widget *widget = ui->widget;
@@ -220,14 +174,14 @@ void DialogModel::openFile2()
 
 void DialogModel::buttonPlus()
 {
-    Texture *m = new TextureTXT("");
-    model->addTexture(m);
+    Texture *t = new TextureTXT("");
+    model->addTexture(t);
 
     ui->TextureList->clear();
 
     QVector<Texture*> items = model->getTextures();
     int i = 1;
-    foreach (Texture* m, items) {
+    foreach (Texture* t, items) {
        ui->TextureList->addItem("Texture " + QString::number(i++));
     }
 }
@@ -251,7 +205,6 @@ void DialogModel::buttonMoins(){
 void DialogModel::itemActivated(QListWidgetItem* i){
 
     ui->comboBox->setEnabled(true);
-    ui->lbName_2->setEnabled(true);
     ui->stackedWidget->setEnabled(true);
 
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
@@ -269,6 +222,98 @@ void DialogModel::itemActivated(QListWidgetItem* i){
     }
 
 }
+
+void DialogModel::buttonPlus1(){
+
+    QString name = "Nouveau";
+    Model *m = new Model(name,canva->getItems().size());
+    canva->addModel(m);
+
+    qDebug() << "Canva" <<canva->getItems();
+    ui->ModelList->clear();
+
+    int i = 1;
+    QVector<Model*> items = canva->getItems();
+    foreach (Model* m, items) {
+       ui->ModelList->addItem("Zone " + QString::number(i++));
+    }
+}
+
+
+void DialogModel::buttonMoins1(){
+
+    if(ui->ModelList->selectedItems().size()<1) return;
+
+       int pos_to_suppress = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
+       canva->getItems().remove(pos_to_suppress);
+       ui->ModelList->clear();
+
+       int i = 1;
+       QVector<Model*> items = canva->getItems();
+       foreach (Model* m, items) {
+          ui->ModelList->addItem("Zone " + QString::number(i++));
+
+       }
+
+
+}
+
+void DialogModel::itemActivated1(QListWidgetItem* i){
+
+    if(ui->ModelList->selectedItems().size()<1) return;
+    int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
+    model = canva->getItems().value(pos);
+
+    ui->TextureList->clear();
+
+    int indTex=0;
+    foreach(Texture *ti, model->getTextures()){
+        qDebug() << "Texture " + QString::number(indTex);
+        ui->TextureList->addItem("Texture " + QString::number(++indTex));
+    }
+
+    //Load it
+
+    if( !model->tlc.isEmpty() && !model->trc.isEmpty() && !model->blc.isEmpty() && !model->brc.isEmpty()) {
+        QStringList lTLC = model->tlc.split(",");
+        double tlcX = lTLC.at(0).toDouble() / ratioX;
+        double tlcY = lTLC.at(1).toDouble() / ratioY;
+        tlcY = -tlcY;
+
+        QStringList lTRC = model->trc.split(",");
+       // double trcX = lTRC.at(0).toDouble() / ratioX;
+        double trcY = lTRC.at(1).toDouble() / ratioY;
+        trcY = -trcY;
+
+        QStringList lBLC = model->blc.split(",");
+        //double blcX = lBLC.at(0).toDouble() / ratioX;
+        double blcY = lBLC.at(1).toDouble() / ratioY;
+        blcY = -blcY;
+
+        QStringList lBRC = model->brc.split(",");
+        double brcX = lBRC.at(0).toDouble() / ratioX;
+        double brcY = lBRC.at(1).toDouble() / ratioY;
+        brcY = -brcY;
+
+        tlcX += (ui->lbpixmap->x() ) ;
+        tlcY += (ui->lbpixmap->y() + ui->lbpixmap->height()) ;
+        qDebug() << tlcX << "," << tlcY << endl;
+        qDebug() << brcX << "," << brcY << endl;
+
+        brcX += (ui->lbpixmap->x()) ;
+        brcY += (ui->lbpixmap->y() + ui->lbpixmap->height());
+        ui->widget->getRubberBand()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
+        ui->widget->getRubberBand()->show();
+
+    }
+
+    ui->TextureList->setEnabled(true);
+    ui->lbName_3->setEnabled(true);
+    ui->pushButton_3->setEnabled(true);
+    ui->pushButton_4->setEnabled(true);
+}
+
+
 
 void DialogModel::changetext(){
 
