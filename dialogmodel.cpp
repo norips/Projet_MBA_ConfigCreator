@@ -174,10 +174,10 @@ void DialogModel::on_buttonBox_accepted()
         qDebug() << "TRC : " << confTRCx << "," << confTRCy << endl;
         qDebug() << "BLC : " << confBLCx << "," << confBLCy << endl;
         qDebug() << "BRC : " << confBRCx << "," << confBRCy << endl;
-        model->tlc.append((QString::number(confTLCx))).append(",").append(QString::number(-confTLCy)).append(",0");
-        model->trc.append((QString::number(confTRCx))).append(",").append(QString::number(-confTRCy)).append(",0");
-        model->blc.append((QString::number(confBLCx))).append(",").append(QString::number(-confBLCy)).append(",0");
-        model->brc.append((QString::number(confBRCx))).append(",").append(QString::number(-confBRCy)).append(",0");
+        model->tlc = QString("").append((QString::number(confTLCx))).append(",").append(QString::number(-confTLCy)).append(",0");
+        model->trc = QString("").append((QString::number(confTRCx))).append(",").append(QString::number(-confTRCy)).append(",0");
+        model->blc = QString("").append((QString::number(confBLCx))).append(",").append(QString::number(-confBLCy)).append(",0");
+        model->brc = QString("").append((QString::number(confBRCx))).append(",").append(QString::number(-confBRCy)).append(",0");
         //TextureIMG *timg = new TextureIMG(canva->getPix());
         //model->addTexture(timg);
         this->hide();
