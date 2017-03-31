@@ -63,7 +63,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="page">
      <widget class="QTextEdit" name="teText">
@@ -101,7 +101,7 @@
        <rect>
         <x>10</x>
         <y>30</y>
-        <width>371</width>
+        <width>381</width>
         <height>21</height>
        </rect>
       </property>
@@ -129,7 +129,7 @@
        <rect>
         <x>10</x>
         <y>30</y>
-        <width>371</width>
+        <width>381</width>
         <height>21</height>
        </rect>
       </property>

@@ -16,7 +16,6 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
 {
     ui->setupUi(this);
 
-
     connect(ui->ModelList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated1(QListWidgetItem*)));
     connect(ui->pushButton_6,SIGNAL(pressed()),this,SLOT(buttonPlus1()));
     connect(ui->pushButton_5,SIGNAL(pressed()),this,SLOT(buttonMoins1()));
@@ -101,9 +100,7 @@ void DialogModel::openFile2()
 {
     QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une vidéo"),"/",tr("Image Files (*.mp4 )"));
     ui->lineEdit_2->insert(fileName);
-    // t.setLocalPath(fileName);
 
-    qDebug() << "FILE" << fileName;
 }
 
 void DialogModel::buttonPlus()
@@ -261,6 +258,7 @@ void DialogModel::modelEnregistrement(){
 
     Widget *widget = ui->widget;
     QRect rect = widget->getRectSelection();
+
     qDebug() << "rectangle" << rect << endl;
     QString text ;
 
@@ -316,8 +314,9 @@ void DialogModel::modelEnregistrement(){
         ui->stackedWidget->setEnabled(false);
         ui->pushButton_7->setEnabled(false);
         ui->ModelList->setEnabled(true);
+        ui->buttonBox->setEnabled(false);
+
     } else {
         qDebug() << "Selection Nulle" << endl;
     }
-
 }

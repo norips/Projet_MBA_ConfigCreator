@@ -39,7 +39,6 @@ private:
     Canva *canva;
     Texture *t;
     modelItem *mo;
-
     double ratioX;
     double ratioY;
 };
