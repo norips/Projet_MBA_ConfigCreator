@@ -31,9 +31,10 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
 
     canva = ConfigHolder::Instance()->getCanvas().at(item->getID());
 
+    int i=1;
     QVector<Model*> items = canva->getItems();
     foreach (Model* m, items) {
-       ui->ModelList->addItem(m->toItem());
+       ui->ModelList->addItem("Zone " + QString::number(i++));
     }
 
     bool landscape = canva->getPix().width() > canva->getPix().height();
@@ -94,7 +95,6 @@ void DialogModel::openFile()
         ui->lineEdit->insert(fileName);
         model->setModified(true);
     }
-    // t.setLocalPath(fileName);
 }
 
 void DialogModel::openFile2()
@@ -134,8 +134,6 @@ void DialogModel::buttonMoins(){
     foreach (Texture* m, items) {
        ui->TextureList->addItem("Texture " + QString::number(i++));
     }
-
-
 }
 
 void DialogModel::itemActivated(QListWidgetItem* i){
@@ -173,7 +171,6 @@ void DialogModel::buttonPlus1(){
     }
 }
 
-
 void DialogModel::buttonMoins1(){
 
     if(ui->ModelList->selectedItems().size()<1) return;
@@ -192,11 +189,6 @@ void DialogModel::buttonMoins1(){
 
 void DialogModel::itemActivated1(QListWidgetItem* i){
 
-
-    ui->comboBox->setEnabled(false);
-    ui->stackedWidget->setEnabled(false);
-    ui->pushButton_7->setEnabled(false);
-
     if(ui->ModelList->selectedItems().size()<1) return;
     int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
     model = canva->getItems().value(pos);
@@ -209,9 +201,9 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
         ui->TextureList->addItem("Texture " + QString::number(++indTex));
     }
 
-    //Load it
-
+    //Load Rectangle
     if( !model->tlc.isEmpty() && !model->trc.isEmpty() && !model->blc.isEmpty() && !model->brc.isEmpty()) {
+        qDebug() << "LOAD RECTANGLE ";
         QStringList lTLC = model->tlc.split(",");
         double tlcX = lTLC.at(0).toDouble() / ratioX;
         double tlcY = lTLC.at(1).toDouble() / ratioY;
@@ -244,13 +236,15 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
 
     }
 
+
+    ui->comboBox->setEnabled(false);
+    ui->stackedWidget->setEnabled(false);
+    ui->pushButton_7->setEnabled(false);
     ui->TextureList->setEnabled(true);
     ui->lbName_3->setEnabled(true);
     ui->pushButton_3->setEnabled(true);
     ui->pushButton_4->setEnabled(true);
 }
-
-
 
 void DialogModel::changetext(){
 
@@ -264,13 +258,11 @@ void DialogModel::changetext(){
 }
 
 void DialogModel::modelEnregistrement(){
-    ui->ModelList->setEnabled(true);
 
     Widget *widget = ui->widget;
     QRect rect = widget->getRectSelection();
     qDebug() << "rectangle" << rect << endl;
     QString text ;
-
 
     if(rect.height() !=0 && rect.width() != 0){
         qDebug() << "Valid" << endl;
@@ -320,9 +312,12 @@ void DialogModel::modelEnregistrement(){
         model->brc = QString("").append((QString::number(confBRCx))).append(",").append(QString::number(-confBRCy)).append(",0");
         //TextureIMG *timg = new TextureIMG(canva->getPix());
         //model->addTexture(timg);
+        ui->comboBox->setEnabled(false);
+        ui->stackedWidget->setEnabled(false);
+        ui->pushButton_7->setEnabled(false);
+        ui->ModelList->setEnabled(true);
     } else {
         qDebug() << "Selection Nulle" << endl;
     }
 
 }
-
