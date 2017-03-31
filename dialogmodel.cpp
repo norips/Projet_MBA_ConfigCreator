@@ -139,6 +139,8 @@ void DialogModel::itemActivated(QListWidgetItem* i){
     ui->stackedWidget->setEnabled(true);
     ui->pushButton_7->setEnabled(true);
 
+
+
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
     if (model->getTextures().value(pos)->getType() == Texture::TEXT){
         Texture* t = model->getTextures().value(pos);
@@ -186,6 +188,17 @@ void DialogModel::buttonMoins1(){
 
 void DialogModel::itemActivated1(QListWidgetItem* i){
 
+    ui->comboBox->setEnabled(false);
+    ui->stackedWidget->setEnabled(false);
+    ui->pushButton_7->setEnabled(false);
+    ui->TextureList->setEnabled(true);
+    ui->lbName_3->setEnabled(true);
+    ui->pushButton_3->setEnabled(true);
+    ui->pushButton_4->setEnabled(true);
+    ui->buttonBox->setEnabled(false);
+
+
+
     if(ui->ModelList->selectedItems().size()<1) return;
     int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
     model = canva->getItems().value(pos);
@@ -230,17 +243,11 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
         brcY += (ui->lbpixmap->y() + ui->lbpixmap->height());
         ui->widget->getRubberBand()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
         ui->widget->getRubberBand()->show();
-
+        ui->buttonBox->setEnabled(true);
+    }else{
+        ui->buttonBox->setEnabled(false);
     }
 
-
-    ui->comboBox->setEnabled(false);
-    ui->stackedWidget->setEnabled(false);
-    ui->pushButton_7->setEnabled(false);
-    ui->TextureList->setEnabled(true);
-    ui->lbName_3->setEnabled(true);
-    ui->pushButton_3->setEnabled(true);
-    ui->pushButton_4->setEnabled(true);
 }
 
 void DialogModel::changetext(){
@@ -259,10 +266,12 @@ void DialogModel::modelEnregistrement(){
     Widget *widget = ui->widget;
     QRect rect = widget->getRectSelection();
 
-    qDebug() << "rectangle" << rect << endl;
+    qDebug() << "rectangle" << rect.height() << endl;
+    qDebug() << "rectangle" << rect.width() << endl;
+    qDebug() << "rectangle" << rect.isEmpty() << endl;
     QString text ;
 
-    if(rect.height() !=0 && rect.width() != 0){
+    if(rect.height() !=30 && rect.width() != 100){
         qDebug() << "Valid" << endl;
         int x =0, y=0, width, height;
         rect.getRect(&x,&y,&width,&height);
@@ -314,7 +323,7 @@ void DialogModel::modelEnregistrement(){
         ui->stackedWidget->setEnabled(false);
         ui->pushButton_7->setEnabled(false);
         ui->ModelList->setEnabled(true);
-        ui->buttonBox->setEnabled(false);
+        ui->buttonBox->setEnabled(true);
 
     } else {
         qDebug() << "Selection Nulle" << endl;
