@@ -56,14 +56,14 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>410</x>
+      <x>400</x>
       <y>40</y>
       <width>401</width>
       <height>101</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page">
      <widget class="QTextEdit" name="teText">
@@ -276,6 +276,22 @@
       <string>Vidéo</string>
      </property>
     </item>
+   </widget>
+   <widget class="QPushButton" name="pushButton_7">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>10</y>
+      <width>191</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Enregistrement de la zone</string>
+    </property>
    </widget>
   </widget>
   <widget class="Widget" name="widget" native="true">

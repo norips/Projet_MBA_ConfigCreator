@@ -30,6 +30,8 @@ private slots:
     void buttonMoins1();
     void itemActivated1(QListWidgetItem*);
     void changetext();
+    void modelEnregistrement();
+
 
 private:
     Ui::DialogModel *ui;

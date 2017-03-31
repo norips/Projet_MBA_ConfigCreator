@@ -50,7 +50,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Ajouter</string>
+     <string>Zones</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">

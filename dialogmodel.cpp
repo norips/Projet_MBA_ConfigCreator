@@ -20,7 +20,7 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     connect(ui->ModelList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated1(QListWidgetItem*)));
     connect(ui->pushButton_6,SIGNAL(pressed()),this,SLOT(buttonPlus1()));
     connect(ui->pushButton_5,SIGNAL(pressed()),this,SLOT(buttonMoins1()));
-
+    connect(ui->pushButton_7,SIGNAL(pressed()),this,SLOT(modelEnregistrement()));
     connect(ui->TextureList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated(QListWidgetItem*)));
     connect(ui->pushButton_3,SIGNAL(pressed()),this,SLOT(buttonPlus()));
     connect(ui->pushButton_4,SIGNAL(pressed()),this,SLOT(buttonMoins()));
@@ -30,6 +30,7 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     connect(ui->teText,SIGNAL(textChanged()),this,SLOT(changetext()));
 
     canva = ConfigHolder::Instance()->getCanvas().at(item->getID());
+
     QVector<Model*> items = canva->getItems();
     foreach (Model* m, items) {
        ui->ModelList->addItem(m->toItem());
@@ -48,7 +49,6 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
         ui->lbpixmap->setFixedWidth(displayedWidth);
         ui->lbpixmap->setPixmap(canva->getPix().scaled(ui->lbpixmap->maximumWidth(),displayedHeight,Qt::KeepAspectRatio));
         geo.translate(0,displayedHeight);
-        qDebug() << "Land";
     } else {
         displayedHeight = ui->lbpixmap->height();
         displayedWidth =  ui->lbpixmap->width() * canva->getPix().width()/canva->getPix().height();
@@ -58,8 +58,6 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
         ui->lbpixmap->setPixmap(canva->getPix().scaled(displayedWidth,ui->lbpixmap->maximumHeight(),Qt::KeepAspectRatio));
     }
     ui->lbpixmap->setGeometry(geo);
-
-    qDebug()<< "width = " << ui->lbpixmap->width() << " height = " << ui->lbpixmap->height() << endl;
     ratioX = (double) 100.0/displayedWidth;
     ratioY = (double) 100.0/displayedHeight;
 }
@@ -69,75 +67,11 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
 DialogModel::~DialogModel()
 {
     this->releaseMouse();
-    //delete widget;
     delete ui;
 }
 
 void DialogModel::on_buttonBox_accepted()
 {
-
-
-    ui->comboBox->setEnabled(false);
-    ui->stackedWidget->setEnabled(false);
-
-    Widget *widget = ui->widget;
-    QRect rect = widget->getRectSelection();
-    qDebug() << "rectangle" << rect << endl;
-    QString text ;
-
-
-    if(rect.height() !=0 && rect.width() != 0){
-        qDebug() << "Valid" << endl;
-        int x =0, y=0, width, height;
-        rect.getRect(&x,&y,&width,&height);
-        QPoint xtlc(x ,  y);
-        QPoint xtrc(x+width,  y);
-        QPoint xblc(x, y+height);
-        QPoint xbrc(x + width,y+height);
-        int lbX=0, lbY=0, lbWidth, lbHeight;
-        ui->lbpixmap->geometry().getRect(&lbX,&lbY,&lbWidth,&lbHeight);
-        lbWidth = ui->lbpixmap->width();
-        lbHeight = ui->lbpixmap->height();
-
-
-        QPoint tlc(lbX,lbY);
-        QPoint trc(lbX+lbWidth,lbY);
-        QPoint blc(lbX,lbY+lbHeight);
-        QPoint brc(lbX+lbWidth,lbY+lbHeight);
-
-
-        qDebug() << "tlc : " << xtlc-blc << endl;
-        qDebug() << "trc : " << xtrc-blc << endl;
-        qDebug() << "blc : " << xblc-blc << endl;
-        qDebug() << "brc : " << xbrc-blc << endl;
-        QPoint relTLC = xtlc-blc;
-        QPoint relTRC = xtrc-blc;
-        QPoint relBLC = xblc-blc;
-        QPoint relBRC = xbrc-blc;
-        double confTLCx = (double) relTLC.x() * ratioX;
-        double confTLCy = (double) relTLC.y() * ratioY;
-        double confTRCx = (double) relTRC.x() * ratioX;
-        double confTRCy = (double) relTRC.y() * ratioY;
-        double confBLCx = (double) relBLC.x() * ratioX;
-        double confBLCy = (double) relBLC.y() * ratioY;
-        double confBRCx = (double) relBRC.x() * ratioX;
-        double confBRCy = (double) relBRC.y() * ratioY;
-        qDebug() << "######CONFIG VALUE#########" << endl;
-        qDebug() << "RATIO X : " << ratioX << "," << ",RATIO Y :" << ratioY << endl;
-        qDebug() << "TLC : " << confTLCx << "," << confTLCy << endl;
-        qDebug() << "TRC : " << confTRCx << "," << confTRCy << endl;
-        qDebug() << "BLC : " << confBLCx << "," << confBLCy << endl;
-        qDebug() << "BRC : " << confBRCx << "," << confBRCy << endl;
-        model->tlc = QString("").append((QString::number(confTLCx))).append(",").append(QString::number(-confTLCy)).append(",0");
-        model->trc = QString("").append((QString::number(confTRCx))).append(",").append(QString::number(-confTRCy)).append(",0");
-        model->blc = QString("").append((QString::number(confBLCx))).append(",").append(QString::number(-confBLCy)).append(",0");
-        model->brc = QString("").append((QString::number(confBRCx))).append(",").append(QString::number(-confBRCy)).append(",0");
-        //TextureIMG *timg = new TextureIMG(canva->getPix());
-        //model->addTexture(timg);
-        this->hide();
-    } else {
-        qDebug() << "Selection Nulle" << endl;
-    }
     this->hide();
 }
 
@@ -174,6 +108,8 @@ void DialogModel::openFile2()
 
 void DialogModel::buttonPlus()
 {
+    ui->ModelList->setEnabled(false);
+
     Texture *t = new TextureTXT("");
     model->addTexture(t);
 
@@ -206,6 +142,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
 
     ui->comboBox->setEnabled(true);
     ui->stackedWidget->setEnabled(true);
+    ui->pushButton_7->setEnabled(true);
 
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
     if (model->getTextures().value(pos)->getType() == Texture::TEXT){
@@ -224,12 +161,9 @@ void DialogModel::itemActivated(QListWidgetItem* i){
 }
 
 void DialogModel::buttonPlus1(){
-
     QString name = "Nouveau";
     Model *m = new Model(name,canva->getItems().size());
     canva->addModel(m);
-
-    qDebug() << "Canva" <<canva->getItems();
     ui->ModelList->clear();
 
     int i = 1;
@@ -254,11 +188,14 @@ void DialogModel::buttonMoins1(){
           ui->ModelList->addItem("Zone " + QString::number(i++));
 
        }
-
-
 }
 
 void DialogModel::itemActivated1(QListWidgetItem* i){
+
+
+    ui->comboBox->setEnabled(false);
+    ui->stackedWidget->setEnabled(false);
+    ui->pushButton_7->setEnabled(false);
 
     if(ui->ModelList->selectedItems().size()<1) return;
     int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
@@ -325,3 +262,67 @@ void DialogModel::changetext(){
     model->getTextures().insert(pos_to_suppress,ttext);
     model->setModified(true);
 }
+
+void DialogModel::modelEnregistrement(){
+    ui->ModelList->setEnabled(true);
+
+    Widget *widget = ui->widget;
+    QRect rect = widget->getRectSelection();
+    qDebug() << "rectangle" << rect << endl;
+    QString text ;
+
+
+    if(rect.height() !=0 && rect.width() != 0){
+        qDebug() << "Valid" << endl;
+        int x =0, y=0, width, height;
+        rect.getRect(&x,&y,&width,&height);
+        QPoint xtlc(x ,  y);
+        QPoint xtrc(x+width,  y);
+        QPoint xblc(x, y+height);
+        QPoint xbrc(x + width,y+height);
+        int lbX=0, lbY=0, lbWidth, lbHeight;
+        ui->lbpixmap->geometry().getRect(&lbX,&lbY,&lbWidth,&lbHeight);
+        lbWidth = ui->lbpixmap->width();
+        lbHeight = ui->lbpixmap->height();
+
+
+        QPoint tlc(lbX,lbY);
+        QPoint trc(lbX+lbWidth,lbY);
+        QPoint blc(lbX,lbY+lbHeight);
+        QPoint brc(lbX+lbWidth,lbY+lbHeight);
+
+
+        qDebug() << "tlc : " << xtlc-blc << endl;
+        qDebug() << "trc : " << xtrc-blc << endl;
+        qDebug() << "blc : " << xblc-blc << endl;
+        qDebug() << "brc : " << xbrc-blc << endl;
+        QPoint relTLC = xtlc-blc;
+        QPoint relTRC = xtrc-blc;
+        QPoint relBLC = xblc-blc;
+        QPoint relBRC = xbrc-blc;
+        double confTLCx = (double) relTLC.x() * ratioX;
+        double confTLCy = (double) relTLC.y() * ratioY;
+        double confTRCx = (double) relTRC.x() * ratioX;
+        double confTRCy = (double) relTRC.y() * ratioY;
+        double confBLCx = (double) relBLC.x() * ratioX;
+        double confBLCy = (double) relBLC.y() * ratioY;
+        double confBRCx = (double) relBRC.x() * ratioX;
+        double confBRCy = (double) relBRC.y() * ratioY;
+        qDebug() << "######CONFIG VALUE#########" << endl;
+        qDebug() << "RATIO X : " << ratioX << "," << ",RATIO Y :" << ratioY << endl;
+        qDebug() << "TLC : " << confTLCx << "," << confTLCy << endl;
+        qDebug() << "TRC : " << confTRCx << "," << confTRCy << endl;
+        qDebug() << "BLC : " << confBLCx << "," << confBLCy << endl;
+        qDebug() << "BRC : " << confBRCx << "," << confBRCy << endl;
+        model->tlc = QString("").append((QString::number(confTLCx))).append(",").append(QString::number(-confTLCy)).append(",0");
+        model->trc = QString("").append((QString::number(confTRCx))).append(",").append(QString::number(-confTRCy)).append(",0");
+        model->blc = QString("").append((QString::number(confBLCx))).append(",").append(QString::number(-confBLCy)).append(",0");
+        model->brc = QString("").append((QString::number(confBRCx))).append(",").append(QString::number(-confBRCy)).append(",0");
+        //TextureIMG *timg = new TextureIMG(canva->getPix());
+        //model->addTexture(timg);
+    } else {
+        qDebug() << "Selection Nulle" << endl;
+    }
+
+}
+
