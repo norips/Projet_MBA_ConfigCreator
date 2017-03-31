@@ -88,11 +88,15 @@ void DialogModel::openFile()
         reader->setFileName(fileName);
         QImage image =reader->read();
         QPixmap map=QPixmap::fromImage(image);
-
         Texture* tImage = new TextureIMG(map);
         model->getTextures().insert(pos_to_suppress,tImage);
         ui->lineEdit->insert(fileName);
         model->setModified(true);
+
+        QLabel* q = ui->lbpixmap_2;
+        QRect geo = ui->widget->getRectSelection();
+        q->setPixmap(map.scaled(geo.size(),Qt::IgnoreAspectRatio));
+        q->setGeometry(geo);
     }
 }
 
@@ -255,6 +259,13 @@ void DialogModel::changetext(){
     QString text = ui->teText->toPlainText();
     TextureTXT * ttext = new TextureTXT(text);
 
+
+    QLabel* q = ui->lbpixmap_2;
+    QRect geo = ui->widget->getRectSelection();
+    q->setGeometry(geo);
+    q->setText(text);
+
+
     int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
     model->getTextures().remove(pos_to_suppress);
     model->getTextures().insert(pos_to_suppress,ttext);
@@ -319,6 +330,7 @@ void DialogModel::modelEnregistrement(){
         model->brc = QString("").append((QString::number(confBRCx))).append(",").append(QString::number(-confBRCy)).append(",0");
         //TextureIMG *timg = new TextureIMG(canva->getPix());
         //model->addTexture(timg);
+
         ui->comboBox->setEnabled(false);
         ui->stackedWidget->setEnabled(false);
         ui->pushButton_7->setEnabled(false);
