@@ -93,10 +93,8 @@ void DialogModel::openFile()
         ui->lineEdit->insert(fileName);
         model->setModified(true);
 
-        QLabel* q = ui->lbpixmap_2;
-        QRect geo = ui->widget->getRectSelection();
-        q->setPixmap(map.scaled(geo.size(),Qt::IgnoreAspectRatio));
-        q->setGeometry(geo);
+        /*QLabel *q = ui->widget->getLabel();
+        q->setPixmap(map.scaled(ui->widget->getRectSelection().size(),Qt::IgnoreAspectRatio));*/
     }
 }
 
@@ -259,12 +257,8 @@ void DialogModel::changetext(){
     QString text = ui->teText->toPlainText();
     TextureTXT * ttext = new TextureTXT(text);
 
-
-    QLabel* q = ui->lbpixmap_2;
-    QRect geo = ui->widget->getRectSelection();
-    q->setGeometry(geo);
-    q->setText(text);
-
+    /*QLabel *q = ui->widget->getLabel();
+    q->setText(text);*/
 
     int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
     model->getTextures().remove(pos_to_suppress);
@@ -282,7 +276,9 @@ void DialogModel::modelEnregistrement(){
     qDebug() << "rectangle" << rect.isEmpty() << endl;
     QString text ;
 
-    if(rect.height() !=30 && rect.width() != 100){
+
+
+    if(rect.height() !=30 && rect.width() != 1000){
         qDebug() << "Valid" << endl;
         int x =0, y=0, width, height;
         rect.getRect(&x,&y,&width,&height);

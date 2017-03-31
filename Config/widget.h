@@ -26,11 +26,12 @@ public:
     void mouseReleaseEvent(QMouseEvent *e);
     QRect getRectSelection();
     QRubberBand* getRubberBand();
+    QLabel* getLabel();
 
 
 private:
     QWidget *toto;
-
+    QLabel *labelWid;
     QRubberBand* rubberBand;
     bool move_rubberBand;
     bool selection_start;

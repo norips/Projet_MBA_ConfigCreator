@@ -39,6 +39,7 @@ private:
     Canva *canva;
     Texture *t;
     modelItem *mo;
+    QLabel *test;
     double ratioX;
     double ratioY;
 };

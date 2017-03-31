@@ -12,7 +12,7 @@ Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
     toto = parent;
-
+    labelWid = new QLabel();
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
     move_rubberBand=false;
     selection_start=false;
@@ -60,6 +60,7 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
     qDebug() << "MouseReleaseEvent : "<< e << endl;
     qDebug() << "rectangle :" << rubberBand->geometry() << endl;
 
+    labelWid->setGeometry(rubberBand->geometry());
     move_rubberBand = false;
     selection_start = false;
     rubberBand->show();
@@ -72,3 +73,9 @@ QRect Widget::getRectSelection(){
 QRubberBand* Widget::getRubberBand() {
     return rubberBand;
 }
+
+QLabel* Widget::getLabel(){
+    return labelWid;
+}
+
+
