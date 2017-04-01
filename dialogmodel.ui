@@ -297,19 +297,22 @@
         <item row="1" column="0">
          <widget class="QStackedWidget" name="stackedWidget">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="page">
            <widget class="QTextEdit" name="teText">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="geometry">
              <rect>
               <x>70</x>
               <y>0</y>
               <width>281</width>
-              <height>101</height>
+              <height>71</height>
              </rect>
             </property>
            </widget>
@@ -319,7 +322,7 @@
             <property name="geometry">
              <rect>
               <x>250</x>
-              <y>60</y>
+              <y>50</y>
               <width>131</width>
               <height>31</height>
              </rect>
@@ -335,7 +338,7 @@
             <property name="geometry">
              <rect>
               <x>10</x>
-              <y>30</y>
+              <y>20</y>
               <width>381</width>
               <height>21</height>
              </rect>
@@ -347,7 +350,7 @@
             <property name="geometry">
              <rect>
               <x>250</x>
-              <y>60</y>
+              <y>50</y>
               <width>131</width>
               <height>31</height>
              </rect>
@@ -363,7 +366,7 @@
             <property name="geometry">
              <rect>
               <x>10</x>
-              <y>30</y>
+              <y>20</y>
               <width>381</width>
               <height>21</height>
              </rect>

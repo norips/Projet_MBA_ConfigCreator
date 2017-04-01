@@ -61,9 +61,7 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     ratioX = (double) 100.0/displayedWidth;
     ratioY = (double) 100.0/displayedHeight;
 
-
-
-
+    ui->stackedWidget->setEnabled(false);
     ui->gbText->setEnabled(false);
 }
 
@@ -115,8 +113,6 @@ void DialogModel::openFile2()
 
 void DialogModel::buttonPlus()
 {
-    ui->gbModele->setEnabled(false);
-
     Texture *t = new TextureTXT("");
     model->addTexture(t);
 
@@ -160,6 +156,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
     ui->stackedWidget->setEnabled(true);
     ui->pbSaveZone->setEnabled(true);
     ui->widgetSelect->getLabel()->setVisible(true);
+    ui->gbModele->setEnabled(false);
 
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
     if (model->getTextures().value(pos)->getType() == Texture::TEXT){
@@ -325,7 +322,7 @@ void DialogModel::modelEnregistrement(){
 
 
 
-    if(rect.height() !=30 && rect.width() != 1000){
+    if(rect.height() !=30 && rect.width() != 100){
         qDebug() << "Valid" << endl;
         int x =0, y=0, width, height;
         rect.getRect(&x,&y,&width,&height);
@@ -374,14 +371,12 @@ void DialogModel::modelEnregistrement(){
         //TextureIMG *timg = new TextureIMG(canva->getPix());
         //model->addTexture(timg);
 
-        ui->cbTextureType->setEnabled(false);
-        ui->stackedWidget->setEnabled(false);
-        ui->pbSaveZone->setEnabled(false);
         ui->gbModele->setEnabled(true);
         ui->buttonBox->setEnabled(true);
 
     } else {
         qDebug() << "Selection Nulle" << endl;
+
     }
 
 }
