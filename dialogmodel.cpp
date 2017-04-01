@@ -63,6 +63,8 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
 
     ui->stackedWidget->setEnabled(false);
     ui->gbText->setEnabled(false);
+
+    ui->widgetSelect->raise();
 }
 
 
