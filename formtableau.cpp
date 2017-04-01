@@ -57,9 +57,9 @@ void formTableau::on_pbAdd_clicked()
 
 void formTableau::on_pushButton_released()
 {
-    /*QString name_tableau = ui->leTitle->text();
+    QString name_tableau = ui->leTitle->text();
     canva->setName(name_tableau);
-    this->close();*/
+    this->close();
 
 }
 

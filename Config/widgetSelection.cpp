@@ -61,6 +61,7 @@ void WidgetSelection::mouseMoveEvent(QMouseEvent *e)
             labelWid->setGeometry(QRect(origin,e->pos()));
             rubberBand->show();
         }
+    labelWid->raise();
 }
 
 void WidgetSelection::mouseReleaseEvent(QMouseEvent *e)
