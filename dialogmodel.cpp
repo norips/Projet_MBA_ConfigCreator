@@ -94,8 +94,8 @@ void DialogModel::openFile()
         model->setModified(true);
 
         //Load pixmap
-        ui->widget->getLabel()->setPixmap(map);
-        ui->widget->getLabel()->setVisible(true);
+        ui->widgetSelect->getLabel()->setPixmap(map);
+        ui->widgetSelect->getLabel()->setVisible(true);
         /*QLabel *q = ui->widget->getLabel();
         q->setPixmap(map.scaled(ui->widget->getRectSelection().size(),Qt::IgnoreAspectRatio));*/
     }
@@ -143,7 +143,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
     ui->comboBox->setEnabled(true);
     ui->stackedWidget->setEnabled(true);
     ui->pushButton_7->setEnabled(true);
-    ui->widget->getLabel()->setVisible(true);
+    ui->widgetSelect->getLabel()->setVisible(true);
 
 
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
@@ -197,7 +197,6 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
     ui->stackedWidget->setEnabled(false);
     ui->pushButton_7->setEnabled(false);
     ui->TextureList->setEnabled(true);
-    ui->lbName_3->setEnabled(true);
     ui->pushButton_3->setEnabled(true);
     ui->pushButton_4->setEnabled(true);
     ui->buttonBox->setEnabled(false);
@@ -246,8 +245,8 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
 
         brcX += (ui->lbpixmap->x()) ;
         brcY += (ui->lbpixmap->y() + ui->lbpixmap->height());
-        ui->widget->getRubberBand()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
-        ui->widget->getRubberBand()->show();
+        ui->widgetSelect->getRubberBand()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
+        ui->widgetSelect->getRubberBand()->show();
         ui->buttonBox->setEnabled(true);
     }else{
         ui->buttonBox->setEnabled(false);
@@ -271,7 +270,7 @@ void DialogModel::changetext(){
 
 void DialogModel::modelEnregistrement(){
 
-    WidgetSelection *widget = ui->widget;
+    WidgetSelection *widget = ui->widgetSelect;
     QRect rect = widget->getRectSelection();
 
     qDebug() << "rectangle" << rect.height() << endl;
