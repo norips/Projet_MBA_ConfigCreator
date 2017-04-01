@@ -158,8 +158,8 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
 
         if(v->modified()) {
             v->setModified(false);
-            feature["name"] = v->getName().remove(QRegExp("[ \"'_-]"));
-            QString trimName = v->getName().remove(QRegExp("[ \"'_-]"));
+            feature["name"] = v->getName().remove(QRegExp("[ \"'_-]|[+]"));
+            QString trimName = v->getName().remove(QRegExp("[ \"'_-]|[+]"));
             baseFolder = trimName;
             QString filename = base + trimName +".jpg";
             qDebug() << "Filename : " + filename;
