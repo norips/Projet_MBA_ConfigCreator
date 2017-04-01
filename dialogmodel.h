@@ -6,7 +6,7 @@
 #include "Config/model.h"
 #include "Config/modelitem.h"
 #include "Config/canva.h"
-#include "Config/widget.h"
+#include "Config/widgetSelection.h"
 namespace Ui {
 class DialogModel;
 }

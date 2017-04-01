@@ -12,13 +12,13 @@
 
 class MainWindow;
 
-class Widget : public QWidget
+class WidgetSelection : public QWidget
 {
     Q_OBJECT
 
 public:
-    Widget(QWidget *parent);
-    ~Widget();
+    WidgetSelection(QWidget *parent);
+    ~WidgetSelection();
 
 public:
     void mousePressEvent(QMouseEvent *e);

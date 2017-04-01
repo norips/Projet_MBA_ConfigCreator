@@ -1,4 +1,4 @@
-#include "widget.h"
+#include "widgetSelection.h"
 #include <QPainter>
 #include <QMouseEvent>
 #include <QDebug>
@@ -7,24 +7,30 @@
 #include <iostream>
 #include <Qt>
 #include <QGraphicsView>
+#include <QGraphicsOpacityEffect>
 
-Widget::Widget(QWidget *parent)
+WidgetSelection::WidgetSelection(QWidget *parent)
     : QWidget(parent)
 {
     toto = parent;
-    labelWid = new QLabel();
+
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
     move_rubberBand=false;
     selection_start=false;
+
+    labelWid = new QLabel(this);
+    labelWid->setVisible(false);
+    labelWid->setScaledContents(true);
+    labelWid->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
 }
 
-Widget::~Widget()
+WidgetSelection::~WidgetSelection()
 {
 
 }
 
 
-void Widget::mousePressEvent(QMouseEvent *e)
+void WidgetSelection::mousePressEvent(QMouseEvent *e)
 {
     qDebug() << "MousePressEvent : "<< e << endl;
 
@@ -42,20 +48,22 @@ void Widget::mousePressEvent(QMouseEvent *e)
    }
 }
 
-void Widget::mouseMoveEvent(QMouseEvent *e)
+void WidgetSelection::mouseMoveEvent(QMouseEvent *e)
 {
     qDebug() << "MouseMoveEnvent : "<< e << endl;
 
-    if(move_rubberBand)
+    if(move_rubberBand) {
         rubberBand->move(e->pos() - rubberBand_offset);
-    else
+        labelWid->move(e->pos() - rubberBand_offset);
+     } else
         if(selection_start){
             rubberBand->setGeometry(QRect(origin,e->pos()));
+            labelWid->setGeometry(QRect(origin,e->pos()));
             rubberBand->show();
         }
 }
 
-void Widget::mouseReleaseEvent(QMouseEvent *e)
+void WidgetSelection::mouseReleaseEvent(QMouseEvent *e)
 {
     qDebug() << "MouseReleaseEvent : "<< e << endl;
     qDebug() << "rectangle :" << rubberBand->geometry() << endl;
@@ -66,15 +74,15 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
     rubberBand->show();
 }
 
-QRect Widget::getRectSelection(){
+QRect WidgetSelection::getRectSelection(){
     return rubberBand->geometry();
 }
 
-QRubberBand* Widget::getRubberBand() {
+QRubberBand* WidgetSelection::getRubberBand() {
     return rubberBand;
 }
 
-QLabel* Widget::getLabel(){
+QLabel* WidgetSelection::getLabel(){
     return labelWid;
 }
 

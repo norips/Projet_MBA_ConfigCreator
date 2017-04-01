@@ -93,6 +93,9 @@ void DialogModel::openFile()
         ui->lineEdit->insert(fileName);
         model->setModified(true);
 
+        //Load pixmap
+        ui->widget->getLabel()->setPixmap(map);
+        ui->widget->getLabel()->setVisible(true);
         /*QLabel *q = ui->widget->getLabel();
         q->setPixmap(map.scaled(ui->widget->getRectSelection().size(),Qt::IgnoreAspectRatio));*/
     }
@@ -140,7 +143,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
     ui->comboBox->setEnabled(true);
     ui->stackedWidget->setEnabled(true);
     ui->pushButton_7->setEnabled(true);
-
+    ui->widget->getLabel()->setVisible(true);
 
 
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
@@ -268,7 +271,7 @@ void DialogModel::changetext(){
 
 void DialogModel::modelEnregistrement(){
 
-    Widget *widget = ui->widget;
+    WidgetSelection *widget = ui->widget;
     QRect rect = widget->getRectSelection();
 
     qDebug() << "rectangle" << rect.height() << endl;
