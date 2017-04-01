@@ -17,18 +17,18 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     ui->setupUi(this);
 
     connect(ui->ModelList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated1(QListWidgetItem*)));
-    connect(ui->pushButton_6,SIGNAL(pressed()),this,SLOT(buttonPlus1()));
-    connect(ui->pushButton_5,SIGNAL(pressed()),this,SLOT(buttonMoins1()));
-    connect(ui->pushButton_7,SIGNAL(pressed()),this,SLOT(modelEnregistrement()));
+    connect(ui->pbAddPage,SIGNAL(pressed()),this,SLOT(buttonPlus()));
+    connect(ui->pbRemovePage,SIGNAL(pressed()),this,SLOT(buttonMoins()));
+    connect(ui->pbSaveZone,SIGNAL(pressed()),this,SLOT(modelEnregistrement()));
     connect(ui->TextureList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated(QListWidgetItem*)));
-    connect(ui->pushButton_3,SIGNAL(pressed()),this,SLOT(buttonPlus()));
-    connect(ui->pushButton_4,SIGNAL(pressed()),this,SLOT(buttonMoins()));
-    connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
-    connect(ui->pushButton, SIGNAL(released()),this,SLOT(openFile()));
-    connect(ui->pushButton_2, SIGNAL(released()),this,SLOT(openFile2()));
+    connect(ui->pbAddZone,SIGNAL(pressed()),this,SLOT(buttonPlus1()));
+    connect(ui->pbRemoveZone,SIGNAL(pressed()),this,SLOT(buttonMoins1()));
+    connect(ui->cbTextureType, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    connect(ui->pbPathIMG, SIGNAL(released()),this,SLOT(openFile()));
+    connect(ui->pbPathMOV, SIGNAL(released()),this,SLOT(openFile2()));
     connect(ui->teText,SIGNAL(textChanged()),this,SLOT(changetext()));
 
-    canva = ConfigHolder::Instance()->getCanvas().at(item->getID());
+    canva = c;
 
     int i=1;
     QVector<Model*> items = canva->getItems();
@@ -60,6 +60,11 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     ui->lbpixmap->setGeometry(geo);
     ratioX = (double) 100.0/displayedWidth;
     ratioY = (double) 100.0/displayedHeight;
+
+
+
+
+    ui->gbText->setEnabled(false);
 }
 
 
@@ -90,7 +95,7 @@ void DialogModel::openFile()
         QPixmap map=QPixmap::fromImage(image);
         Texture* tImage = new TextureIMG(map);
         model->getTextures().insert(pos_to_suppress,tImage);
-        ui->lineEdit->insert(fileName);
+        ui->lePathIMG->insert(fileName);
         model->setModified(true);
 
         //Load pixmap
@@ -104,13 +109,13 @@ void DialogModel::openFile()
 void DialogModel::openFile2()
 {
     QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une vidéo"),"/",tr("Image Files (*.mp4 )"));
-    ui->lineEdit_2->insert(fileName);
+    ui->lePathMOV->insert(fileName);
 
 }
 
 void DialogModel::buttonPlus()
 {
-    ui->ModelList->setEnabled(false);
+    ui->gbModele->setEnabled(false);
 
     Texture *t = new TextureTXT("");
     model->addTexture(t);
@@ -127,7 +132,6 @@ void DialogModel::buttonPlus()
 void DialogModel::buttonMoins(){
 
     if(ui->TextureList->selectedItems().size()<1) return;
-
     int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
     model->getTextures().remove(pos_to_suppress);
     ui->TextureList->clear();
@@ -136,15 +140,27 @@ void DialogModel::buttonMoins(){
     foreach (Texture* m, items) {
        ui->TextureList->addItem("Texture " + QString::number(i++));
     }
+    if(model->getTextures().size()<1) {
+        ui->cbTextureType->setEnabled(false);
+        ui->stackedWidget->setEnabled(false);
+        ui->gbText->setEnabled(false);
+        ui->pbSaveZone->setEnabled(false);
+        ui->gbModele->setEnabled(true);
+        ui->buttonBox->setEnabled(true);
+        return;
+    } else {
+        ui->TextureList->setCurrentRow(model->getTextures().size()-1);
+    }
 }
 
+//On click texture
 void DialogModel::itemActivated(QListWidgetItem* i){
 
-    ui->comboBox->setEnabled(true);
+    ui->cbTextureType->setEnabled(true);
     ui->stackedWidget->setEnabled(true);
-    ui->pushButton_7->setEnabled(true);
+    ui->pbSaveZone->setEnabled(true);
     ui->widgetSelect->getLabel()->setVisible(true);
-
+    ui->gbModele->setEnabled(false);
 
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
     if (model->getTextures().value(pos)->getType() == Texture::TEXT){
@@ -154,15 +170,16 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         qDebug() << "Texte texture = " << textTexture << endl;
         ui->teText->setText(textTexture);
         ui->stackedWidget->setCurrentIndex(0);
-        ui->comboBox->setCurrentIndex(0);
+        ui->cbTextureType->setCurrentIndex(0);
     } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
         ui->stackedWidget->setCurrentIndex(1);
-        ui->comboBox->setCurrentIndex(1);
+        ui->cbTextureType->setCurrentIndex(1);
     }
 
 }
 
 void DialogModel::buttonPlus1(){
+    ui->pbRemoveZone->setEnabled(true);
     QString name = "Nouveau";
     Model *m = new Model(name,canva->getItems().size());
     canva->addModel(m);
@@ -187,19 +204,32 @@ void DialogModel::buttonMoins1(){
        QVector<Model*> items = canva->getItems();
        foreach (Model* m, items) {
           ui->ModelList->addItem("Zone " + QString::number(i++));
-
        }
-}
 
+       if(items.size()<1) {
+           ui->cbTextureType->setEnabled(false);
+           ui->stackedWidget->setEnabled(false);
+           ui->gbText->setEnabled(false);
+           ui->pbSaveZone->setEnabled(false);
+           ui->gbModele->setEnabled(true);
+           ui->buttonBox->setEnabled(true);
+           ui->pbRemoveZone->setEnabled(false);
+           return;
+       } else {
+           ui->TextureList->setCurrentRow(items.size()-1);
+       }
+
+}
+//On click model
 void DialogModel::itemActivated1(QListWidgetItem* i){
 
-    ui->comboBox->setEnabled(false);
+    ui->cbTextureType->setEnabled(false);
     ui->stackedWidget->setEnabled(false);
-    ui->pushButton_7->setEnabled(false);
-    ui->TextureList->setEnabled(true);
-    ui->pushButton_3->setEnabled(true);
-    ui->pushButton_4->setEnabled(true);
-    ui->buttonBox->setEnabled(false);
+    ui->pbSaveZone->setEnabled(false);
+
+
+    ui->gbText->setEnabled(true);
+
 
 
 
@@ -246,6 +276,7 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
         brcX += (ui->lbpixmap->x()) ;
         brcY += (ui->lbpixmap->y() + ui->lbpixmap->height());
         ui->widgetSelect->getRubberBand()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
+        ui->widgetSelect->getLabel()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
         ui->widgetSelect->getRubberBand()->show();
         ui->buttonBox->setEnabled(true);
     }else{
@@ -329,13 +360,15 @@ void DialogModel::modelEnregistrement(){
         //TextureIMG *timg = new TextureIMG(canva->getPix());
         //model->addTexture(timg);
 
-        ui->comboBox->setEnabled(false);
+        ui->cbTextureType->setEnabled(false);
         ui->stackedWidget->setEnabled(false);
-        ui->pushButton_7->setEnabled(false);
-        ui->ModelList->setEnabled(true);
+        ui->gbText->setEnabled(false);
+        ui->pbSaveZone->setEnabled(false);
+        ui->gbModele->setEnabled(true);
         ui->buttonBox->setEnabled(true);
 
     } else {
         qDebug() << "Selection Nulle" << endl;
     }
+
 }

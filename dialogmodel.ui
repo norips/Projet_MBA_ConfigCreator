@@ -66,7 +66,7 @@
          <rect>
           <x>10</x>
           <y>30</y>
-          <width>131</width>
+          <width>140</width>
           <height>141</height>
          </rect>
         </property>
@@ -99,7 +99,7 @@
          <item>
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="QPushButton" name="pushButton_6">
+            <widget class="QPushButton" name="pbAddZone">
              <property name="minimumSize">
               <size>
                <width>30</width>
@@ -118,7 +118,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_5">
+            <widget class="QPushButton" name="pbRemoveZone">
              <property name="minimumSize">
               <size>
                <width>30</width>
@@ -144,6 +144,9 @@
      </item>
      <item>
       <widget class="QGroupBox" name="gbText">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>150</width>
@@ -166,7 +169,7 @@
          <item>
           <widget class="QListWidget" name="TextureList">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="maximumSize">
             <size>
@@ -182,9 +185,9 @@
             <enum>QLayout::SetDefaultConstraint</enum>
            </property>
            <item>
-            <widget class="QPushButton" name="pushButton_3">
+            <widget class="QPushButton" name="pbAddPage">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="minimumSize">
               <size>
@@ -204,9 +207,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_4">
+            <widget class="QPushButton" name="pbRemovePage">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="minimumSize">
               <size>
@@ -252,7 +255,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QComboBox" name="comboBox">
+          <widget class="QComboBox" name="cbTextureType">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -277,7 +280,23 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_7">
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Minimum</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbSaveZone">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -294,7 +313,7 @@
           <bool>false</bool>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="page">
           <widget class="QTextEdit" name="teText">
@@ -309,7 +328,7 @@
           </widget>
          </widget>
          <widget class="QWidget" name="page_2">
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="pbPathIMG">
            <property name="geometry">
             <rect>
              <x>250</x>
@@ -322,7 +341,7 @@
             <string>Chercher Image</string>
            </property>
           </widget>
-          <widget class="QLineEdit" name="lineEdit">
+          <widget class="QLineEdit" name="lePathIMG">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -337,7 +356,7 @@
           </widget>
          </widget>
          <widget class="QWidget" name="page_3">
-          <widget class="QPushButton" name="pushButton_2">
+          <widget class="QPushButton" name="pbPathMOV">
            <property name="geometry">
             <rect>
              <x>250</x>
@@ -350,7 +369,7 @@
             <string>Chercher Vidéo</string>
            </property>
           </widget>
-          <widget class="QLineEdit" name="lineEdit_2">
+          <widget class="QLineEdit" name="lePathMOV">
            <property name="enabled">
             <bool>false</bool>
            </property>
