@@ -93,7 +93,9 @@ void DialogModel::openFile()
         reader->setFileName(fileName);
         QImage image =reader->read();
         QPixmap map=QPixmap::fromImage(image);
-        Texture* tImage = new TextureIMG(map);
+        TextureIMG* tImage = new TextureIMG(map);
+        tImage->setLocalPath(fileName);
+
         model->getTextures().insert(pos_to_suppress,tImage);
         ui->lePathIMG->insert(fileName);
         model->setModified(true);
@@ -101,8 +103,6 @@ void DialogModel::openFile()
         //Load pixmap
         ui->widgetSelect->getLabel()->setPixmap(map);
         ui->widgetSelect->getLabel()->setVisible(true);
-        /*QLabel *q = ui->widget->getLabel();
-        q->setPixmap(map.scaled(ui->widget->getRectSelection().size(),Qt::IgnoreAspectRatio));*/
     }
 }
 
@@ -160,7 +160,6 @@ void DialogModel::itemActivated(QListWidgetItem* i){
     ui->stackedWidget->setEnabled(true);
     ui->pbSaveZone->setEnabled(true);
     ui->widgetSelect->getLabel()->setVisible(true);
-    ui->gbModele->setEnabled(false);
 
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
     if (model->getTextures().value(pos)->getType() == Texture::TEXT){
@@ -171,9 +170,25 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         ui->teText->setText(textTexture);
         ui->stackedWidget->setCurrentIndex(0);
         ui->cbTextureType->setCurrentIndex(0);
+
+        ui->widgetSelect->getLabel()->setText(textTexture);
     } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
+        Texture* t = model->getTextures().value(pos);
+        TextureIMG* test = (TextureIMG*) t;
+        QString filename = test->getLocalPath();
+        qDebug() << "FILENAME texture = " << filename << endl;
+        QImageReader *reader = new QImageReader();
+        reader->setFileName(filename);
+        QImage image =reader->read();
+        QPixmap map=QPixmap::fromImage(image);
+        Texture* tImage = new TextureIMG(map);
+
+        ui->lePathIMG->insert(filename);
+
         ui->stackedWidget->setCurrentIndex(1);
         ui->cbTextureType->setCurrentIndex(1);
+        ui->widgetSelect->getLabel()->setPixmap(map);
+        ui->widgetSelect->getLabel()->setVisible(true);
     }
 
 }
@@ -226,8 +241,7 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
     ui->cbTextureType->setEnabled(false);
     ui->stackedWidget->setEnabled(false);
     ui->pbSaveZone->setEnabled(false);
-
-
+     ui->widgetSelect->getLabel()->setVisible(false);
     ui->gbText->setEnabled(true);
 
 
@@ -290,8 +304,8 @@ void DialogModel::changetext(){
     QString text = ui->teText->toPlainText();
     TextureTXT * ttext = new TextureTXT(text);
 
-    /*QLabel *q = ui->widget->getLabel();
-    q->setText(text);*/
+    ui->widgetSelect->getLabel()->setVisible(true);
+    ui->widgetSelect->getLabel()->setText(text);
 
     int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
     model->getTextures().remove(pos_to_suppress);
@@ -362,7 +376,6 @@ void DialogModel::modelEnregistrement(){
 
         ui->cbTextureType->setEnabled(false);
         ui->stackedWidget->setEnabled(false);
-        ui->gbText->setEnabled(false);
         ui->pbSaveZone->setEnabled(false);
         ui->gbModele->setEnabled(true);
         ui->buttonBox->setEnabled(true);
