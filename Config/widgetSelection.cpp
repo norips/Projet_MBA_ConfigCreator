@@ -22,6 +22,8 @@ WidgetSelection::WidgetSelection(QWidget *parent)
     labelWid->setVisible(false);
     labelWid->setScaledContents(true);
     labelWid->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
+    labelWid->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    labelWid->setWordWrap(true);
 }
 
 WidgetSelection::~WidgetSelection()
