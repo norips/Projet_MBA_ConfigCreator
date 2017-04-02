@@ -103,6 +103,7 @@ void DialogModel::openFile()
         //Load pixmap
         ui->widgetSelect->getLabel()->setPixmap(map);
         ui->widgetSelect->getLabel()->setVisible(true);
+        ui->widgetSelect->getTextEdit()->setVisible(false);
     }
 }
 
@@ -158,6 +159,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
     ui->stackedWidget->setEnabled(true);
     ui->pbSaveZone->setEnabled(true);
     ui->widgetSelect->getLabel()->setVisible(true);
+    ui->widgetSelect->getTextEdit()->setVisible(false);
     ui->gbModele->setEnabled(false);
 
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
@@ -170,7 +172,9 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         ui->stackedWidget->setCurrentIndex(0);
         ui->cbTextureType->setCurrentIndex(0);
 
-        ui->widgetSelect->getLabel()->setText(textTexture);
+        ui->widgetSelect->getTextEdit()->setText(textTexture);
+        ui->widgetSelect->getTextEdit()->setVisible(true);
+        ui->widgetSelect->getLabel()->setVisible(false);
     } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
         Texture* t = model->getTextures().value(pos);
         TextureIMG* test = (TextureIMG*) t;
@@ -188,6 +192,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         ui->cbTextureType->setCurrentIndex(1);
         ui->widgetSelect->getLabel()->setPixmap(map);
         ui->widgetSelect->getLabel()->setVisible(true);
+        ui->widgetSelect->getTextEdit()->setVisible(false);
     }
 
 }
@@ -241,6 +246,7 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
     ui->stackedWidget->setEnabled(false);
     ui->pbSaveZone->setEnabled(false);
      ui->widgetSelect->getLabel()->setVisible(false);
+     ui->widgetSelect->getTextEdit()->setVisible(false);
     ui->gbText->setEnabled(true);
 
 
@@ -303,13 +309,43 @@ void DialogModel::changetext(){
     QString text = ui->teText->toPlainText();
     TextureTXT * ttext = new TextureTXT(text);
 
-    ui->widgetSelect->getLabel()->setVisible(true);
-    ui->widgetSelect->getLabel()->setText(text);
+    ui->widgetSelect->getLabel()->setVisible(false);
+    ui->widgetSelect->getTextEdit()->setText(text);
+    ui->widgetSelect->getTextEdit()->setVisible(true);
 
     int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
     model->getTextures().remove(pos_to_suppress);
     model->getTextures().insert(pos_to_suppress,ttext);
     model->setModified(true);
+
+    QFont font = ui->widgetSelect->getTextEdit()->font();
+
+    QRect cRect = ui->widgetSelect->getTextEdit()->contentsRect();
+    QRect lRect = ui->widgetSelect->getLabel()->contentsRect();
+
+    if( ui->widgetSelect->getTextEdit()->toPlainText().isEmpty() )
+            return;
+
+    int flags = Qt::TextWordWrap; //more flags if needed
+
+         int fontSize = 1;
+          qDebug() << "content size:" << cRect.width() << "," << cRect.height() << endl;
+          qDebug() << "label size:" << lRect.width() << "," << lRect.height() << endl;
+          while( true )
+          {
+                      QFont f(font);
+                           f.setPixelSize( fontSize );
+                      QRect r = QFontMetrics(f).boundingRect(cRect,flags, ui->widgetSelect->getTextEdit()->toPlainText() );
+                      if (r.height() <= cRect.height() )
+                            fontSize++;
+                      else
+                            break;
+          }
+
+         font.setPixelSize(fontSize);
+         ui->widgetSelect->getTextEdit()->setFont(font);
+
+
 }
 
 void DialogModel::modelEnregistrement(){

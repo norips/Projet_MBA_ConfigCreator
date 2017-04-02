@@ -24,6 +24,9 @@ WidgetSelection::WidgetSelection(QWidget *parent)
     labelWid->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
     labelWid->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     labelWid->setWordWrap(true);
+
+    teWid = new TextEdit("",this);
+    teWid->setVisible(false);
 }
 
 WidgetSelection::~WidgetSelection()
@@ -57,13 +60,17 @@ void WidgetSelection::mouseMoveEvent(QMouseEvent *e)
     if(move_rubberBand) {
         rubberBand->move(e->pos() - rubberBand_offset);
         labelWid->move(e->pos() - rubberBand_offset);
+        teWid->move(e->pos() - rubberBand_offset);
      } else
         if(selection_start){
             rubberBand->setGeometry(QRect(origin,e->pos()));
             labelWid->setGeometry(QRect(origin,e->pos()));
+            teWid->setGeometry(QRect(origin,e->pos()));
             rubberBand->show();
         }
     labelWid->raise();
+    teWid->raise();
+
 }
 
 void WidgetSelection::mouseReleaseEvent(QMouseEvent *e)
@@ -72,6 +79,7 @@ void WidgetSelection::mouseReleaseEvent(QMouseEvent *e)
     qDebug() << "rectangle :" << rubberBand->geometry() << endl;
 
     labelWid->setGeometry(rubberBand->geometry());
+    teWid->setGeometry(rubberBand->geometry());
     move_rubberBand = false;
     selection_start = false;
     rubberBand->show();
@@ -87,6 +95,10 @@ QRubberBand* WidgetSelection::getRubberBand() {
 
 QLabel* WidgetSelection::getLabel(){
     return labelWid;
+}
+
+TextEdit* WidgetSelection::getTextEdit(){
+    return teWid;
 }
 
 

@@ -6,6 +6,7 @@
 #include <QGroupBox>
 #include <QMenu>
 #include <QRubberBand>
+#include "../textedit.h"
 #include "mainwindow.h"
 
 
@@ -27,11 +28,13 @@ public:
     QRect getRectSelection();
     QRubberBand* getRubberBand();
     QLabel* getLabel();
+    TextEdit* getTextEdit();
 
 
 private:
     QWidget *toto;
     QLabel *labelWid;
+    TextEdit *teWid;
     QRubberBand* rubberBand;
     bool move_rubberBand;
     bool selection_start;

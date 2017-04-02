@@ -51,7 +51,8 @@ HEADERS  += mainwindow.h \
     Config/file.h \
     threadexport.h \
     Config/modified.h \
-    Config/widgetSelection.h
+    Config/widgetSelection.h \
+    textedit.h
 
 FORMS    += mainwindow.ui \
     formtableau.ui \
