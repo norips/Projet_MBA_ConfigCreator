@@ -61,6 +61,15 @@ void MainWindow::on_actionOuvrir_triggered()
         tr("Open Configuration"), QDir::currentPath(), tr("Configuration Files (*.json)"));
     if(fileName!=NULL) {
         ConfigHolder* hold = ConfigHolder::Instance();
+        QMessageBox *msgBox = new QMessageBox(this);
+            msgBox->setText("Please wait while loading configuration's file.");
+            msgBox->setWindowTitle("Loading configuration's file...");
+            msgBox->setWindowModality(Qt::WindowModal);
+            msgBox->setStandardButtons(0);
+            msgBox->setModal(true);
+            msgBox->show();
+            msgBox->raise();
+            QObject::connect(hold,SIGNAL(configImported(int)),msgBox,SLOT(done(int)));
         hold->LoadFromJSONFile(fileName);
         createUIFromConfig(hold);
     }

@@ -47,7 +47,8 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
         QJsonObject features = obj["feature"].toObject();
         QJsonArray featureFiles = features["files"].toArray();
         if(featureFiles.size()<3) {
-            //Error
+            int ERROR_ISET = 1;
+            emit configImported(ERROR_ISET);
         }
         Feature *feature = new Feature(name);
         QEventLoop pause;
@@ -120,7 +121,8 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
         c->setModified(false);
         canvas.append(c);
     }
-
+    int NO_ERROR = 0;
+    emit configImported(NO_ERROR);
 
 }
 void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
