@@ -16,6 +16,7 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
 {
     ui->setupUi(this);
     UNUSED(item);
+    firstload = 1;
     connect(ui->ModelList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated1(QListWidgetItem*)));
     connect(ui->pbAddPage,SIGNAL(pressed()),this,SLOT(buttonPlus()));
     connect(ui->pbRemovePage,SIGNAL(pressed()),this,SLOT(buttonMoins()));
@@ -166,6 +167,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         QString textTexture = test->getData();
         qDebug() << "Texte texture = " << textTexture << endl;
         ui->teText->setText(textTexture);
+        firstload = 1;
         ui->stackedWidget->setCurrentIndex(0);
         ui->cbTextureType->setCurrentIndex(0);
 
@@ -241,7 +243,7 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
     ui->cbTextureType->setEnabled(false);
     ui->stackedWidget->setEnabled(false);
     ui->pbSaveZone->setEnabled(false);
-     ui->widgetSelect->getLabel()->setVisible(false);
+    ui->widgetSelect->getLabel()->setVisible(false);
      ui->widgetSelect->getTextEdit()->setVisible(false);
     ui->gbText->setEnabled(true);
 
@@ -298,9 +300,11 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
     }
 
 }
-
 void DialogModel::changetext(){
-
+    if(firstload){
+        firstload=0;
+        return;
+    }
     QString text = ui->teText->toPlainText();
     TextureTXT * ttext = new TextureTXT(text);
 

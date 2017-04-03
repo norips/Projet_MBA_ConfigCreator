@@ -42,6 +42,7 @@ private:
     QLabel *test;
     double ratioX;
     double ratioY;
+    int firstload;
 };
 
 #endif // DIALOGMODEL_H

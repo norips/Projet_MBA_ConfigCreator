@@ -193,7 +193,9 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                 files.append(file);
             }
         } else {
-            feature["name"] = v->getFeature()->getName();
+            feature["name"] = v->getName().remove(QRegExp("[ \"'_-]|[+]"));
+            QString trimName = v->getName().remove(QRegExp("[ \"'_-]|[+]"));
+            baseFolder = trimName;
             QJsonObject iset;
             iset["name"] = v->getFeature()->getIset().getName();
             iset["path"] = v->getFeature()->getIset().getPath();
@@ -249,9 +251,9 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                         QByteArray strHash;
                         hash.addData(bArray);
                         strHash = hash.result();
-                        QString tmpName = m->name.remove(QRegExp("[ \"'_-]")) + "%1" + ".png";
+                        QString tmpName = m->name.remove(QRegExp("[ \"'_-]|[+]")) + "%1" + ".png";
                         tex["name"] = tmpName.arg(++indexTex);
-                        tex["path"] = QString(cex->upload(baseFolder + "/" + tmpName.arg(indexTex),bArray));
+                        tex["path"] = QString(cex->upload(QString(baseFolder + "/" + tmpName.arg(indexTex)),bArray));
                         tex["MD5"] = QString(strHash.toHex());
                         tex["type"] = "image";
                         textures.append(tex);
