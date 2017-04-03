@@ -175,6 +175,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         ui->widgetSelect->getTextEdit()->setText(textTexture);
         ui->widgetSelect->getTextEdit()->setVisible(true);
         ui->widgetSelect->getLabel()->setVisible(false);
+        ui->gbModele->setEnabled(true);
     } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
         Texture* t = model->getTextures().value(pos);
         TextureIMG* test = (TextureIMG*) t;
@@ -193,6 +194,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         ui->widgetSelect->getLabel()->setPixmap(map);
         ui->widgetSelect->getLabel()->setVisible(true);
         ui->widgetSelect->getTextEdit()->setVisible(false);
+        ui->gbModele->setEnabled(true);
     }
 
 }
