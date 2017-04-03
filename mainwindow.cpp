@@ -71,7 +71,7 @@ void MainWindow::on_actionOuvrir_triggered()
             msgBox->raise();
             QObject::connect(hold,SIGNAL(configImported(int)),msgBox,SLOT(done(int)));
         hold->LoadFromJSONFile(fileName);
-        createUIFromConfig(hold);
+        reDraw();
     }
 }
 

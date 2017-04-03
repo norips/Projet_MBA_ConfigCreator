@@ -15,7 +15,7 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     ui(new Ui::DialogModel)
 {
     ui->setupUi(this);
-
+    UNUSED(item);
     connect(ui->ModelList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated1(QListWidgetItem*)));
     connect(ui->pbAddPage,SIGNAL(pressed()),this,SLOT(buttonPlus()));
     connect(ui->pbRemovePage,SIGNAL(pressed()),this,SLOT(buttonMoins()));
@@ -29,8 +29,6 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     connect(ui->teText,SIGNAL(textChanged()),this,SLOT(changetext()));
 
     canva = c;
-    //Unused
-    free(item);
     QVector<Model*> items = canva->getItems();
     for(int i = 1; i < items.size()+1;i++) {
        ui->ModelList->addItem("Zone " + QString::number(i++));
