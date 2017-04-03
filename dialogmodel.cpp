@@ -30,8 +30,9 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
 
     canva = c;
     QVector<Model*> items = canva->getItems();
+    qDebug() << "Item size " << items.size();
     for(int i = 1; i < items.size()+1;i++) {
-       ui->ModelList->addItem("Zone " + QString::number(i++));
+       ui->ModelList->addItem("Zone " + QString::number(i));
     }
 
     bool landscape = canva->getPix().width() > canva->getPix().height();
@@ -121,7 +122,7 @@ void DialogModel::buttonPlus()
 
     QVector<Texture*> items = model->getTextures();
     for(int i = 1; i < items.size()+1; i++) {
-       ui->TextureList->addItem("Texture " + QString::number(i++));
+       ui->TextureList->addItem("Texture " + QString::number(i));
     }
 }
 
@@ -133,7 +134,7 @@ void DialogModel::buttonMoins(){
     ui->TextureList->clear();
     QVector<Texture*> items = model->getTextures();
     for(int i = 1; i < items.size()+1; i++) {
-       ui->TextureList->addItem("Texture " + QString::number(i++));
+       ui->TextureList->addItem("Texture " + QString::number(i));
     }
     if(model->getTextures().size()<1) {
         ui->cbTextureType->setEnabled(false);
@@ -203,7 +204,7 @@ void DialogModel::buttonPlus1(){
 
     QVector<Model*> items = canva->getItems();
     for(int i = 1; i < items.size()+1; i++) {
-       ui->ModelList->addItem("Zone " + QString::number(i++));
+       ui->ModelList->addItem("Zone " + QString::number(i));
     }
 }
 
@@ -217,7 +218,7 @@ void DialogModel::buttonMoins1(){
 
        QVector<Model*> items = canva->getItems();
        for(int i = 1; i < items.size()+1; i++) {
-          ui->ModelList->addItem("Zone " + QString::number(i++));
+          ui->ModelList->addItem("Zone " + QString::number(i));
        }
 
        if(items.size()<1) {
@@ -253,10 +254,8 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
 
     ui->TextureList->clear();
 
-    int indTex=0;
     for(int i = 1; i < model->getTextures().size()+1; i++){
-        qDebug() << "Texture " + QString::number(indTex);
-        ui->TextureList->addItem("Texture " + QString::number(++indTex));
+        ui->TextureList->addItem("Texture " + QString::number(i));
     }
 
     //Load Rectangle
