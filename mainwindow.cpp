@@ -90,7 +90,6 @@ void MainWindow::on_actionEnregistrer_triggered()
         tr("Save Configuration"), QDir::currentPath(), tr("Configuration Files (*.json)"));
     if(fileName!=NULL) {
         ConfigHolder* hold = ConfigHolder::Instance();
-        DropboxExporter *exp = new DropboxExporter();
         QMessageBox *msgBox = new QMessageBox(this);
             msgBox->setText("Please wait while creating configuration's file.");
             msgBox->setWindowTitle("Creating configuration's file...");

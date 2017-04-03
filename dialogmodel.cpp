@@ -9,7 +9,7 @@
 #include <QFileDialog>
 #include <QImageReader>
 #include <QPainter>
-
+#define UNUSED(x) (void)(x)
 DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     QDialog(parent),
     ui(new Ui::DialogModel)
@@ -29,10 +29,10 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     connect(ui->teText,SIGNAL(textChanged()),this,SLOT(changetext()));
 
     canva = c;
-
-    int i=1;
+    //Unused
+    free(item);
     QVector<Model*> items = canva->getItems();
-    foreach (Model* m, items) {
+    for(int i = 1; i < items.size()+1;i++) {
        ui->ModelList->addItem("Zone " + QString::number(i++));
     }
 
@@ -122,8 +122,7 @@ void DialogModel::buttonPlus()
     ui->TextureList->clear();
 
     QVector<Texture*> items = model->getTextures();
-    int i = 1;
-    foreach (Texture* t, items) {
+    for(int i = 1; i < items.size()+1; i++) {
        ui->TextureList->addItem("Texture " + QString::number(i++));
     }
 }
@@ -135,8 +134,7 @@ void DialogModel::buttonMoins(){
     model->getTextures().remove(pos_to_suppress);
     ui->TextureList->clear();
     QVector<Texture*> items = model->getTextures();
-    int i = 1;
-    foreach (Texture* m, items) {
+    for(int i = 1; i < items.size()+1; i++) {
        ui->TextureList->addItem("Texture " + QString::number(i++));
     }
     if(model->getTextures().size()<1) {
@@ -154,7 +152,7 @@ void DialogModel::buttonMoins(){
 
 //On click texture
 void DialogModel::itemActivated(QListWidgetItem* i){
-
+    UNUSED(i);
     ui->cbTextureType->setEnabled(true);
     ui->stackedWidget->setEnabled(true);
     ui->pbSaveZone->setEnabled(true);
@@ -185,7 +183,6 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         reader->setFileName(filename);
         QImage image =reader->read();
         QPixmap map=QPixmap::fromImage(image);
-        Texture* tImage = new TextureIMG(map);
 
         ui->lePathIMG->insert(filename);
 
@@ -206,9 +203,8 @@ void DialogModel::buttonPlus1(){
     canva->addModel(m);
     ui->ModelList->clear();
 
-    int i = 1;
     QVector<Model*> items = canva->getItems();
-    foreach (Model* m, items) {
+    for(int i = 1; i < items.size()+1; i++) {
        ui->ModelList->addItem("Zone " + QString::number(i++));
     }
 }
@@ -221,9 +217,8 @@ void DialogModel::buttonMoins1(){
        canva->getItems().remove(pos_to_suppress);
        ui->ModelList->clear();
 
-       int i = 1;
        QVector<Model*> items = canva->getItems();
-       foreach (Model* m, items) {
+       for(int i = 1; i < items.size()+1; i++) {
           ui->ModelList->addItem("Zone " + QString::number(i++));
        }
 
@@ -243,7 +238,7 @@ void DialogModel::buttonMoins1(){
 }
 //On click model
 void DialogModel::itemActivated1(QListWidgetItem* i){
-
+    UNUSED(i);
     ui->cbTextureType->setEnabled(false);
     ui->stackedWidget->setEnabled(false);
     ui->pbSaveZone->setEnabled(false);
@@ -261,7 +256,7 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
     ui->TextureList->clear();
 
     int indTex=0;
-    foreach(Texture *ti, model->getTextures()){
+    for(int i = 1; i < model->getTextures().size()+1; i++){
         qDebug() << "Texture " + QString::number(indTex);
         ui->TextureList->addItem("Texture " + QString::number(++indTex));
     }
