@@ -37,11 +37,12 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
     QJsonObject rootO = doc.object();
     QJsonArray rootA = rootO["canvas"].toArray();
     FileDownloader *fileD = NULL;
-    QString base = "../img/";
+    QString baseB = "../tmp/";
     foreach(const QJsonValue &v, rootA){
         QJsonObject obj = v.toObject();
         qDebug() << obj["name"] << endl;
         QString name = obj["name"].toString();
+        QString base = baseB + name;
         Canva *c = new Canva(QPixmap(),name,base + name);
 
         QJsonObject features = obj["feature"].toObject();
@@ -104,6 +105,7 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
                    QPixmap pix = QPixmap::fromImage(img);
                    QString md5 = tobj["name"].toString();
                    TextureIMG *tmp = new TextureIMG(pix,url,md5);
+                   tmp->setLocalPath(base + name);
                    tmp->setModified(false);
                    m->addTexture(tmp);
                    qDebug() << "Texture added" << endl;

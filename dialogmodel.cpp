@@ -185,7 +185,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         QImage image =reader->read();
         QPixmap map=QPixmap::fromImage(image);
 
-        ui->lePathIMG->insert(filename);
+        ui->lePathIMG->setText(filename);
 
         ui->stackedWidget->setCurrentIndex(1);
         ui->cbTextureType->setCurrentIndex(1);
@@ -301,21 +301,22 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
 
 }
 void DialogModel::changetext(){
+    QString text = ui->teText->toPlainText();
+
     if(firstload){
         firstload=0;
-        return;
+    } else {
+        TextureTXT * ttext = new TextureTXT(text);
+        int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+        model->getTextures().remove(pos_to_suppress);
+        model->getTextures().insert(pos_to_suppress,ttext);
+        model->setModified(true);
     }
-    QString text = ui->teText->toPlainText();
-    TextureTXT * ttext = new TextureTXT(text);
+
 
     ui->widgetSelect->getLabel()->setVisible(false);
     ui->widgetSelect->getTextEdit()->setText(text);
     ui->widgetSelect->getTextEdit()->setVisible(true);
-
-    int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
-    model->getTextures().remove(pos_to_suppress);
-    model->getTextures().insert(pos_to_suppress,ttext);
-    model->setModified(true);
 
     QFont font = ui->widgetSelect->getTextEdit()->font();
 
