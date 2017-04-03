@@ -160,7 +160,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
     ui->pbSaveZone->setEnabled(true);
     ui->widgetSelect->getLabel()->setVisible(true);
     ui->widgetSelect->getTextEdit()->setVisible(false);
-    ui->gbModele->setEnabled(false);
+    //ui->gbModele->setEnabled(false);
 
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
     if (model->getTextures().value(pos)->getType() == Texture::TEXT){
@@ -296,6 +296,7 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
         brcY += (ui->lbpixmap->y() + ui->lbpixmap->height());
         ui->widgetSelect->getRubberBand()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
         ui->widgetSelect->getLabel()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
+        ui->widgetSelect->getTextEdit()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
         ui->widgetSelect->getRubberBand()->show();
         ui->buttonBox->setEnabled(true);
     }else{
