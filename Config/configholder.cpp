@@ -103,7 +103,7 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
                    QImage img;
                    img.loadFromData(fileD->downloadedData());
                    QPixmap pix = QPixmap::fromImage(img);
-                   QString md5 = tobj["name"].toString();
+                   QString md5 = tobj["MD5"].toString();
                    TextureIMG *tmp = new TextureIMG(pix,url,md5);
                    tmp->setLocalPath(base + name);
                    tmp->setModified(false);
