@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     Config/file.cpp \
     threadexport.cpp \
     Config/modified.cpp \
-    Config/widgetSelection.cpp
+    Config/widgetSelection.cpp \
+    preview.cpp
 
 HEADERS  += mainwindow.h \
     formtableau.h \
@@ -52,8 +53,10 @@ HEADERS  += mainwindow.h \
     threadexport.h \
     Config/modified.h \
     Config/widgetSelection.h \
-    textedit.h
+    textedit.h \
+    preview.h
 
 FORMS    += mainwindow.ui \
     formtableau.ui \
-    dialogmodel.ui
+    dialogmodel.ui \
+    preview.ui

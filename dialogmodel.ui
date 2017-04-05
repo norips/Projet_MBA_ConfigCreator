@@ -406,6 +406,9 @@
    <property name="mouseTracking">
     <bool>true</bool>
    </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
    <widget class="QLabel" name="lbpixmap">
     <property name="geometry">
      <rect>
@@ -429,6 +432,9 @@
     </property>
     <property name="mouseTracking">
      <bool>true</bool>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
     </property>
     <property name="lineWidth">
      <number>0</number>
