@@ -136,6 +136,14 @@ static QString setZ(QString pos,int z) {
     return tmp;
 }
 
+static QRect convertToQRect(QString tlc,QString brc) {
+    QStringList posTLC = tlc.split(",");
+    QStringList posBRC = brc.split(",");
+    QPoint pTLC(posTLC.at(0).toDouble(),posTLC.at(0).toDouble());
+    QPoint pBRC(posBRC.at(0).toDouble(),posBRC.at(0).toDouble());
+    return QRect(pTLC,pBRC);
+}
+
 void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
     QFile file(filepath);
     file.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -231,11 +239,21 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
         feature["files"] = files;
         canva["feature"] = feature;
         QJsonArray models;
-        int zModel = 0; //First model will be on 0 axis and next on n*2 axis
+        QVector<QRect> listRect;
         foreach(Model *m, v->getItems()){
             QJsonObject model;
-            QString tmp;
+
+            int zModel = 0; //First model will be on 0 axis and next on n*2 axis
             model["name"] = m->name;
+
+            QRect currentRect = convertToQRect(m->tlc,m->brc);
+            foreach(QRect r, listRect) {
+                if(r.intersects(currentRect)) {
+                    zModel+=2;
+                }
+            }
+            listRect.append(currentRect);
+
             model["tlc"] = setZ(m->tlc,zModel);
             model["trc"] = setZ(m->trc,zModel);
             model["blc"] = setZ(m->blc,zModel);
