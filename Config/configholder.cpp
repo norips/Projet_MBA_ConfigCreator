@@ -127,6 +127,15 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
     emit configImported(NO_ERROR);
 
 }
+static QString setZ(QString pos,int z) {
+    QString tmp;
+    tmp = pos;
+    int cut = tmp.lastIndexOf(",");
+    tmp = tmp.left(cut+1);
+    tmp.append(QString::number(z));
+    return tmp;
+}
+
 void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
     QFile file(filepath);
     file.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -222,13 +231,16 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
         feature["files"] = files;
         canva["feature"] = feature;
         QJsonArray models;
+        int zModel = 0; //First model will be on 0 axis and next on n*2 axis
         foreach(Model *m, v->getItems()){
             QJsonObject model;
+            QString tmp;
             model["name"] = m->name;
-            model["tlc"] = m->tlc;
-            model["trc"] = m->trc;
-            model["blc"] = m->blc;
-            model["brc"] = m->brc;
+            model["tlc"] = setZ(m->tlc,zModel);
+            model["trc"] = setZ(m->trc,zModel);
+            model["blc"] = setZ(m->blc,zModel);
+            model["brc"] = setZ(m->brc,zModel);
+            zModel+=2;
             QJsonArray textures;
             int indexTex = 0;
             foreach(Texture *t, m->getTextures()){
