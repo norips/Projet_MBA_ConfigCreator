@@ -17,11 +17,11 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     ui->setupUi(this);
     UNUSED(item);
     firstload = 1;
-    connect(ui->ModelList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated1(QListWidgetItem*)));
+    connect(ui->ModelList,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(itemActivated1(QListWidgetItem*)));
     connect(ui->pbAddPage,SIGNAL(pressed()),this,SLOT(buttonPlus()));
     connect(ui->pbRemovePage,SIGNAL(pressed()),this,SLOT(buttonMoins()));
     connect(ui->pbSaveZone,SIGNAL(pressed()),this,SLOT(modelEnregistrement()));
-    connect(ui->TextureList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated(QListWidgetItem*)));
+    connect(ui->TextureList,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(itemActivated(QListWidgetItem*)));
     connect(ui->pbAddZone,SIGNAL(pressed()),this,SLOT(buttonPlus1()));
     connect(ui->pbRemoveZone,SIGNAL(pressed()),this,SLOT(buttonMoins1()));
     connect(ui->cbTextureType, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
@@ -229,6 +229,7 @@ void DialogModel::buttonMoins1(){
        }
 
 }
+
 //On click model
 void DialogModel::itemActivated1(QListWidgetItem* i){
     UNUSED(i);
@@ -408,5 +409,25 @@ void DialogModel::modelEnregistrement(){
         qDebug() << "Selection Nulle" << endl;
 
     }
+}
+
+void DialogModel::on_pbUpModel_clicked()
+{
+    int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
+    model = canva->getItems().value(pos);
+}
+
+void DialogModel::on_pbDownModel_clicked()
+{
+
+}
+
+void DialogModel::on_pbUpTexture_clicked()
+{
+
+}
+
+void DialogModel::on_pbDownTexture_clicked()
+{
 
 }
