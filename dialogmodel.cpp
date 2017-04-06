@@ -17,11 +17,11 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     ui->setupUi(this);
     UNUSED(item);
     firstload = 1;
-    connect(ui->ModelList,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(itemActivated1(QListWidgetItem*)));
+    connect(ui->ModelList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated1(QListWidgetItem*)));
     connect(ui->pbAddPage,SIGNAL(pressed()),this,SLOT(buttonPlus()));
     connect(ui->pbRemovePage,SIGNAL(pressed()),this,SLOT(buttonMoins()));
     connect(ui->pbSaveZone,SIGNAL(pressed()),this,SLOT(modelEnregistrement()));
-    connect(ui->TextureList,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(itemActivated(QListWidgetItem*)));
+    connect(ui->TextureList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated(QListWidgetItem*)));
     connect(ui->pbAddZone,SIGNAL(pressed()),this,SLOT(buttonPlus1()));
     connect(ui->pbRemoveZone,SIGNAL(pressed()),this,SLOT(buttonMoins1()));
     connect(ui->cbTextureType, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
@@ -135,7 +135,6 @@ void DialogModel::buttonMoins(){
         ui->gbText->setEnabled(false);
         ui->pbSaveZone->setEnabled(false);
         ui->gbModele->setEnabled(true);
-        ui->buttonBox->setEnabled(true);
         return;
     } else {
         ui->TextureList->setCurrentRow(model->getTextures().size()-1);
@@ -415,6 +414,24 @@ void DialogModel::on_pbUpModel_clicked()
 {
     int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
     model = canva->getItems().value(pos);
+
+    if(ui->ModelList->selectedItems().size()<=1) return;
+       int pos_to_suppress = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
+       canva->getItems().remove(pos_to_suppress);
+       ui->ModelList->clear();
+
+       QVector<Model*> items = canva->getItems();
+       for(int i = 1; i < items.size()+1; i++) {
+          ui->ModelList->addItem("Zone " + QString::number(i));
+       }
+
+       canva->getItems().insert(pos-1);
+       ui->ModelList->clear();
+
+       for(int i = 1; i < items.size()+1; i++) {
+          ui->ModelList->addItem("Zone " + QString::number(i));
+       }
+
 }
 
 void DialogModel::on_pbDownModel_clicked()
