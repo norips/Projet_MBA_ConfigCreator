@@ -22,7 +22,6 @@ public:
 private slots:
     void on_buttonBox_accepted();
     void openFile();
-    void openFile2();
     void buttonPlus();
     void buttonMoins();
     void itemActivated(QListWidgetItem*);

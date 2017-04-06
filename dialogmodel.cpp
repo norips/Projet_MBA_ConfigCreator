@@ -26,7 +26,6 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     connect(ui->pbRemoveZone,SIGNAL(pressed()),this,SLOT(buttonMoins1()));
     connect(ui->cbTextureType, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(ui->pbPathIMG, SIGNAL(released()),this,SLOT(openFile()));
-    connect(ui->pbPathMOV, SIGNAL(released()),this,SLOT(openFile2()));
     connect(ui->teText,SIGNAL(textChanged()),this,SLOT(changetext()));
 
     canva = c;
@@ -105,13 +104,6 @@ void DialogModel::openFile()
         ui->widgetSelect->getLabel()->setVisible(true);
         ui->widgetSelect->getTextEdit()->setVisible(false);
     }
-}
-
-void DialogModel::openFile2()
-{
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une vidéo"),"/",tr("Image Files (*.mp4 )"));
-    ui->lePathMOV->insert(fileName);
-
 }
 
 void DialogModel::buttonPlus()
