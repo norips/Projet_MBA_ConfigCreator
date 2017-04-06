@@ -415,7 +415,7 @@ void DialogModel::on_pbUpModel_clicked()
     int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
     model = canva->getItems().value(pos);
 
-    if(ui->ModelList->selectedItems().size()<=1) return;
+    /*if(ui->ModelList->selectedItems().size()<=1) return;
        int pos_to_suppress = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
        canva->getItems().remove(pos_to_suppress);
        ui->ModelList->clear();
@@ -430,7 +430,7 @@ void DialogModel::on_pbUpModel_clicked()
 
        for(int i = 1; i < items.size()+1; i++) {
           ui->ModelList->addItem("Zone " + QString::number(i));
-       }
+       }*/
 
 }
 
