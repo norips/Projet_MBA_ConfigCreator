@@ -279,7 +279,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                         TextureTXT *ttxt =  static_cast<TextureTXT *>(t);
                         QJsonObject tex;
                         tex[QString("text")] = ttxt->getData();
-                        tex[QString("type")] = "texte";
+                        tex[QString("type")] = QString("texte");
                         textures.append(tex);
                     }
                     if(t->getType() == Texture::IMG) {
@@ -305,7 +305,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                         tex[QString("name")] = nameTex;
                         tex[QString("path")] = QString(cex->upload(QString(baseFolder + "/" + nameTex),bArray));
                         tex[QString("MD5")] = QString(strHash.toHex());
-                        tex[QString("type")] = "image";
+                        tex[QString("type")] = QString("image");
                         textures.append(tex);
                     }
                 } else {
@@ -313,13 +313,13 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                         TextureTXT *ttxt =  static_cast<TextureTXT *>(t);
                         QJsonObject tex;
                         tex[QString("text")] = ttxt->getData();
-                        tex[QString("type")] = "texte";
+                        tex[QString("type")] = QString("texte");
                         textures.append(tex);
                     }
                     if(t->getType() == Texture::IMG) {
                         TextureIMG *timg =  static_cast<TextureIMG *>(t);
                         QJsonObject tex;
-                        tex[QString("type")] = "image";
+                        tex[QString("type")] = QString("image");
                         QFileInfo fileName(timg->getLocalPath());
                         tex[QString("name")] = fileName.fileName();
                         tex[QString("path")] = timg->getUrl();
