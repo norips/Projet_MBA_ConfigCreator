@@ -108,6 +108,7 @@ void DialogModel::openFile()
 
 void DialogModel::buttonPlus()
 {
+    ui->gbModele->setEnabled(false);
     Texture *t = new TextureTXT("");
     model->addTexture(t);
 
@@ -117,7 +118,17 @@ void DialogModel::buttonPlus()
     for(int i = 1; i < items.size()+1; i++) {
        ui->TextureList->addItem("Texture " + QString::number(i));
     }
+    qDebug() << "SIZE ITEM" << items.size();
+
+    if(items.size() == 1){
+        ui->pbDownTexture->setEnabled(false);
+        ui->pbUpTexture->setEnabled(false);
+    }else{
+        ui->pbDownTexture->setEnabled(true);
+        ui->pbUpTexture->setEnabled(true);
+    }
 }
+
 
 void DialogModel::buttonMoins(){
 
@@ -139,6 +150,11 @@ void DialogModel::buttonMoins(){
     } else {
         ui->TextureList->setCurrentRow(model->getTextures().size()-1);
     }
+
+    if(items.size() == 1){
+        ui->pbDownModel->setEnabled(false);
+        ui->pbUpModel->setEnabled(false);
+    }
 }
 
 //On click texture
@@ -149,7 +165,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
     ui->pbSaveZone->setEnabled(true);
     ui->widgetSelect->getLabel()->setVisible(true);
     ui->widgetSelect->getTextEdit()->setVisible(false);
-    //ui->gbModele->setEnabled(false);
+
 
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
     if (model->getTextures().value(pos)->getType() == Texture::TEXT){
@@ -165,7 +181,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         ui->widgetSelect->getTextEdit()->setText(textTexture);
         ui->widgetSelect->getTextEdit()->setVisible(true);
         ui->widgetSelect->getLabel()->setVisible(false);
-        ui->gbModele->setEnabled(true);
+        //ui->gbModele->setEnabled(true);
     } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
         Texture* t = model->getTextures().value(pos);
         TextureIMG* test = (TextureIMG*) t;
@@ -199,6 +215,16 @@ void DialogModel::buttonPlus1(){
     for(int i = 1; i < items.size()+1; i++) {
        ui->ModelList->addItem("Zone " + QString::number(i));
     }
+
+    if(items.size() == 1){
+        ui->pbDownModel->setEnabled(false);
+        ui->pbUpModel->setEnabled(false);
+    }else{
+        ui->pbDownModel->setEnabled(true);
+        ui->pbUpModel->setEnabled(true);
+    }
+    ui->pbAddZone->setEnabled(false);
+
 }
 
 void DialogModel::buttonMoins1(){
@@ -214,7 +240,7 @@ void DialogModel::buttonMoins1(){
           ui->ModelList->addItem("Zone " + QString::number(i));
        }
 
-       if(items.size()<1) {
+       if(items.size()<=1) {
            ui->cbTextureType->setEnabled(false);
            ui->stackedWidget->setEnabled(false);
            ui->gbText->setEnabled(false);
@@ -292,6 +318,7 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
     }
 
 }
+
 void DialogModel::changetext(){
     QString text = ui->teText->toPlainText();
 
@@ -344,14 +371,7 @@ void DialogModel::modelEnregistrement(){
 
     WidgetSelection *widget = ui->widgetSelect;
     QRect rect = widget->getRectSelection();
-
-    qDebug() << "rectangle" << rect.height() << endl;
-    qDebug() << "rectangle" << rect.width() << endl;
-    qDebug() << "rectangle" << rect.isEmpty() << endl;
     QString text ;
-
-
-
     if(rect.height() !=30 && rect.width() != 100){
         qDebug() << "Valid" << endl;
         int x =0, y=0, width, height;
@@ -403,6 +423,7 @@ void DialogModel::modelEnregistrement(){
 
         ui->gbModele->setEnabled(true);
         ui->buttonBox->setEnabled(true);
+        ui->pbAddZone->setEnabled(true);
 
     } else {
         qDebug() << "Selection Nulle" << endl;
