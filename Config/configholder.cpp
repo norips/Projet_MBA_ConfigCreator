@@ -266,14 +266,14 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                     qDebug() << "Modified texture" << endl;
                     t->setModified(false);
                     if(t->getType() == Texture::TEXT) {
-                        TextureTXT *ttxt =  dynamic_cast<TextureTXT *>(t);
+                        TextureTXT *ttxt =  static_cast<TextureTXT *>(t);
                         QJsonObject tex;
                         tex["text"] = ttxt->getData();
                         tex["type"] = "texte";
                         textures.append(tex);
                     }
                     if(t->getType() == Texture::IMG) {
-                        TextureIMG *timg =  dynamic_cast<TextureIMG *>(t);
+                        TextureIMG *timg =  static_cast<TextureIMG *>(t);
                         QJsonObject tex;
                         QByteArray bArray;
                         QBuffer buffer(&bArray);
@@ -292,14 +292,14 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                     }
                 } else {
                     if(t->getType() == Texture::TEXT) {
-                        TextureTXT *ttxt =  dynamic_cast<TextureTXT *>(t);
+                        TextureTXT *ttxt =  static_cast<TextureTXT *>(t);
                         QJsonObject tex;
                         tex["text"] = ttxt->getData();
                         tex["type"] = "texte";
                         textures.append(tex);
                     }
                     if(t->getType() == Texture::IMG) {
-                        TextureIMG *timg =  dynamic_cast<TextureIMG *>(t);
+                        TextureIMG *timg =  static_cast<TextureIMG *>(t);
                         QJsonObject tex;
                         tex["type"] = "image";
                         QString tmpName = m->name.remove(QRegExp("[ \"'_-]")) + "%1" + ".png";
