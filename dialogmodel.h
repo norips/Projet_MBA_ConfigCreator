@@ -30,7 +30,10 @@ private slots:
     void itemActivated1(QListWidgetItem*);
     void changetext();
     void modelEnregistrement();
-
+    void on_pbUpModel_clicked();
+    void on_pbDownModel_clicked();
+    void on_pbUpTexture_clicked();
+    void on_pbDownTexture_clicked();
 
 private:
     Ui::DialogModel *ui;
