@@ -65,8 +65,10 @@ void Preview::create_pixmap(Model *model, int position)
     if (position >=0){
         pos = position % model->getTextures().size();
     }else{
-        //TODO
-        //JE SAIS PAS COMMENT FAIRE
+        while(position<0){
+            position = position + model->getTextures().size();
+            pos = position;
+        }
     }
     TextEdit * text = new TextEdit("",this);
 
@@ -163,7 +165,6 @@ void Preview::plus_texture()
 {
     QVector<Model*> items = canva->getItems();
     i=i+1;
-    printf("PLUS i=%d",i);
     for(int j = 0; j < items.size();j++) {
        create_pixmap(canva->getItems().value(j), i);
     }
@@ -174,7 +175,6 @@ void Preview::moins_texture()
 {
     QVector<Model*> items = canva->getItems();
     i=i-1;
-    printf("MOINS i=%d",i);
     for(int j = 0; j < items.size();j++) {
        create_pixmap(canva->getItems().value(j), i);
     }
