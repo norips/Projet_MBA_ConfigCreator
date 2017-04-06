@@ -116,7 +116,7 @@ void DialogModel::buttonPlus()
 
     QVector<Texture*> items = model->getTextures();
     for(int i = 1; i < items.size()+1; i++) {
-       ui->TextureList->addItem("Texture " + QString::number(i));
+       ui->TextureList->addItem("Page " + QString::number(i));
     }
     qDebug() << "SIZE ITEM" << items.size();
 
@@ -138,7 +138,7 @@ void DialogModel::buttonMoins(){
     ui->TextureList->clear();
     QVector<Texture*> items = model->getTextures();
     for(int i = 1; i < items.size()+1; i++) {
-       ui->TextureList->addItem("Texture " + QString::number(i));
+       ui->TextureList->addItem("Page " + QString::number(i));
     }
     if(model->getTextures().size()<1) {
         ui->cbTextureType->setEnabled(false);
@@ -276,7 +276,7 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
     ui->TextureList->clear();
 
     for(int i = 1; i < model->getTextures().size()+1; i++){
-        ui->TextureList->addItem("Texture " + QString::number(i));
+        ui->TextureList->addItem("Page " + QString::number(i));
     }
 
     //Load Rectangle
@@ -491,7 +491,7 @@ void DialogModel::on_pbUpTexture_clicked()
 
     QVector<Texture*> items = model->getTextures();
     for(int i = 1; i < items.size()+1; i++) {
-       ui->TextureList->addItem("Texture " + QString::number(i));
+       ui->TextureList->addItem("Page " + QString::number(i));
     }
 
 }
@@ -514,6 +514,6 @@ void DialogModel::on_pbDownTexture_clicked()
 
     QVector<Texture*> items = model->getTextures();
     for(int i = 1; i < items.size()+1; i++) {
-       ui->TextureList->addItem("Texture " + QString::number(i));
+       ui->TextureList->addItem("Page " + QString::number(i));
     }
 }
