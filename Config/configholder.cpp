@@ -290,7 +290,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                         QByteArray bArray;
                         QBuffer buffer(&bArray);
                         buffer.open(QIODevice::WriteOnly);
-                        if(fileExt.compare("jpg",Qt::CaseInsensitive) == 0 | fileExt.compare("jpeg",Qt::CaseInsensitive) == 0) {
+                        if(fileExt.compare("jpg",Qt::CaseInsensitive) == 0 || fileExt.compare("jpeg",Qt::CaseInsensitive) == 0) {
                             timg->getData().save(&buffer, "JPG");
                         } else if (fileExt.compare("png",Qt::CaseInsensitive) == 0) {
                             timg->getData().save(&buffer, "PNG");
