@@ -7,15 +7,20 @@
 #include <textedit.h>
 #include <QImageReader>
 #include <QFont>
+#include <QAbstractButton>
+#include <QPushButton>
 
 Preview::Preview(QWidget *parent, Canva *c) :
     QDialog(parent),
     ui(new Ui::Preview)
 {
     ui->setupUi(this);
+    connect(ui->page_plus, SIGNAL(pressed()), this, SLOT(plus_texture()));
+    connect(ui->page_moins, SIGNAL(pressed()), this, SLOT(moins_texture()));
 
     canva = c;
     i=0;
+    first = true;
 
     bool landscape = canva->getPix().width() > canva->getPix().height();
     float displayedHeight;
@@ -54,8 +59,15 @@ Preview::~Preview()
     delete ui;
 }
 
-void Preview::create_pixmap(Model *model, int pos)
+void Preview::create_pixmap(Model *model, int position)
 {
+    int pos =0;
+    if (position >=0){
+        pos = position % model->getTextures().size();
+    }else{
+        //TODO
+        //JE SAIS PAS COMMENT FAIRE
+    }
     TextEdit * text = new TextEdit("",this);
 
     QLabel * label = new QLabel(this);
@@ -93,6 +105,7 @@ void Preview::create_pixmap(Model *model, int pos)
     }
 
     if (model->getTextures().value(pos)->getType() == Texture::TEXT){
+        text->raise();
         Texture* t = model->getTextures().value(pos);
         TextureTXT* test = (TextureTXT*) t;
         QString textTexture = test->getData();
@@ -130,6 +143,7 @@ void Preview::create_pixmap(Model *model, int pos)
         text->setVisible(true);
 
     } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
+        label->raise();
         Texture* t = model->getTextures().value(pos);
         TextureIMG* test = (TextureIMG*) t;
         QString filename = test->getLocalPath();
@@ -143,4 +157,26 @@ void Preview::create_pixmap(Model *model, int pos)
         label->setVisible(true);
         text->setVisible(false);
     }
+}
+
+void Preview::plus_texture()
+{
+    QVector<Model*> items = canva->getItems();
+    i=i+1;
+    printf("PLUS i=%d",i);
+    for(int j = 0; j < items.size();j++) {
+       create_pixmap(canva->getItems().value(j), i);
+    }
+
+}
+
+void Preview::moins_texture()
+{
+    QVector<Model*> items = canva->getItems();
+    i=i-1;
+    printf("MOINS i=%d",i);
+    for(int j = 0; j < items.size();j++) {
+       create_pixmap(canva->getItems().value(j), i);
+    }
+
 }

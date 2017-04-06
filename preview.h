@@ -20,12 +20,15 @@ public:
 
 private slots:
     void create_pixmap(Model * m, int pos);
+    void plus_texture();
+    void moins_texture();
 
 private:
     Ui::Preview *ui;
     Canva *canva;
     Texture *t;
 
+    bool first;
     double ratioX;
     double ratioY;
     int i;
