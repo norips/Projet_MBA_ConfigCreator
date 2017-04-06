@@ -224,6 +224,7 @@ void DialogModel::buttonPlus1(){
         ui->pbUpModel->setEnabled(true);
     }
     ui->pbAddZone->setEnabled(false);
+    ui->buttonBox->setEnabled(false);
 
 }
 
@@ -436,36 +437,83 @@ void DialogModel::on_pbUpModel_clicked()
     int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
     model = canva->getItems().value(pos);
 
-    /*if(ui->ModelList->selectedItems().size()<=1) return;
-       int pos_to_suppress = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
-       canva->getItems().remove(pos_to_suppress);
-       ui->ModelList->clear();
+    if(ui->ModelList->selectedItems().size()<1)
+        return;
+    if(pos == 0)
+        return;
 
-       QVector<Model*> items = canva->getItems();
-       for(int i = 1; i < items.size()+1; i++) {
-          ui->ModelList->addItem("Zone " + QString::number(i));
-       }
+    canva->getItems().remove(pos);
+    canva->getItems().insert(pos-1,model);
+    ui->ModelList->clear();
 
-       canva->getItems().insert(pos-1);
-       ui->ModelList->clear();
-
-       for(int i = 1; i < items.size()+1; i++) {
-          ui->ModelList->addItem("Zone " + QString::number(i));
-       }*/
-
+    QVector<Model*> items = canva->getItems();
+    for(int i = 1; i < items.size()+1; i++) {
+        ui->ModelList->addItem("Zone " + QString::number(i));
+    }
 }
 
 void DialogModel::on_pbDownModel_clicked()
 {
+    int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
+    model = canva->getItems().value(pos);
 
+    if(ui->ModelList->selectedItems().size()<1)
+        return;
+    if(pos == canva->getItems().size()-1)
+        return;
+
+    canva->getItems().remove(pos);
+    canva->getItems().insert(pos+1,model);
+    ui->ModelList->clear();
+
+    QVector<Model*> items = canva->getItems();
+    for(int i = 1; i < items.size()+1; i++) {
+        ui->ModelList->addItem("Zone " + QString::number(i));
+    }
 }
+
 
 void DialogModel::on_pbUpTexture_clicked()
 {
+    int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+    t= model->getTextures().value(pos);
+
+    if(ui->TextureList->selectedItems().size()<1)
+        return;
+
+    if(pos == 0)
+        return;
+
+    model->getTextures().remove(pos);
+    model->getTextures().insert(pos-1,t);
+
+    ui->TextureList->clear();
+
+    QVector<Texture*> items = model->getTextures();
+    for(int i = 1; i < items.size()+1; i++) {
+       ui->TextureList->addItem("Texture " + QString::number(i));
+    }
 
 }
 
 void DialogModel::on_pbDownTexture_clicked()
 {
+    int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+    t= model->getTextures().value(pos);
 
+    if(ui->TextureList->selectedItems().size()<1)
+        return;
+
+    if(pos == model->getTextures().size()-1)
+        return;
+
+    model->getTextures().remove(pos);
+    model->getTextures().insert(pos+1,t);
+
+    ui->TextureList->clear();
+
+    QVector<Texture*> items = model->getTextures();
+    for(int i = 1; i < items.size()+1; i++) {
+       ui->TextureList->addItem("Texture " + QString::number(i));
+    }
 }
