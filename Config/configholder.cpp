@@ -96,7 +96,7 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
                if(tobj["type"].toString().compare("image") == 0) {
                    QString url = tobj["path"].toString();
                    name = tobj["name"].toString();
-                   fileD = new FileDownloader(QUrl(url),base + name);
+                   fileD = new FileDownloader(QUrl(url),base + "/" + name);
                    qDebug() << "URL : " << url << endl;
                    QObject::connect(fileD, SIGNAL (downloaded()), &pause, SLOT (quit()));
                    pause.exec();
@@ -105,7 +105,7 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
                    QPixmap pix = QPixmap::fromImage(img);
                    QString md5 = tobj["MD5"].toString();
                    TextureIMG *tmp = new TextureIMG(pix,url,md5);
-                   tmp->setLocalPath(base + name);
+                   tmp->setLocalPath(base + "/" + name);
                    tmp->setModified(false);
                    m->addTexture(tmp);
                    qDebug() << "Texture added" << endl;
@@ -165,7 +165,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
         tmpHash.insert(v->getName(),"None");
 
     }
-    foreach(Canva *v, getCanvas()){
+    foreach(Canva *canv, getCanvas()){
         if(pass) {
             pass = false;
             continue;
@@ -173,20 +173,21 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
         }
         QString baseFolder;
         QJsonObject canva;
-        canva["name"] = v->getName();
+        canva["name"] = canv->getName();
         QJsonObject feature;
         QJsonArray files;
 
-        if(v->modified()) {
-            v->setModified(false);
-            feature["name"] = v->getName().remove(QRegExp("[ \"'_-]|[+]"));
-            QString trimName = v->getName().remove(QRegExp("[ \"'_-]|[+]"));
+        if(canv->modified()) {
+            canv->setModified(false);
+            feature["name"] = canv->getName().remove(QRegExp("[ \"'_-]|[+]"));
+            Feature *featureCanva = new Feature(feature["name"].toString());
+            QString trimName = canv->getName().remove(QRegExp("[ \"'_-]|[+]"));
             baseFolder = trimName;
             QString filename = base + trimName +".jpg";
             qDebug() << "Filename : " + filename;
             QFile file(filename);
             file.open(QIODevice::WriteOnly);
-            v->getPix().save(&file, "JPG");
+            canv->getPix().save(&file, "JPG");
             QProcess *process = new QProcess();
 #ifdef Q_OS_WIN
             QString prog = "../bin/genTexData.exe " + filename + " -level=2 -leveli=1 -dpi=100 -min_dpi=20 -max_dpi=100";
@@ -209,26 +210,35 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                 filup.seek(0);
                 file["path"] = cex->upload(QString(baseFolder + "/" + trimName + "." + ext[i]),filup.readAll());
                 file["MD5"] = QString(strHash.toHex());
+                File fileFeature(file["name"].toString(),file["path"].toString(),file["MD5"].toString());
+                if(ext[i].compare("iset") == 0) {
+                    featureCanva->setIset(fileFeature);
+                } else if(ext[i].compare("fset") == 0) {
+                    featureCanva->setFset(fileFeature);
+                } else if(ext[i].compare("fset3") == 0) {
+                    featureCanva->setFset3(fileFeature);
+                }
                 files.append(file);
             }
+            canv->setFeature(featureCanva);
         } else {
-            feature["name"] = v->getName().remove(QRegExp("[ \"'_-]|[+]"));
-            QString trimName = v->getName().remove(QRegExp("[ \"'_-]|[+]"));
+            feature["name"] = canv->getName().remove(QRegExp("[ \"'_-]|[+]"));
+            QString trimName = canv->getName().remove(QRegExp("[ \"'_-]|[+]"));
             baseFolder = trimName;
             QJsonObject iset;
-            iset["name"] = v->getFeature()->getIset().getName();
-            iset["path"] = v->getFeature()->getIset().getPath();
-            iset["MD5"] = v->getFeature()->getIset().getMD5();
+            iset["name"] = canv->getFeature()->getIset().getName();
+            iset["path"] = canv->getFeature()->getIset().getPath();
+            iset["MD5"] = canv->getFeature()->getIset().getMD5();
             files.append(iset);
             QJsonObject fset;
-            fset["name"] = v->getFeature()->getFset().getName();
-            fset["path"] = v->getFeature()->getFset().getPath();
-            fset["MD5"] = v->getFeature()->getFset().getMD5();
+            fset["name"] = canv->getFeature()->getFset().getName();
+            fset["path"] = canv->getFeature()->getFset().getPath();
+            fset["MD5"] = canv->getFeature()->getFset().getMD5();
             files.append(fset);
             QJsonObject fset3;
-            fset3["name"] = v->getFeature()->getFset3().getName();
-            fset3["path"] = v->getFeature()->getFset3().getPath();
-            fset3["MD5"] = v->getFeature()->getFset3().getMD5();
+            fset3["name"] = canv->getFeature()->getFset3().getName();
+            fset3["path"] = canv->getFeature()->getFset3().getPath();
+            fset3["MD5"] = canv->getFeature()->getFset3().getMD5();
             files.append(fset3);
         }
 
@@ -240,7 +250,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
         canva["feature"] = feature;
         QJsonArray models;
         QVector<QRect> listRect;
-        foreach(Model *m, v->getItems()){
+        foreach(Model *m, canv->getItems()){
             QJsonObject model;
 
             int zModel = 0; //First model will be on 0 axis and next on n*2 axis
@@ -274,18 +284,26 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                     }
                     if(t->getType() == Texture::IMG) {
                         TextureIMG *timg =  static_cast<TextureIMG *>(t);
+                        QFileInfo fileName(timg->getLocalPath());
+                        QString fileExt = fileName.suffix();
                         QJsonObject tex;
                         QByteArray bArray;
                         QBuffer buffer(&bArray);
                         buffer.open(QIODevice::WriteOnly);
-                        timg->getData().save(&buffer, "PNG");
+                        if(fileExt.compare("jpg",Qt::CaseInsensitive) == 0 | fileExt.compare("jpeg",Qt::CaseInsensitive) == 0) {
+                            timg->getData().save(&buffer, "JPG");
+                        } else if (fileExt.compare("png",Qt::CaseInsensitive) == 0) {
+                            timg->getData().save(&buffer, "PNG");
+                        } else {
+                            timg->getData().save(&buffer, "BMP");
+                        }
                         QCryptographicHash hash(QCryptographicHash::Md5);
                         QByteArray strHash;
                         hash.addData(bArray);
                         strHash = hash.result();
-                        QString tmpName = m->name.remove(QRegExp("[ \"'_-]|[+]")) + "%1" + ".png";
-                        tex["name"] = tmpName.arg(++indexTex);
-                        tex["path"] = QString(cex->upload(QString(baseFolder + "/" + tmpName.arg(indexTex)),bArray));
+                        QString nameTex = strHash.toHex() + "." + fileExt;
+                        tex["name"] = nameTex;
+                        tex["path"] = QString(cex->upload(QString(baseFolder + "/" + nameTex),bArray));
                         tex["MD5"] = QString(strHash.toHex());
                         tex["type"] = "image";
                         textures.append(tex);
@@ -302,8 +320,8 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                         TextureIMG *timg =  static_cast<TextureIMG *>(t);
                         QJsonObject tex;
                         tex["type"] = "image";
-                        QString tmpName = m->name.remove(QRegExp("[ \"'_-]")) + "%1" + ".png";
-                        tex["name"] = tmpName.arg(++indexTex);
+                        QFileInfo fileName(timg->getLocalPath());
+                        tex["name"] = fileName.fileName();
                         tex["path"] = timg->getUrl();
                         tex["MD5"] =  timg->getMD5();
                         textures.append(tex);
