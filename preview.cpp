@@ -2,7 +2,11 @@
 #include "ui_preview.h"
 #include <QPixmap>
 #include <QRect>
-
+#include <Config/textureimg.h>
+#include <Config/texturetxt.h>
+#include <textedit.h>
+#include <QImageReader>
+#include <QFont>
 
 Preview::Preview(QWidget *parent, Canva *c) :
     QDialog(parent),
@@ -11,6 +15,7 @@ Preview::Preview(QWidget *parent, Canva *c) :
     ui->setupUi(this);
 
     canva = c;
+    i=0;
 
     bool landscape = canva->getPix().width() > canva->getPix().height();
     float displayedHeight;
@@ -38,8 +43,8 @@ Preview::Preview(QWidget *parent, Canva *c) :
     ratioY = (double) 100.0/displayedHeight;
 
     QVector<Model*> items = canva->getItems();
-    for(int i = 0; i < items.size();i++) {
-       create_pixmap(canva->getItems().value(i));
+    for(int j = 0; j < items.size();j++) {
+       create_pixmap(canva->getItems().value(j), i);
     }
 
 }
@@ -49,10 +54,93 @@ Preview::~Preview()
     delete ui;
 }
 
-void Preview::create_pixmap(Model *m)
+void Preview::create_pixmap(Model *model, int pos)
 {
-    //TODO
-    //creation des pixmaps correspondant aux modèles
+    TextEdit * text = new TextEdit("",this);
+
+    QLabel * label = new QLabel(this);
+    label->setScaledContents(true);
+    label->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
+    label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    label->setWordWrap(true);
+
+    if( !model->tlc.isEmpty() && !model->trc.isEmpty() && !model->blc.isEmpty() && !model->brc.isEmpty()) {
+        QStringList lTLC = model->tlc.split(",");
+        double tlcX = lTLC.at(0).toDouble() / ratioX;
+        double tlcY = lTLC.at(1).toDouble() / ratioY;
+        tlcY = -tlcY;
+
+        QStringList lTRC = model->trc.split(",");
+        double trcY = lTRC.at(1).toDouble() / ratioY;
+        trcY = -trcY;
+
+        QStringList lBLC = model->blc.split(",");
+        double blcY = lBLC.at(1).toDouble() / ratioY;
+        blcY = -blcY;
+
+        QStringList lBRC = model->brc.split(",");
+        double brcX = lBRC.at(0).toDouble() / ratioX;
+        double brcY = lBRC.at(1).toDouble() / ratioY;
+        brcY = -brcY;
+
+        tlcX += (ui->tableau->x()) ;
+        tlcY += (ui->tableau->y() + ui->tableau->height()) ;
+        brcX += (ui->tableau->x()) ;
+        brcY += (ui->tableau->y() + ui->tableau->height());
+
+        label->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
+        text->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
+    }
+
+    if (model->getTextures().value(pos)->getType() == Texture::TEXT){
+        Texture* t = model->getTextures().value(pos);
+        TextureTXT* test = (TextureTXT*) t;
+        QString textTexture = test->getData();
+        qDebug() << "Texte texture = " << textTexture << endl;
+        text->setText(textTexture);
 
 
+        QFont font = text->font();
+
+        QRect cRect = text->contentsRect();
+        QRect lRect = label->contentsRect();
+
+        if(text->toPlainText().isEmpty() )
+                return;
+
+        int flags = Qt::TextWordWrap; //more flags if needed
+
+             int fontSize = 1;
+              while( true )
+              {
+                          QFont f(font);
+                               f.setPixelSize( fontSize );
+                          QRect r = QFontMetrics(f).boundingRect(cRect,flags, text->toPlainText() );
+                          if (r.height() <= cRect.height() )
+                                fontSize++;
+                          else
+                                break;
+              }
+
+             font.setPixelSize(fontSize);
+             text->setFont(font);
+
+
+        label->setVisible(false);
+        text->setVisible(true);
+
+    } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
+        Texture* t = model->getTextures().value(pos);
+        TextureIMG* test = (TextureIMG*) t;
+        QString filename = test->getLocalPath();
+
+        QImageReader *reader = new QImageReader();
+        reader->setFileName(filename);
+        QImage image =reader->read();
+        QPixmap map=QPixmap::fromImage(image);
+
+        label->setPixmap(map);
+        label->setVisible(true);
+        text->setVisible(false);
+    }
 }

@@ -19,7 +19,7 @@ public:
     ~Preview();
 
 private slots:
-    void create_pixmap(Model * m);
+    void create_pixmap(Model * m, int pos);
 
 private:
     Ui::Preview *ui;
@@ -28,6 +28,7 @@ private:
 
     double ratioX;
     double ratioY;
+    int i;
 };
 
 #endif // PREVIEW_H
