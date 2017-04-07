@@ -434,13 +434,16 @@ void DialogModel::modelEnregistrement(){
 
 void DialogModel::on_pbUpModel_clicked()
 {
-    int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
-    model = canva->getItems().value(pos);
-
     if(ui->ModelList->selectedItems().size()<1)
         return;
+
+    int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
+
     if(pos == 0)
         return;
+
+    model = canva->getItems().value(pos);
+
 
     canva->getItems().remove(pos);
     canva->getItems().insert(pos-1,model);
@@ -454,13 +457,15 @@ void DialogModel::on_pbUpModel_clicked()
 
 void DialogModel::on_pbDownModel_clicked()
 {
-    int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
-    model = canva->getItems().value(pos);
-
     if(ui->ModelList->selectedItems().size()<1)
         return;
+
+    int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
+
     if(pos == canva->getItems().size()-1)
         return;
+
+    model = canva->getItems().value(pos);
 
     canva->getItems().remove(pos);
     canva->getItems().insert(pos+1,model);
@@ -475,14 +480,17 @@ void DialogModel::on_pbDownModel_clicked()
 
 void DialogModel::on_pbUpTexture_clicked()
 {
-    int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
-    t= model->getTextures().value(pos);
-
     if(ui->TextureList->selectedItems().size()<1)
         return;
 
+    int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+
     if(pos == 0)
         return;
+
+    t= model->getTextures().value(pos);
+
+
 
     model->getTextures().remove(pos);
     model->getTextures().insert(pos-1,t);
@@ -498,14 +506,19 @@ void DialogModel::on_pbUpTexture_clicked()
 
 void DialogModel::on_pbDownTexture_clicked()
 {
-    int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
-    t= model->getTextures().value(pos);
-
     if(ui->TextureList->selectedItems().size()<1)
         return;
 
+    int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+
     if(pos == model->getTextures().size()-1)
         return;
+
+    t= model->getTextures().value(pos);
+
+
+
+
 
     model->getTextures().remove(pos);
     model->getTextures().insert(pos+1,t);
