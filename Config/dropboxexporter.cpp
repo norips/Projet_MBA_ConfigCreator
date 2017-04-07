@@ -7,6 +7,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QMessageBox>
+#include <QTextStream>
 
 DropboxExporter::DropboxExporter() : QObject()
 {
@@ -16,7 +18,15 @@ DropboxExporter::DropboxExporter() : QObject()
 
     /* connect the QHttp.requestFinished() Signal to the QEventLoop.quit() Slot */
     connect(this, SIGNAL(urlRetrieved()), &pause, SLOT(quit()));
+    QFile file("../bin/dropboxapi.key");
+    if(!file.open(QIODevice::ReadOnly)) {
+        QTextStream(stdout) << "Error while opening dropbox api key (in bin/dropboxapi.key)" << endl;
+    } else {
+        QTextStream in(&file);
+        apiKey = in.readLine();
 
+        file.close();
+    }
 
 }
 //TODO
@@ -53,7 +63,7 @@ QString DropboxExporter::upload(const QString fileName, const QByteArray &payloa
 void DropboxExporter::replyFinished(QNetworkReply *nr) {
     if(first){
         QByteArray output = nr->readAll();
-        //qInfo(output);
+        qInfo(output);
         QJsonDocument doc = QJsonDocument::fromJson(output);
         QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
 
@@ -72,8 +82,12 @@ void DropboxExporter::replyFinished(QNetworkReply *nr) {
         secondFirst = true;
     } else {
         QByteArray output = nr->readAll();
-        //qInfo(output);
+        qInfo(output);
         if(nr->attribute(QNetworkRequest::HttpStatusCodeAttribute) != 200) {
+            if(secondFirst == false) {
+                path = "Error while exporting : " + QString(output);
+                emit urlRetrieved();
+            }
             qDebug() << "Error while retrieving url, assuming already existing link" << endl;
             QNetworkRequest nr(QUrl("https://api.dropboxapi.com/2/sharing/list_shared_links"));
             nr.setRawHeader("Authorization",(tr("Bearer ") + apiKey).toUtf8());
