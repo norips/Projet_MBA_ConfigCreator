@@ -13,6 +13,8 @@ public:
     QString getMD5();
     QPixmap getData();
     QString getLocalPath();
+    void setFile(File f);
+    File& getFile();
     void setLocalPath(QString path);
 private:
     QPixmap pix;

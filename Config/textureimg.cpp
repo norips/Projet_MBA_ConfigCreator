@@ -34,3 +34,11 @@ QString TextureIMG::getLocalPath() {
 void TextureIMG::setLocalPath(QString path) {
     this->localPath = path;
 }
+
+void TextureIMG::setFile(File f) {
+    this->f = f;
+}
+
+File& TextureIMG::getFile() {
+    return f;
+}

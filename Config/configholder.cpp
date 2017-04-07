@@ -107,6 +107,8 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
                    TextureIMG *tmp = new TextureIMG(pix,url,md5);
                    tmp->setLocalPath(base + "/" + name);
                    tmp->setModified(false);
+                   File f(tobj[QString("name")].toString(),tobj[QString("path")].toString(),tobj[QString("MD5")].toString());
+                   tmp->setFile(f);
                    m->addTexture(tmp);
                    qDebug() << "Texture added" << endl;
                } else if(tobj[QString("type")].toString().compare("texte") == 0 ) {
@@ -306,6 +308,8 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                         tex[QString("path")] = QString(cex->upload(QString(baseFolder + "/" + nameTex),bArray));
                         tex[QString("MD5")] = QString(strHash.toHex());
                         tex[QString("type")] = QString("image");
+                        File f(tex[QString("name")].toString(),tex[QString("path")].toString(),tex[QString("MD5")].toString());
+                        timg->setFile(f);
                         textures.append(tex);
                     }
                 } else {
@@ -320,8 +324,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                         TextureIMG *timg =  static_cast<TextureIMG *>(t);
                         QJsonObject tex;
                         tex[QString("type")] = QString("image");
-                        QFileInfo fileName(timg->getLocalPath());
-                        tex[QString("name")] = fileName.fileName();
+                        tex[QString("name")] = timg->getFile().getName();
                         tex[QString("path")] = timg->getUrl();
                         tex[QString("MD5")] =  timg->getMD5();
                         textures.append(tex);
