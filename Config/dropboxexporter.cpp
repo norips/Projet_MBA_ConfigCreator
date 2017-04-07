@@ -24,7 +24,6 @@ DropboxExporter::DropboxExporter() : QObject()
     } else {
         QTextStream in(&file);
         apiKey = in.readLine();
-
         file.close();
     }
 
@@ -63,7 +62,7 @@ QString DropboxExporter::upload(const QString fileName, const QByteArray &payloa
 void DropboxExporter::replyFinished(QNetworkReply *nr) {
     if(first){
         QByteArray output = nr->readAll();
-        qInfo(output);
+        //qInfo(output);
         QJsonDocument doc = QJsonDocument::fromJson(output);
         QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
 
@@ -82,7 +81,7 @@ void DropboxExporter::replyFinished(QNetworkReply *nr) {
         secondFirst = true;
     } else {
         QByteArray output = nr->readAll();
-        qInfo(output);
+        //qInfo(output);
         if(nr->attribute(QNetworkRequest::HttpStatusCodeAttribute) != 200) {
             if(secondFirst == false) {
                 path = "Error while exporting : " + QString(output);
