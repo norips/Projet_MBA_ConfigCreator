@@ -9,40 +9,30 @@
 #include <QFileDialog>
 #include <QImageReader>
 #include <QPainter>
-
-DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
+#define UNUSED(x) (void)(x)
+DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     QDialog(parent),
     ui(new Ui::DialogModel)
 {
     ui->setupUi(this);
-    model = m->getModel();
-
+    UNUSED(item);
+    firstload = 1;
+    connect(ui->ModelList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated1(QListWidgetItem*)));
+    connect(ui->pbAddPage,SIGNAL(pressed()),this,SLOT(buttonPlus()));
+    connect(ui->pbRemovePage,SIGNAL(pressed()),this,SLOT(buttonMoins()));
+    connect(ui->pbSaveZone,SIGNAL(pressed()),this,SLOT(modelEnregistrement()));
     connect(ui->TextureList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated(QListWidgetItem*)));
-    connect(ui->pushButton_3,SIGNAL(pressed()),this,SLOT(buttonPlus()));
-    connect(ui->pushButton_4,SIGNAL(pressed()),this,SLOT(buttonMoins()));
-    connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
-    connect(ui->pushButton, SIGNAL(released()),this,SLOT(openFile()));
-    connect(ui->pushButton_2, SIGNAL(released()),this,SLOT(openFile2()));
+    connect(ui->pbAddZone,SIGNAL(pressed()),this,SLOT(buttonPlus1()));
+    connect(ui->pbRemoveZone,SIGNAL(pressed()),this,SLOT(buttonMoins1()));
+    connect(ui->cbTextureType, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    connect(ui->pbPathIMG, SIGNAL(released()),this,SLOT(openFile()));
     connect(ui->teText,SIGNAL(textChanged()),this,SLOT(changetext()));
 
     canva = c;
-
-    int indTex=0;
-    qDebug() << "Texture";
-    foreach(Texture *t, model->getTextures()){
-        qDebug() << "Texture " + QString::number(indTex);
-        ui->TextureList->addItem("Texture " + QString::number(++indTex));
-       /* if((model->getTextures().at(0))->getType() == Texture::IMG && model->getTextures().size() > 0) {
-                TextureIMG *timg = dynamic_cast<TextureIMG *>(model->getTextures().at(0));
-                ui->lbText->setPixmap(timg->getData());
-            }
-        else
-            if(t->getType() == Texture::TEXT){
-                TextureTXT *ttext = dynamic_cast<TextureTXT*>(t);
-                ui->teText->setText(ttext->getData());
-                break;
-            }
-            */
+    QVector<Model*> items = canva->getItems();
+    qDebug() << "Item size " << items.size();
+    for(int i = 1; i < items.size()+1;i++) {
+       ui->ModelList->addItem("Zone " + QString::number(i));
     }
 
     bool landscape = canva->getPix().width() > canva->getPix().height();
@@ -58,7 +48,6 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
         ui->lbpixmap->setFixedWidth(displayedWidth);
         ui->lbpixmap->setPixmap(canva->getPix().scaled(ui->lbpixmap->maximumWidth(),displayedHeight,Qt::KeepAspectRatio));
         geo.translate(0,displayedHeight);
-        qDebug() << "Land";
     } else {
         displayedHeight = ui->lbpixmap->height();
         displayedWidth =  ui->lbpixmap->width() * canva->getPix().width()/canva->getPix().height();
@@ -68,13 +57,231 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
         ui->lbpixmap->setPixmap(canva->getPix().scaled(displayedWidth,ui->lbpixmap->maximumHeight(),Qt::KeepAspectRatio));
     }
     ui->lbpixmap->setGeometry(geo);
-
-    qDebug()<< "width = " << ui->lbpixmap->width() << " height = " << ui->lbpixmap->height() << endl;
     ratioX = (double) 100.0/displayedWidth;
     ratioY = (double) 100.0/displayedHeight;
 
-    //Load it
+    ui->stackedWidget->setEnabled(false);
+    ui->gbText->setEnabled(false);
+
+    ui->widgetSelect->raise();
+}
+
+
+
+DialogModel::~DialogModel()
+{
+    this->releaseMouse();
+    delete ui;
+}
+
+void DialogModel::on_buttonBox_accepted()
+{
+    this->hide();
+}
+
+void DialogModel::openFile()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),"/",tr("Image Files (*.png  *.jpg *.bmp *.jpeg)"));
+
+    if (fileName != NULL){
+
+        int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+        model->getTextures().remove(pos_to_suppress);
+
+        QImageReader *reader = new QImageReader();
+        reader->setFileName(fileName);
+        QImage image =reader->read();
+        QPixmap map=QPixmap::fromImage(image);
+        TextureIMG* tImage = new TextureIMG(map);
+        tImage->setLocalPath(fileName);
+
+        model->getTextures().insert(pos_to_suppress,tImage);
+        ui->lePathIMG->insert(fileName);
+        model->setModified(true);
+
+        //Load pixmap
+        ui->widgetSelect->getLabel()->setPixmap(map);
+        ui->widgetSelect->getLabel()->setVisible(true);
+        ui->widgetSelect->getTextEdit()->setVisible(false);
+    }
+}
+
+void DialogModel::buttonPlus()
+{
+    ui->gbModele->setEnabled(false);
+    Texture *t = new TextureTXT("");
+    model->addTexture(t);
+
+    ui->TextureList->clear();
+
+    QVector<Texture*> items = model->getTextures();
+    for(int i = 1; i < items.size()+1; i++) {
+       ui->TextureList->addItem("Page " + QString::number(i));
+    }
+    qDebug() << "SIZE ITEM" << items.size();
+
+    if(items.size() == 1){
+        ui->pbDownTexture->setEnabled(false);
+        ui->pbUpTexture->setEnabled(false);
+    }else{
+        ui->pbDownTexture->setEnabled(true);
+        ui->pbUpTexture->setEnabled(true);
+    }
+}
+
+
+void DialogModel::buttonMoins(){
+
+    if(ui->TextureList->selectedItems().size()<1) return;
+    int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+    model->getTextures().remove(pos_to_suppress);
+    ui->TextureList->clear();
+    QVector<Texture*> items = model->getTextures();
+    for(int i = 1; i < items.size()+1; i++) {
+       ui->TextureList->addItem("Page " + QString::number(i));
+    }
+    if(model->getTextures().size()<1) {
+        ui->cbTextureType->setEnabled(false);
+        ui->stackedWidget->setEnabled(false);
+        ui->gbText->setEnabled(false);
+        ui->pbSaveZone->setEnabled(false);
+        ui->gbModele->setEnabled(true);
+        return;
+    } else {
+        ui->TextureList->setCurrentRow(model->getTextures().size()-1);
+    }
+
+    if(items.size() == 1){
+        ui->pbDownModel->setEnabled(false);
+        ui->pbUpModel->setEnabled(false);
+    }
+}
+
+//On click texture
+void DialogModel::itemActivated(QListWidgetItem* i){
+    UNUSED(i);
+    ui->cbTextureType->setEnabled(true);
+    ui->stackedWidget->setEnabled(true);
+    ui->pbSaveZone->setEnabled(true);
+    ui->widgetSelect->getLabel()->setVisible(true);
+    ui->widgetSelect->getTextEdit()->setVisible(false);
+
+
+    int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+    if (model->getTextures().value(pos)->getType() == Texture::TEXT){
+        Texture* t = model->getTextures().value(pos);
+        TextureTXT* test = (TextureTXT*) t;
+        QString textTexture = test->getData();
+        qDebug() << "Texte texture = " << textTexture << endl;
+        ui->teText->setText(textTexture);
+        firstload = 1;
+        ui->stackedWidget->setCurrentIndex(0);
+        ui->cbTextureType->setCurrentIndex(0);
+
+        ui->widgetSelect->getTextEdit()->setText(textTexture);
+        ui->widgetSelect->getTextEdit()->setVisible(true);
+        ui->widgetSelect->getLabel()->setVisible(false);
+        //ui->gbModele->setEnabled(true);
+    } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
+        Texture* t = model->getTextures().value(pos);
+        TextureIMG* test = (TextureIMG*) t;
+        QString filename = test->getLocalPath();
+        qDebug() << "FILENAME texture = " << filename << endl;
+        QImageReader *reader = new QImageReader();
+        reader->setFileName(filename);
+        QImage image =reader->read();
+        QPixmap map=QPixmap::fromImage(image);
+
+        ui->lePathIMG->setText(filename);
+
+        ui->stackedWidget->setCurrentIndex(1);
+        ui->cbTextureType->setCurrentIndex(1);
+        ui->widgetSelect->getLabel()->setPixmap(map);
+        ui->widgetSelect->getLabel()->setVisible(true);
+        ui->widgetSelect->getTextEdit()->setVisible(false);
+        ui->gbModele->setEnabled(true);
+    }
+
+}
+
+void DialogModel::buttonPlus1(){
+    ui->pbRemoveZone->setEnabled(true);
+    QString name = "Nouveau";
+    Model *m = new Model(name,canva->getItems().size());
+    canva->addModel(m);
+    ui->ModelList->clear();
+
+    QVector<Model*> items = canva->getItems();
+    for(int i = 1; i < items.size()+1; i++) {
+       ui->ModelList->addItem("Zone " + QString::number(i));
+    }
+
+    if(items.size() == 1){
+        ui->pbDownModel->setEnabled(false);
+        ui->pbUpModel->setEnabled(false);
+    }else{
+        ui->pbDownModel->setEnabled(true);
+        ui->pbUpModel->setEnabled(true);
+    }
+    ui->pbAddZone->setEnabled(false);
+    ui->buttonBox->setEnabled(false);
+
+}
+
+void DialogModel::buttonMoins1(){
+
+    if(ui->ModelList->selectedItems().size()<1) return;
+
+       int pos_to_suppress = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
+       canva->getItems().remove(pos_to_suppress);
+       ui->ModelList->clear();
+
+       QVector<Model*> items = canva->getItems();
+       for(int i = 1; i < items.size()+1; i++) {
+          ui->ModelList->addItem("Zone " + QString::number(i));
+       }
+
+       if(items.size()<=1) {
+           ui->cbTextureType->setEnabled(false);
+           ui->stackedWidget->setEnabled(false);
+           ui->gbText->setEnabled(false);
+           ui->pbSaveZone->setEnabled(false);
+           ui->gbModele->setEnabled(true);
+           ui->buttonBox->setEnabled(true);
+           ui->pbRemoveZone->setEnabled(false);
+           return;
+       } else {
+           ui->TextureList->setCurrentRow(items.size()-1);
+       }
+
+}
+
+//On click model
+void DialogModel::itemActivated1(QListWidgetItem* i){
+    UNUSED(i);
+    ui->cbTextureType->setEnabled(false);
+    ui->stackedWidget->setEnabled(false);
+    ui->pbSaveZone->setEnabled(false);
+    ui->widgetSelect->getLabel()->setVisible(false);
+     ui->widgetSelect->getTextEdit()->setVisible(false);
+    ui->gbText->setEnabled(true);
+
+
+
+
+    if(ui->ModelList->selectedItems().size()<1) return;
+    int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
+    model = canva->getItems().value(pos);
+
+    ui->TextureList->clear();
+
+    for(int i = 1; i < model->getTextures().size()+1; i++){
+        ui->TextureList->addItem("Page " + QString::number(i));
+    }
+
+    //Load Rectangle
     if( !model->tlc.isEmpty() && !model->trc.isEmpty() && !model->blc.isEmpty() && !model->brc.isEmpty()) {
+        qDebug() << "LOAD RECTANGLE ";
         QStringList lTLC = model->tlc.split(",");
         double tlcX = lTLC.at(0).toDouble() / ratioX;
         double tlcY = lTLC.at(1).toDouble() / ratioY;
@@ -102,37 +309,71 @@ DialogModel::DialogModel(QWidget *parent,modelItem* m, Canva *c) :
 
         brcX += (ui->lbpixmap->x()) ;
         brcY += (ui->lbpixmap->y() + ui->lbpixmap->height());
-        ui->widget->getRubberBand()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
-        ui->widget->getRubberBand()->show();
-
+        ui->widgetSelect->getRubberBand()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
+        ui->widgetSelect->getLabel()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
+        ui->widgetSelect->getTextEdit()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
+        ui->widgetSelect->getRubberBand()->show();
+        ui->buttonBox->setEnabled(true);
+    }else{
+        ui->buttonBox->setEnabled(false);
     }
 
 }
 
+void DialogModel::changetext(){
+    QString text = ui->teText->toPlainText();
+
+    if(firstload){
+        firstload=0;
+    } else {
+        TextureTXT * ttext = new TextureTXT(text);
+        int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+        model->getTextures().remove(pos_to_suppress);
+        model->getTextures().insert(pos_to_suppress,ttext);
+        model->setModified(true);
+    }
 
 
-DialogModel::~DialogModel()
-{
-    this->releaseMouse();
-    //delete widget;
-    delete ui;
+    ui->widgetSelect->getLabel()->setVisible(false);
+    ui->widgetSelect->getTextEdit()->setText(text);
+    ui->widgetSelect->getTextEdit()->setVisible(true);
+
+    QFont font = ui->widgetSelect->getTextEdit()->font();
+
+    QRect cRect = ui->widgetSelect->getTextEdit()->contentsRect();
+    QRect lRect = ui->widgetSelect->getLabel()->contentsRect();
+
+    if( ui->widgetSelect->getTextEdit()->toPlainText().isEmpty() )
+            return;
+
+    int flags = Qt::TextWordWrap; //more flags if needed
+
+         int fontSize = 1;
+          qDebug() << "content size:" << cRect.width() << "," << cRect.height() << endl;
+          qDebug() << "label size:" << lRect.width() << "," << lRect.height() << endl;
+          while( true )
+          {
+                      QFont f(font);
+                           f.setPixelSize( fontSize );
+                      QRect r = QFontMetrics(f).boundingRect(cRect,flags, ui->widgetSelect->getTextEdit()->toPlainText() );
+                      if (r.height() <= cRect.height() )
+                            fontSize++;
+                      else
+                            break;
+          }
+
+         font.setPixelSize(fontSize);
+         ui->widgetSelect->getTextEdit()->setFont(font);
+
+
 }
 
-void DialogModel::on_buttonBox_accepted()
-{
+void DialogModel::modelEnregistrement(){
 
-
-    ui->comboBox->setEnabled(false);
-    ui->lbName_2->setEnabled(false);
-    ui->stackedWidget->setEnabled(false);
-
-    Widget *widget = ui->widget;
+    WidgetSelection *widget = ui->widgetSelect;
     QRect rect = widget->getRectSelection();
-    qDebug() << "rectangle" << rect << endl;
     QString text ;
-
-
-    if(rect.height() !=0 && rect.width() != 0){
+    if(rect.height() !=30 && rect.width() != 100){
         qDebug() << "Valid" << endl;
         int x =0, y=0, width, height;
         rect.getRect(&x,&y,&width,&height);
@@ -174,109 +415,118 @@ void DialogModel::on_buttonBox_accepted()
         qDebug() << "TRC : " << confTRCx << "," << confTRCy << endl;
         qDebug() << "BLC : " << confBLCx << "," << confBLCy << endl;
         qDebug() << "BRC : " << confBRCx << "," << confBRCy << endl;
-        model->tlc.append((QString::number(confTLCx))).append(",").append(QString::number(-confTLCy)).append(",0");
-        model->trc.append((QString::number(confTRCx))).append(",").append(QString::number(-confTRCy)).append(",0");
-        model->blc.append((QString::number(confBLCx))).append(",").append(QString::number(-confBLCy)).append(",0");
-        model->brc.append((QString::number(confBRCx))).append(",").append(QString::number(-confBRCy)).append(",0");
+        model->tlc = QString("").append((QString::number(confTLCx))).append(",").append(QString::number(-confTLCy)).append(",0");
+        model->trc = QString("").append((QString::number(confTRCx))).append(",").append(QString::number(-confTRCy)).append(",0");
+        model->blc = QString("").append((QString::number(confBLCx))).append(",").append(QString::number(-confBLCy)).append(",0");
+        model->brc = QString("").append((QString::number(confBRCx))).append(",").append(QString::number(-confBRCy)).append(",0");
         //TextureIMG *timg = new TextureIMG(canva->getPix());
         //model->addTexture(timg);
-        this->hide();
+
+        ui->gbModele->setEnabled(true);
+        ui->buttonBox->setEnabled(true);
+        ui->pbAddZone->setEnabled(true);
+
     } else {
         qDebug() << "Selection Nulle" << endl;
+
     }
-    this->hide();
 }
 
-void DialogModel::openFile()
+void DialogModel::on_pbUpModel_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),"/",tr("Image Files (*.png  *.jpg *.bmp *.jpeg)"));
+    if(ui->ModelList->selectedItems().size()<1)
+        return;
 
-    if (fileName != NULL){
+    int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
 
-        int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
-        model->getTextures().remove(pos_to_suppress);
+    if(pos == 0)
+        return;
 
-        QImageReader *reader = new QImageReader();
-        reader->setFileName(fileName);
-        QImage image =reader->read();
-        QPixmap map=QPixmap::fromImage(image);
+    model = canva->getItems().value(pos);
 
-        Texture* tImage = new TextureIMG(map);
-        model->getTextures().insert(pos_to_suppress,tImage);
-        ui->lineEdit->insert(fileName);
-        model->setModified(true);
+
+    canva->getItems().remove(pos);
+    canva->getItems().insert(pos-1,model);
+    ui->ModelList->clear();
+
+    QVector<Model*> items = canva->getItems();
+    for(int i = 1; i < items.size()+1; i++) {
+        ui->ModelList->addItem("Zone " + QString::number(i));
     }
-    // t.setLocalPath(fileName);
 }
 
-void DialogModel::openFile2()
+void DialogModel::on_pbDownModel_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une vidéo"),"/",tr("Image Files (*.mp4 )"));
-    ui->lineEdit_2->insert(fileName);
-    // t.setLocalPath(fileName);
+    if(ui->ModelList->selectedItems().size()<1)
+        return;
 
-    qDebug() << "FILE" << fileName;
+    int pos = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
+
+    if(pos == canva->getItems().size()-1)
+        return;
+
+    model = canva->getItems().value(pos);
+
+    canva->getItems().remove(pos);
+    canva->getItems().insert(pos+1,model);
+    ui->ModelList->clear();
+
+    QVector<Model*> items = canva->getItems();
+    for(int i = 1; i < items.size()+1; i++) {
+        ui->ModelList->addItem("Zone " + QString::number(i));
+    }
 }
 
-void DialogModel::buttonPlus()
+
+void DialogModel::on_pbUpTexture_clicked()
 {
-    Texture *m = new TextureTXT("");
-    model->addTexture(m);
-
-    ui->TextureList->clear();
-
-    QVector<Texture*> items = model->getTextures();
-    int i = 1;
-    foreach (Texture* m, items) {
-       ui->TextureList->addItem("Texture " + QString::number(i++));
-    }
-}
-
-void DialogModel::buttonMoins(){
-
-    if(ui->TextureList->selectedItems().size()<1) return;
-
-    int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
-    model->getTextures().remove(pos_to_suppress);
-    ui->TextureList->clear();
-    QVector<Texture*> items = model->getTextures();
-    int i = 1;
-    foreach (Texture* m, items) {
-       ui->TextureList->addItem("Texture " + QString::number(i++));
-    }
-
-
-}
-
-void DialogModel::itemActivated(QListWidgetItem* i){
-
-    ui->comboBox->setEnabled(true);
-    ui->lbName_2->setEnabled(true);
-    ui->stackedWidget->setEnabled(true);
+    if(ui->TextureList->selectedItems().size()<1)
+        return;
 
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
-    if (model->getTextures().value(pos)->getType() == Texture::TEXT){
-        Texture* t = model->getTextures().value(pos);
-        TextureTXT* test = (TextureTXT*) t;
-        QString textTexture = test->getData();
-        qDebug() << "Texte texture = " << textTexture << endl;
-        ui->teText->setText(textTexture);
-        ui->stackedWidget->setCurrentIndex(0);
-        ui->comboBox->setCurrentIndex(0);
-    } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
-        ui->stackedWidget->setCurrentIndex(1);
-        ui->comboBox->setCurrentIndex(1);
+
+    if(pos == 0)
+        return;
+
+    t= model->getTextures().value(pos);
+
+
+
+    model->getTextures().remove(pos);
+    model->getTextures().insert(pos-1,t);
+
+    ui->TextureList->clear();
+
+    QVector<Texture*> items = model->getTextures();
+    for(int i = 1; i < items.size()+1; i++) {
+       ui->TextureList->addItem("Page " + QString::number(i));
     }
 
 }
 
-void DialogModel::changetext(){
+void DialogModel::on_pbDownTexture_clicked()
+{
+    if(ui->TextureList->selectedItems().size()<1)
+        return;
 
-    QString text = ui->teText->toPlainText();
-    TextureTXT * ttext = new TextureTXT(text);
+    int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
 
-    int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
-    model->getTextures().remove(pos_to_suppress);
-    model->getTextures().insert(pos_to_suppress,ttext);
-    model->setModified(true);
+    if(pos == model->getTextures().size()-1)
+        return;
+
+    t= model->getTextures().value(pos);
+
+
+
+
+
+    model->getTextures().remove(pos);
+    model->getTextures().insert(pos+1,t);
+
+    ui->TextureList->clear();
+
+    QVector<Texture*> items = model->getTextures();
+    for(int i = 1; i < items.size()+1; i++) {
+       ui->TextureList->addItem("Page " + QString::number(i));
+    }
 }

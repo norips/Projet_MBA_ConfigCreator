@@ -1,5 +1,6 @@
 #include "filedownloader.h"
 #include <QFile>
+#include <QDir>
 FileDownloader::FileDownloader(QUrl imageUrl,QString fileName, QObject *parent) :
  QObject(parent)
 {
@@ -30,6 +31,8 @@ void FileDownloader::fileDownloaded(QNetworkReply* pReply) {
     }
     m_DownloadedData = QByteArray(pReply->readAll());
     //emit a signal
+    QFileInfo fi(m_fileName);
+    QDir().mkpath(fi.path());
     QFile file(m_fileName);
     if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)){
         qDebug() << "Can't open" << endl;

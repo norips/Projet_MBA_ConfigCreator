@@ -22,6 +22,7 @@ private:
     bool first;
 signals:
     void configExported(int code);
+    void configImported(int code);
 };
 
 #endif // CONFIGHOLDER_H

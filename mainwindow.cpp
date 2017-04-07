@@ -20,12 +20,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lvTableaux->setDragEnabled(false);
 
     connect(ui->lvTableaux, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(openCanvas(QListWidgetItem*)));
-//    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/003-022.jpg"),"003-022.jpg","../img/003-022.jpg"));
-//    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/e102.jpg"),"e102.jpg","../img/e102.jpg"));
-//    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/pinball.jpg"),"pinball.jpg","../img/pinball.jpg"));
-//    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/tournesol.jpg"),"tournesol.jpg","../img/tournesol.jpg"));
-//    ui->lvTableaux->addItem(new canvaItem(QPixmap("../img/tournesol2.jpg"),"tournesol2.jpg","../img/tournesol2.jpg"));
-//    ui->lvTableaux->addItem(new QListWidgetItem(QIcon(QPixmap("../img/plus.png")),"Nouveau"));
     ConfigHolder* hold = ConfigHolder::Instance();
     hold->addEmpty();
     createUIFromConfig(hold);
@@ -61,8 +55,17 @@ void MainWindow::on_actionOuvrir_triggered()
         tr("Open Configuration"), QDir::currentPath(), tr("Configuration Files (*.json)"));
     if(fileName!=NULL) {
         ConfigHolder* hold = ConfigHolder::Instance();
+        QMessageBox *msgBox = new QMessageBox(this);
+            msgBox->setText("Please wait while loading configuration's file.");
+            msgBox->setWindowTitle("Loading configuration's file...");
+            msgBox->setWindowModality(Qt::WindowModal);
+            msgBox->setStandardButtons(0);
+            msgBox->setModal(true);
+            msgBox->show();
+            msgBox->raise();
+            QObject::connect(hold,SIGNAL(configImported(int)),msgBox,SLOT(done(int)));
         hold->LoadFromJSONFile(fileName);
-        createUIFromConfig(hold);
+        reDraw();
     }
 }
 
@@ -81,7 +84,6 @@ void MainWindow::on_actionEnregistrer_triggered()
         tr("Save Configuration"), QDir::currentPath(), tr("Configuration Files (*.json)"));
     if(fileName!=NULL) {
         ConfigHolder* hold = ConfigHolder::Instance();
-        DropboxExporter *exp = new DropboxExporter();
         QMessageBox *msgBox = new QMessageBox(this);
             msgBox->setText("Please wait while creating configuration's file.");
             msgBox->setWindowTitle("Creating configuration's file...");

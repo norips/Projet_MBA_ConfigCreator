@@ -7,7 +7,7 @@
 QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
+CONFIG += c++11
 TARGET = ConfigCreator
 TEMPLATE = app
 
@@ -29,9 +29,10 @@ SOURCES += main.cpp\
     Config/dropboxexporter.cpp \
     Config/feature.cpp \
     Config/file.cpp \
-    Config/widget.cpp \
     threadexport.cpp \
-    Config/modified.cpp
+    Config/modified.cpp \
+    Config/widgetSelection.cpp \
+    preview.cpp
 
 HEADERS  += mainwindow.h \
     formtableau.h \
@@ -49,10 +50,13 @@ HEADERS  += mainwindow.h \
     Config/dropboxexporter.h \
     Config/feature.h \
     Config/file.h \
-Config/widget.h \
     threadexport.h \
-    Config/modified.h
+    Config/modified.h \
+    Config/widgetSelection.h \
+    textedit.h \
+    preview.h
 
 FORMS    += mainwindow.ui \
     formtableau.ui \
-    dialogmodel.ui
+    dialogmodel.ui \
+    preview.ui

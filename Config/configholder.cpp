@@ -35,25 +35,27 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
     QString data = file.readAll();
     QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
     QJsonObject rootO = doc.object();
-    QJsonArray rootA = rootO["canvas"].toArray();
+    QJsonArray rootA = rootO[QString("canvas")].toArray();
     FileDownloader *fileD = NULL;
-    QString base = "../img/";
+    QString baseB = "../tmp/";
     foreach(const QJsonValue &v, rootA){
         QJsonObject obj = v.toObject();
-        qDebug() << obj["name"] << endl;
-        QString name = obj["name"].toString();
+        qDebug() << obj[QString("name")] << endl;
+        QString name = obj[QString("name")].toString();
+        QString base = baseB + name;
         Canva *c = new Canva(QPixmap(),name,base + name);
 
-        QJsonObject features = obj["feature"].toObject();
-        QJsonArray featureFiles = features["files"].toArray();
+        QJsonObject features = obj[QString("feature")].toObject();
+        QJsonArray featureFiles = features[QString("files")].toArray();
         if(featureFiles.size()<3) {
-            //Error
+            int ERROR_ISET = 1;
+            emit configImported(ERROR_ISET);
         }
         Feature *feature = new Feature(name);
         QEventLoop pause;
         foreach(const QJsonValue &jfilev, featureFiles) {
             QJsonObject jfileo = jfilev.toObject();
-            File f(jfileo["name"].toString(),jfileo["path"].toString(),jfileo["MD5"].toString());
+            File f(jfileo[QString("name")].toString(),jfileo[QString("path")].toString(),jfileo[QString("MD5")].toString());
             qDebug() << f.getName();
             if(f.getName().endsWith(".iset")) {
                 feature->setIset(f);
@@ -77,40 +79,41 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
         c->setModified(false);
         delete fileD;
 
-        QJsonArray models = obj["models"].toArray();
+        QJsonArray models = obj[QString("models")].toArray();
         int modInd = 0;
         foreach (const QJsonValue &mod, models) {
            QJsonObject modObj = mod.toObject();
-           QString modName = modObj["name"].toString();
+           QString modName = modObj[QString("name")].toString();
            Model *m = new Model(modName,modInd++);
-           m->tlc = modObj["tlc"].toString();
-           m->trc = modObj["trc"].toString();
-           m->blc = modObj["blc"].toString();
-           m->brc = modObj["brc"].toString();
-           QJsonArray textures = modObj["textures"].toArray();
+           m->tlc = modObj[QString("tlc")].toString();
+           m->trc = modObj[QString("trc")].toString();
+           m->blc = modObj[QString("blc")].toString();
+           m->brc = modObj[QString("brc")].toString();
+           QJsonArray textures = modObj[QString("textures")].toArray();
            foreach (const QJsonValue &t, textures) {
                qDebug() << "Texture found" << endl;
                QJsonObject tobj = t.toObject();
-               if(tobj["type"].toString().compare("image") == 0) {
-                   QString url = tobj["path"].toString();
-                   name = tobj["name"].toString();
-                   fileD = new FileDownloader(QUrl(url),base + name);
+               if(tobj[QString("type")].toString().compare("image") == 0) {
+                   QString url = tobj[QString("path")].toString();
+                   name = tobj[QString("name")].toString();
+                   fileD = new FileDownloader(QUrl(url),base + "/" + name);
                    qDebug() << "URL : " << url << endl;
                    QObject::connect(fileD, SIGNAL (downloaded()), &pause, SLOT (quit()));
                    pause.exec();
                    QImage img;
                    img.loadFromData(fileD->downloadedData());
                    QPixmap pix = QPixmap::fromImage(img);
-                   QString md5 = tobj["name"].toString();
+                   QString md5 = tobj[QString("MD5")].toString();
                    TextureIMG *tmp = new TextureIMG(pix,url,md5);
+                   tmp->setLocalPath(base + "/" + name);
                    tmp->setModified(false);
                    m->addTexture(tmp);
                    qDebug() << "Texture added" << endl;
-               } else if(tobj["type"].toString().compare("texte") == 0 ) {
-                   TextureTXT *tmp = new TextureTXT(tobj["text"].toString());
+               } else if(tobj[QString("type")].toString().compare("texte") == 0 ) {
+                   TextureTXT *tmp = new TextureTXT(tobj[QString("text")].toString());
                    tmp->setModified(false);
                    m->addTexture(tmp);
-                   qDebug() << "Texture added :" << tobj["text"].toString() << endl;
+                   qDebug() << "Texture added :" << tobj[QString("text")].toString() << endl;
                }
 
            }
@@ -120,9 +123,27 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
         c->setModified(false);
         canvas.append(c);
     }
-
+    int NO_ERROR = 0;
+    emit configImported(NO_ERROR);
 
 }
+static QString setZ(QString pos,int z) {
+    QString tmp;
+    tmp = pos;
+    int cut = tmp.lastIndexOf(",");
+    tmp = tmp.left(cut+1);
+    tmp.append(QString::number(z));
+    return tmp;
+}
+
+static QRect convertToQRect(QString tlc,QString brc) {
+    QStringList posTLC = tlc.split(",");
+    QStringList posBRC = brc.split(",");
+    QPoint pTLC(posTLC.at(0).toDouble(),posTLC.at(0).toDouble());
+    QPoint pBRC(posBRC.at(0).toDouble(),posBRC.at(0).toDouble());
+    return QRect(pTLC,pBRC);
+}
+
 void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
     QFile file(filepath);
     file.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -144,7 +165,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
         tmpHash.insert(v->getName(),"None");
 
     }
-    foreach(Canva *v, getCanvas()){
+    foreach(Canva *canv, getCanvas()){
         if(pass) {
             pass = false;
             continue;
@@ -152,20 +173,21 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
         }
         QString baseFolder;
         QJsonObject canva;
-        canva["name"] = v->getName();
+        canva[QString("name")] = canv->getName();
         QJsonObject feature;
         QJsonArray files;
 
-        if(v->modified()) {
-            v->setModified(false);
-            feature["name"] = v->getName().remove(QRegExp("[ \"'_-]"));
-            QString trimName = v->getName().remove(QRegExp("[ \"'_-]"));
+        if(canv->modified()) {
+            canv->setModified(false);
+            feature[QString("name")] = canv->getName().remove(QRegExp("[ \"'_-]|[+]"));
+            Feature *featureCanva = new Feature(feature[QString("name")].toString());
+            QString trimName = canv->getName().remove(QRegExp("[ \"'_-]|[+]"));
             baseFolder = trimName;
             QString filename = base + trimName +".jpg";
             qDebug() << "Filename : " + filename;
             QFile file(filename);
             file.open(QIODevice::WriteOnly);
-            v->getPix().save(&file, "JPG");
+            canv->getPix().save(&file, "JPG");
             QProcess *process = new QProcess();
 #ifdef Q_OS_WIN
             QString prog = "../bin/genTexData.exe " + filename + " -level=2 -leveli=1 -dpi=100 -min_dpi=20 -max_dpi=100";
@@ -184,28 +206,39 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                 if (hash.addData(&filup)) {
                     strHash = hash.result();
                 }
-                file["name"] = trimName + "." + ext[i];
+                file[QString("name")] = trimName + "." + ext[i];
                 filup.seek(0);
-                file["path"] = cex->upload(QString(baseFolder + "/" + trimName + "." + ext[i]),filup.readAll());
-                file["MD5"] = QString(strHash.toHex());
+                file[QString("path")] = cex->upload(QString(baseFolder + "/" + trimName + "." + ext[i]),filup.readAll());
+                file[QString("MD5")] = QString(strHash.toHex());
+                File fileFeature(file[QString("name")].toString(),file[QString("path")].toString(),file[QString("MD5")].toString());
+                if(ext[i].compare("iset") == 0) {
+                    featureCanva->setIset(fileFeature);
+                } else if(ext[i].compare("fset") == 0) {
+                    featureCanva->setFset(fileFeature);
+                } else if(ext[i].compare("fset3") == 0) {
+                    featureCanva->setFset3(fileFeature);
+                }
                 files.append(file);
             }
+            canv->setFeature(featureCanva);
         } else {
-            feature["name"] = v->getFeature()->getName();
+            feature[QString("name")] = canv->getName().remove(QRegExp("[ \"'_-]|[+]"));
+            QString trimName = canv->getName().remove(QRegExp("[ \"'_-]|[+]"));
+            baseFolder = trimName;
             QJsonObject iset;
-            iset["name"] = v->getFeature()->getIset().getName();
-            iset["path"] = v->getFeature()->getIset().getPath();
-            iset["MD5"] = v->getFeature()->getIset().getMD5();
+            iset[QString("name")] = canv->getFeature()->getIset().getName();
+            iset[QString("path")] = canv->getFeature()->getIset().getPath();
+            iset[QString("MD5")] = canv->getFeature()->getIset().getMD5();
             files.append(iset);
             QJsonObject fset;
-            fset["name"] = v->getFeature()->getFset().getName();
-            fset["path"] = v->getFeature()->getFset().getPath();
-            fset["MD5"] = v->getFeature()->getFset().getMD5();
+            fset[QString("name")] = canv->getFeature()->getFset().getName();
+            fset[QString("path")] = canv->getFeature()->getFset().getPath();
+            fset[QString("MD5")] = canv->getFeature()->getFset().getMD5();
             files.append(fset);
             QJsonObject fset3;
-            fset3["name"] = v->getFeature()->getFset3().getName();
-            fset3["path"] = v->getFeature()->getFset3().getPath();
-            fset3["MD5"] = v->getFeature()->getFset3().getMD5();
+            fset3[QString("name")] = canv->getFeature()->getFset3().getName();
+            fset3[QString("path")] = canv->getFeature()->getFset3().getPath();
+            fset3[QString("MD5")] = canv->getFeature()->getFset3().getMD5();
             files.append(fset3);
         }
 
@@ -213,16 +246,29 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
 
 
 
-        feature["files"] = files;
-        canva["feature"] = feature;
+        feature[QString("files")] = files;
+        canva[QString("feature")] = feature;
         QJsonArray models;
-        foreach(Model *m, v->getItems()){
+        QVector<QRect> listRect;
+        foreach(Model *m, canv->getItems()){
             QJsonObject model;
-            model["name"] = m->name;
-            model["tlc"] = m->tlc;
-            model["trc"] = m->trc;
-            model["blc"] = m->blc;
-            model["brc"] = m->brc;
+
+            int zModel = 0; //First model will be on 0 axis and next on n*2 axis
+            model[QString("name")] = m->name;
+
+            QRect currentRect = convertToQRect(m->tlc,m->brc);
+            foreach(QRect r, listRect) {
+                if(r.intersects(currentRect)) {
+                    zModel+=2;
+                }
+            }
+            listRect.append(currentRect);
+
+            model[QString("tlc")] = setZ(m->tlc,zModel);
+            model[QString("trc")] = setZ(m->trc,zModel);
+            model[QString("blc")] = setZ(m->blc,zModel);
+            model[QString("brc")] = setZ(m->brc,zModel);
+            zModel+=2;
             QJsonArray textures;
             int indexTex = 0;
             foreach(Texture *t, m->getTextures()){
@@ -230,58 +276,66 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                     qDebug() << "Modified texture" << endl;
                     t->setModified(false);
                     if(t->getType() == Texture::TEXT) {
-                        TextureTXT *ttxt =  dynamic_cast<TextureTXT *>(t);
+                        TextureTXT *ttxt =  static_cast<TextureTXT *>(t);
                         QJsonObject tex;
-                        tex["text"] = ttxt->getData();
-                        tex["type"] = "texte";
+                        tex[QString("text")] = ttxt->getData();
+                        tex[QString("type")] = QString("texte");
                         textures.append(tex);
                     }
                     if(t->getType() == Texture::IMG) {
-                        TextureIMG *timg =  dynamic_cast<TextureIMG *>(t);
+                        TextureIMG *timg =  static_cast<TextureIMG *>(t);
+                        QFileInfo fileName(timg->getLocalPath());
+                        QString fileExt = fileName.suffix();
                         QJsonObject tex;
                         QByteArray bArray;
                         QBuffer buffer(&bArray);
                         buffer.open(QIODevice::WriteOnly);
-                        timg->getData().save(&buffer, "PNG");
+                        if(fileExt.compare("jpg",Qt::CaseInsensitive) == 0 || fileExt.compare("jpeg",Qt::CaseInsensitive) == 0) {
+                            timg->getData().save(&buffer, "JPG");
+                        } else if (fileExt.compare("png",Qt::CaseInsensitive) == 0) {
+                            timg->getData().save(&buffer, "PNG");
+                        } else {
+                            timg->getData().save(&buffer, "BMP");
+                        }
                         QCryptographicHash hash(QCryptographicHash::Md5);
                         QByteArray strHash;
                         hash.addData(bArray);
                         strHash = hash.result();
-                        QString tmpName = m->name.remove(QRegExp("[ \"'_-]")) + "%1" + ".png";
-                        tex["name"] = tmpName.arg(++indexTex);
-                        tex["path"] = QString(cex->upload(baseFolder + "/" + tmpName.arg(indexTex),bArray));
-                        tex["MD5"] = QString(strHash.toHex());
-                        tex["type"] = "image";
+                        QString nameTex = strHash.toHex() + "." + fileExt;
+                        tex[QString("name")] = nameTex;
+                        tex[QString("path")] = QString(cex->upload(QString(baseFolder + "/" + nameTex),bArray));
+                        tex[QString("MD5")] = QString(strHash.toHex());
+                        tex[QString("type")] = QString("image");
                         textures.append(tex);
                     }
                 } else {
                     if(t->getType() == Texture::TEXT) {
-                        TextureTXT *ttxt =  dynamic_cast<TextureTXT *>(t);
+                        TextureTXT *ttxt =  static_cast<TextureTXT *>(t);
                         QJsonObject tex;
-                        tex["text"] = ttxt->getData();
-                        tex["type"] = "texte";
+                        tex[QString("text")] = ttxt->getData();
+                        tex[QString("type")] = QString("texte");
                         textures.append(tex);
                     }
                     if(t->getType() == Texture::IMG) {
-                        TextureIMG *timg =  dynamic_cast<TextureIMG *>(t);
+                        TextureIMG *timg =  static_cast<TextureIMG *>(t);
                         QJsonObject tex;
-                        tex["type"] = "image";
-                        QString tmpName = m->name.remove(QRegExp("[ \"'_-]")) + "%1" + ".png";
-                        tex["name"] = tmpName.arg(++indexTex);
-                        tex["path"] = timg->getUrl();
-                        tex["MD5"] =  timg->getMD5();
+                        tex[QString("type")] = QString("image");
+                        QFileInfo fileName(timg->getLocalPath());
+                        tex[QString("name")] = fileName.fileName();
+                        tex[QString("path")] = timg->getUrl();
+                        tex[QString("MD5")] =  timg->getMD5();
                         textures.append(tex);
                     }
                 }
             }
-            model["textures"] = textures;
+            model[QString("textures")] = textures;
             models.append(model);
         }
-        canva["models"] = models;
+        canva[QString("models")] = models;
         canvas.append(canva);
     }
     QJsonObject canvasRoot;
-    canvasRoot["canvas"] = canvas;
+    canvasRoot[QString("canvas")] = canvas;
     doc.setObject(canvasRoot);
     file.write(doc.toJson());
     int NO_ERROR = 0;

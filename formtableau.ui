@@ -32,56 +32,78 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>200</y>
+     <y>250</y>
      <width>581</width>
-     <height>221</height>
+     <height>151</height>
     </rect>
    </property>
    <property name="title">
-    <string>Modèle 3D</string>
+    <string>Zone d'activité:</string>
    </property>
-   <widget class="QWidget" name="horizontalLayoutWidget_2">
+   <widget class="QPushButton" name="pbAdd">
     <property name="geometry">
      <rect>
-      <x>9</x>
-      <y>29</y>
-      <width>551</width>
-      <height>181</height>
+      <x>0</x>
+      <y>110</y>
+      <width>151</width>
+      <height>31</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QListWidget" name="lvListeModele"/>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_7"/>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QPushButton" name="pbAdd">
-         <property name="text">
-          <string>Ajouter</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pbMod">
-         <property name="text">
-          <string>Modifier</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pbDel">
-         <property name="text">
-          <string>Supprimer</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
+    <property name="text">
+     <string>Zones</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>571</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>  L'ajout de &quot;Zone d'activité&quot; sur le tableau permet de créer des zones de réalité augmentée</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>60</y>
+      <width>571</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>pouvant comporter du texte ou des images. Ces créations de textes ou images apparaitront</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>571</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>dans l'application du client lorsque ce dernier visera ce tableau avec l'objectif du téléphone.</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="apercu">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>110</y>
+      <width>151</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Aperçu final</string>
+    </property>
    </widget>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget_3">
@@ -90,7 +112,7 @@
      <x>10</x>
      <y>10</y>
      <width>581</width>
-     <height>204</height>
+     <height>231</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -220,7 +242,7 @@
    <property name="geometry">
     <rect>
      <x>390</x>
-     <y>410</y>
+     <y>400</y>
      <width>201</width>
      <height>51</height>
     </rect>
