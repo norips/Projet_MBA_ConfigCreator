@@ -53,7 +53,7 @@ QString DropboxExporter::upload(const QString fileName, const QByteArray &payloa
 void DropboxExporter::replyFinished(QNetworkReply *nr) {
     if(first){
         QByteArray output = nr->readAll();
-        qInfo(output);
+        //qInfo(output);
         QJsonDocument doc = QJsonDocument::fromJson(output);
         QString formattedJsonString = doc.toJson(QJsonDocument::Indented);
 
@@ -72,7 +72,7 @@ void DropboxExporter::replyFinished(QNetworkReply *nr) {
         secondFirst = true;
     } else {
         QByteArray output = nr->readAll();
-        qInfo(output);
+        //qInfo(output);
         if(nr->attribute(QNetworkRequest::HttpStatusCodeAttribute) != 200) {
             qDebug() << "Error while retrieving url, assuming already existing link" << endl;
             QNetworkRequest nr(QUrl("https://api.dropboxapi.com/2/sharing/list_shared_links"));
