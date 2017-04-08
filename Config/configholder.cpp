@@ -199,6 +199,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
             process->start(prog);
             process->waitForFinished(-1); //Timeout 20min
             QString ext[] = {"iset","fset3","fset"};
+            QString folderIset = "";
             for(int i = 0; i < 3; i++) {
                 QJsonObject file;
                 QFile filup(base + trimName + "." + ext[i]);
@@ -208,9 +209,11 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                 if (hash.addData(&filup)) {
                     strHash = hash.result();
                 }
+                if(i==0)
+                    folderIset = QString(strHash.toHex());
                 file[QString("name")] = trimName + "." + ext[i];
                 filup.seek(0);
-                file[QString("path")] = cex->upload(QString(baseFolder + "/" + trimName + "." + ext[i]),filup.readAll());
+                file[QString("path")] = cex->upload(QString(baseFolder + "/" + folderIset + "/" + trimName + "." + ext[i]),filup.readAll());
                 file[QString("MD5")] = QString(strHash.toHex());
                 File fileFeature(file[QString("name")].toString(),file[QString("path")].toString(),file[QString("MD5")].toString());
                 if(ext[i].compare("iset") == 0) {
