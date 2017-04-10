@@ -273,9 +273,7 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
             model[QString("trc")] = setZ(m->trc,zModel);
             model[QString("blc")] = setZ(m->blc,zModel);
             model[QString("brc")] = setZ(m->brc,zModel);
-            zModel+=2;
             QJsonArray textures;
-            int indexTex = 0;
             foreach(Texture *t, m->getTextures()){
                 if(t->modified()) {
                     qDebug() << "Modified texture" << endl;

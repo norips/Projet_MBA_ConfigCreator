@@ -118,7 +118,6 @@ void Preview::create_pixmap(Model *model, int position)
         QFont font = text->font();
 
         QRect cRect = text->contentsRect();
-        QRect lRect = label->contentsRect();
 
         if(text->toPlainText().isEmpty() )
                 return;
