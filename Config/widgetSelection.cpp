@@ -24,6 +24,7 @@ WidgetSelection::WidgetSelection(QWidget *parent)
     labelWid->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
     labelWid->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     labelWid->setWordWrap(true);
+    labelWid->setVisible(false);
 
     teWid = new TextEdit("",this);
     teWid->setVisible(false);

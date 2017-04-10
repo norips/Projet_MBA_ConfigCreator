@@ -62,7 +62,11 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
 
     ui->stackedWidget->setEnabled(false);
     ui->gbText->setEnabled(false);
-
+    QRect posWidg = ui->widgetSelect->geometry();
+    posWidg.setHeight(1);
+    posWidg.setWidth(1);
+    ui->widgetSelect->getLabel()->setGeometry(posWidg);
+    ui->widgetSelect->getTextEdit()->setGeometry(posWidg);
     ui->widgetSelect->raise();
 }
 
