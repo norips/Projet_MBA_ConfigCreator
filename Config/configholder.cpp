@@ -338,9 +338,19 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                         QFileInfo fileName(filePath);
                         QString fileExt = fileName.suffix();
                         QJsonObject tex;
-                        QByteArray bArray;
+
+
+                        QFile file(filePath);
+
+                        if (!file.open(QIODevice::ReadOnly)) {
+                            qDebug() << "Can't open movie" << endl;
+                            continue;
+                        }
+                        QByteArray bArray = file.readAll();
                         QBuffer buffer(&bArray);
                         buffer.open(QIODevice::WriteOnly);
+
+
                         QCryptographicHash hash(QCryptographicHash::Md5);
                         QByteArray strHash;
                         hash.addData(bArray);
