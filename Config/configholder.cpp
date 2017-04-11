@@ -334,7 +334,8 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                     }
                     if(t->getType() == Texture::MOV) {
                         TextureMOV *tmov =  static_cast<TextureMOV *>(t);
-                        QFileInfo fileName(tmov->getLocalPath());
+                        QString filePath = tmov->getLocalPath();
+                        QFileInfo fileName(filePath);
                         QString fileExt = fileName.suffix();
                         QJsonObject tex;
                         QByteArray bArray;

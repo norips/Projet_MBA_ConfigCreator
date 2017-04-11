@@ -1,5 +1,11 @@
 #include "textureimg.h"
 
+TextureIMG::TextureIMG() {
+    this->pix = pix;
+    this->f = File("","","");
+    this->localPath = "";
+}
+
 TextureIMG::TextureIMG(QPixmap &pix) : Texture()
 {
     this->pix = pix;

@@ -5,6 +5,8 @@
 #include "Config/texture.h"
 #include "Config/textureimg.h"
 #include "Config/texturetxt.h"
+#include "Config/texturemov.h"
+
 #include <QDebug>
 #include <QFileDialog>
 #include <QImageReader>
@@ -26,6 +28,7 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     connect(ui->pbRemoveZone,SIGNAL(pressed()),this,SLOT(buttonMoins1()));
     connect(ui->cbTextureType, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(ui->pbPathIMG, SIGNAL(released()),this,SLOT(openFile()));
+    connect(ui->pbPathMOV, SIGNAL(released()),this,SLOT(openFileVideo()));
     connect(ui->teText,SIGNAL(textChanged()),this,SLOT(changetext()));
 
     canva = c;
@@ -107,6 +110,23 @@ void DialogModel::openFile()
         ui->widgetSelect->getLabel()->setPixmap(map);
         ui->widgetSelect->getLabel()->setVisible(true);
         ui->widgetSelect->getTextEdit()->setVisible(false);
+    }
+}
+
+void DialogModel::openFileVideo()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une vidéo"),"/",tr("Image Files (*.mp4)"));
+
+    if (fileName != NULL){
+
+        int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+        model->getTextures().remove(pos_to_suppress);
+        TextureMOV* tMovie = new TextureMOV();
+        tMovie->setLocalPath(fileName);
+
+        model->getTextures().insert(pos_to_suppress,tMovie);
+        ui->lePathMOV->insert(fileName);
+        model->setModified(true);
     }
 }
 
@@ -203,6 +223,10 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         ui->widgetSelect->getLabel()->setPixmap(map);
         ui->widgetSelect->getLabel()->setVisible(true);
         ui->widgetSelect->getTextEdit()->setVisible(false);
+        ui->gbModele->setEnabled(true);
+    } else if (model->getTextures().value(pos)->getType() == Texture::MOV) {
+        ui->stackedWidget->setCurrentIndex(2);
+        ui->cbTextureType->setCurrentIndex(2);
         ui->gbModele->setEnabled(true);
     }
 

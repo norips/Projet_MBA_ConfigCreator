@@ -34,6 +34,7 @@ private slots:
     void on_pbDownModel_clicked();
     void on_pbUpTexture_clicked();
     void on_pbDownTexture_clicked();
+    void openFileVideo();
 
 private:
     Ui::DialogModel *ui;

@@ -6,6 +6,7 @@
 class TextureIMG : public Texture
 {
 public:
+    TextureIMG();
     TextureIMG(QPixmap& pix);
     TextureIMG(QPixmap& pix,QString& url,QString& md5);
     int getType();
