@@ -16,6 +16,7 @@
 #include "texturetxt.h"
 #include "textureimg.h"
 #include "configexporter.h"
+#include "texturemov.h"
 
 ConfigHolder* ConfigHolder::m_instance=0;
 ConfigHolder::ConfigHolder( QObject* parent ) : QObject( parent )
@@ -116,6 +117,24 @@ void ConfigHolder::LoadFromJSONFile(QString &filepath){
                    tmp->setModified(false);
                    m->addTexture(tmp);
                    qDebug() << "Texture added :" << tobj[QString("text")].toString() << endl;
+               } else if(tobj[QString("type")].toString().compare("video") == 0 ) {
+                   TextureMOV *tmp = new TextureMOV;
+
+                   QString url = tobj[QString("path")].toString();
+                   name = tobj[QString("name")].toString();
+                   fileD = new FileDownloader(QUrl(url),base + "/" + name);
+                   qDebug() << "URL : " << url << endl;
+                   QObject::connect(fileD, SIGNAL (downloaded()), &pause, SLOT (quit()));
+                   pause.exec();
+
+
+                   File f(tobj[QString("name")].toString(),tobj[QString("path")].toString(),tobj[QString("MD5")].toString());
+                   tmp->setFile(f);
+                   tmp->setLocalPath(base + "/" + name);
+                   tmp->setModified(false);
+
+
+                   m->addTexture(tmp);
                }
 
            }
@@ -313,6 +332,27 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                         timg->setFile(f);
                         textures.append(tex);
                     }
+                    if(t->getType() == Texture::MOV) {
+                        TextureMOV *tmov =  static_cast<TextureMOV *>(t);
+                        QFileInfo fileName(tmov->getLocalPath());
+                        QString fileExt = fileName.suffix();
+                        QJsonObject tex;
+                        QByteArray bArray;
+                        QBuffer buffer(&bArray);
+                        buffer.open(QIODevice::WriteOnly);
+                        QCryptographicHash hash(QCryptographicHash::Md5);
+                        QByteArray strHash;
+                        hash.addData(bArray);
+                        strHash = hash.result();
+                        QString nameTex = strHash.toHex() + "." + fileExt;
+                        tex[QString("name")] = nameTex;
+                        tex[QString("path")] = QString(cex->upload(QString(baseFolder + "/" + nameTex),bArray));
+                        tex[QString("MD5")] = QString(strHash.toHex());
+                        tex[QString("type")] = QString("video");
+                        File f(tex[QString("name")].toString(),tex[QString("path")].toString(),tex[QString("MD5")].toString());
+                        tmov->setFile(f);
+                        textures.append(tex);
+                    }
                 } else {
                     if(t->getType() == Texture::TEXT) {
                         TextureTXT *ttxt =  static_cast<TextureTXT *>(t);
@@ -328,6 +368,15 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
                         tex[QString("name")] = timg->getFile().getName();
                         tex[QString("path")] = timg->getUrl();
                         tex[QString("MD5")] =  timg->getMD5();
+                        textures.append(tex);
+                    }
+                    if(t->getType() == Texture::MOV) {
+                        TextureMOV *tmov =  static_cast<TextureMOV *>(t);
+                        QJsonObject tex;
+                        tex[QString("type")] = QString("video");
+                        tex[QString("name")] = tmov->getFile().getName();
+                        tex[QString("path")] = tmov->getUrl();
+                        tex[QString("MD5")] =  tmov->getMD5();
                         textures.append(tex);
                     }
                 }
