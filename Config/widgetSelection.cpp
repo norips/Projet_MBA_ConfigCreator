@@ -8,6 +8,9 @@
 #include <Qt>
 #include <QGraphicsView>
 #include <QGraphicsOpacityEffect>
+#include <QVBoxLayout>
+#include <QtMultimediaWidgets/QVideoWidget>
+#include <QtMultimedia/QMediaPlayer>
 
 WidgetSelection::WidgetSelection(QWidget *parent)
     : QWidget(parent)
@@ -28,6 +31,10 @@ WidgetSelection::WidgetSelection(QWidget *parent)
 
     teWid = new TextEdit("",this);
     teWid->setVisible(false);
+
+    videoWidget = new QVideoWidget(this);
+    videoWidget->setVisible(false);
+
 }
 
 WidgetSelection::~WidgetSelection()
@@ -67,10 +74,12 @@ void WidgetSelection::mouseMoveEvent(QMouseEvent *e)
             rubberBand->setGeometry(QRect(origin,e->pos()));
             labelWid->setGeometry(QRect(origin,e->pos()));
             teWid->setGeometry(QRect(origin,e->pos()));
+            videoWidget->setGeometry(QRect(origin,e->pos()));
             rubberBand->show();
         }
     labelWid->raise();
     teWid->raise();
+    videoWidget->raise();
 
 }
 
@@ -81,6 +90,7 @@ void WidgetSelection::mouseReleaseEvent(QMouseEvent *e)
 
     labelWid->setGeometry(rubberBand->geometry());
     teWid->setGeometry(rubberBand->geometry());
+    videoWidget->setGeometry(rubberBand->geometry());
     move_rubberBand = false;
     selection_start = false;
     rubberBand->show();
@@ -101,5 +111,10 @@ QLabel* WidgetSelection::getLabel(){
 TextEdit* WidgetSelection::getTextEdit(){
     return teWid;
 }
+
+QVideoWidget*  WidgetSelection::getVideo(){
+    return videoWidget;
+}
+
 
 

@@ -15,6 +15,7 @@
 #include <QtMultimedia/QMediaPlayer>
 #include <QtMultimedia/QMediaPlaylist>
 #include <QtMultimediaWidgets/QVideoWidget>
+#include <QVBoxLayout>
 #include <QUrl>
 #define UNUSED(x) (void)(x)
 #define MAX_LOOP_TIMES 10
@@ -147,7 +148,7 @@ void DialogModel::openFileVideo()
         movie->start();
 
         *VIDEO QUI MARCHE PAS ENCORE*
-        QMediaPlayer * player = new QMediaPlayer(this,QMediaPlayer::LowLatency);
+        QMediaPlayer * player = new QMediaPlayer();
 
         QMediaPlaylist *playlist = new QMediaPlaylist(player);
         playlist->addMedia(QUrl::fromLocalFile(fileName));
@@ -155,13 +156,24 @@ void DialogModel::openFileVideo()
         QVideoWidget *videoWidget = new QVideoWidget(this);
         player->setVideoOutput(videoWidget);
 
+        videoWidget->raise();
         videoWidget->show();
         playlist->setCurrentIndex(1);
         player->play();*/
 
+
+        QMediaPlayer *player = new QMediaPlayer(ui->widgetSelect);
+        player->setMedia(QUrl::fromLocalFile(fileName));
+        player->setVideoOutput(ui->widgetSelect->getVideo());
+        ui->widgetSelect->getVideo()->show();
+        player->play();
+
+
+
         //Load pixmap
-        ui->widgetSelect->getLabel()->setPixmap(map);
-        ui->widgetSelect->getLabel()->setVisible(true);
+        //ui->widgetSelect->getLabel()->setPixmap(map);
+        ui->widgetSelect->getVideo()->setVisible(true);
+        ui->widgetSelect->getLabel()->setVisible(false);
         ui->widgetSelect->getTextEdit()->setVisible(false);
     }
 }

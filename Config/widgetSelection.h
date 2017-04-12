@@ -6,6 +6,8 @@
 #include <QGroupBox>
 #include <QMenu>
 #include <QRubberBand>
+#include <QtMultimediaWidgets/QVideoWidget>
+#include <QtMultimedia/QMediaPlayer>
 #include "../textedit.h"
 #include "mainwindow.h"
 
@@ -29,6 +31,7 @@ public:
     QRubberBand* getRubberBand();
     QLabel* getLabel();
     TextEdit* getTextEdit();
+    QVideoWidget* getVideo();
 
 
 private:
@@ -36,6 +39,8 @@ private:
     QLabel *labelWid;
     TextEdit *teWid;
     QRubberBand* rubberBand;
+    QVideoWidget *videoWidget;
+
     bool move_rubberBand;
     bool selection_start;
     QPoint rubberBand_offset;
