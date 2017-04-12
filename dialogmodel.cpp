@@ -11,7 +11,13 @@
 #include <QFileDialog>
 #include <QImageReader>
 #include <QPainter>
+#include <QMovie>
+#include <QtMultimedia/QMediaPlayer>
+#include <QtMultimedia/QMediaPlaylist>
+#include <QtMultimediaWidgets/QVideoWidget>
+#include <QUrl>
 #define UNUSED(x) (void)(x)
+#define MAX_LOOP_TIMES 10
 DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     QDialog(parent),
     ui(new Ui::DialogModel)
@@ -115,7 +121,7 @@ void DialogModel::openFile()
 
 void DialogModel::openFileVideo()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une vidéo"),"/",tr("Image Files (*.mp4)"));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une vidéo"),"/",tr("Image Files (*.mp4 *.gif)"));
 
     if (fileName != NULL){
 
@@ -129,9 +135,29 @@ void DialogModel::openFileVideo()
         QImage image =reader->read();
         QPixmap map=QPixmap::fromImage(image);
 
+        /*GIF *
+
+        movie = new QMovie(fileName);
         model->getTextures().insert(pos_to_suppress,tMovie);
         ui->lePathMOV->insert(fileName);
         model->setModified(true);
+
+        ui->widgetSelect->getLabel()->setPixmap(map);
+        ui->widgetSelect->getLabel()->setMovie(movie);
+        movie->start();
+
+        *VIDEO QUI MARCHE PAS ENCORE*
+        QMediaPlayer * player = new QMediaPlayer(this,QMediaPlayer::LowLatency);
+
+        QMediaPlaylist *playlist = new QMediaPlaylist(player);
+        playlist->addMedia(QUrl::fromLocalFile(fileName));
+
+        QVideoWidget *videoWidget = new QVideoWidget(this);
+        player->setVideoOutput(videoWidget);
+
+        videoWidget->show();
+        playlist->setCurrentIndex(1);
+        player->play();*/
 
         //Load pixmap
         ui->widgetSelect->getLabel()->setPixmap(map);
@@ -139,6 +165,7 @@ void DialogModel::openFileVideo()
         ui->widgetSelect->getTextEdit()->setVisible(false);
     }
 }
+
 
 void DialogModel::buttonPlus()
 {

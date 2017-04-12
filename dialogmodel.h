@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QGroupBox>
+#include <QMovie>
 #include "Config/model.h"
 #include "Config/modelitem.h"
 #include "Config/canva.h"
@@ -43,6 +44,7 @@ private:
     Texture *t;
     modelItem *mo;
     QLabel *test;
+    QMovie *movie;
     double ratioX;
     double ratioY;
     int firstload;
