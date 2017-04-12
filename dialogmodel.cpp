@@ -124,9 +124,19 @@ void DialogModel::openFileVideo()
         TextureMOV* tMovie = new TextureMOV();
         tMovie->setLocalPath(fileName);
 
+        QImageReader *reader = new QImageReader();
+        reader->setFileName("../img/video.png");
+        QImage image =reader->read();
+        QPixmap map=QPixmap::fromImage(image);
+
         model->getTextures().insert(pos_to_suppress,tMovie);
         ui->lePathMOV->insert(fileName);
         model->setModified(true);
+
+        //Load pixmap
+        ui->widgetSelect->getLabel()->setPixmap(map);
+        ui->widgetSelect->getLabel()->setVisible(true);
+        ui->widgetSelect->getTextEdit()->setVisible(false);
     }
 }
 
@@ -225,9 +235,20 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         ui->widgetSelect->getTextEdit()->setVisible(false);
         ui->gbModele->setEnabled(true);
     } else if (model->getTextures().value(pos)->getType() == Texture::MOV) {
+        Texture* t = model->getTextures().value(pos);
+        TextureMOV* tmov = (TextureMOV*) t;
         ui->stackedWidget->setCurrentIndex(2);
         ui->cbTextureType->setCurrentIndex(2);
+        ui->lePathMOV->setText(tmov->getLocalPath());
         ui->gbModele->setEnabled(true);
+
+        QImageReader *reader = new QImageReader();
+        reader->setFileName("../img/video.png");
+        QImage image =reader->read();
+        QPixmap map=QPixmap::fromImage(image);
+        ui->widgetSelect->getLabel()->setPixmap(map);
+        ui->widgetSelect->getLabel()->setVisible(true);
+        ui->widgetSelect->getTextEdit()->setVisible(false);
     }
 
 }

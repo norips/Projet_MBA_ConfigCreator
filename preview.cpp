@@ -4,6 +4,7 @@
 #include <QRect>
 #include <Config/textureimg.h>
 #include <Config/texturetxt.h>
+#include <Config/texturemov.h>
 #include <textedit.h>
 #include <QImageReader>
 #include <QFont>
@@ -151,6 +152,19 @@ void Preview::create_pixmap(Model *model, int position)
 
         QImageReader *reader = new QImageReader();
         reader->setFileName(filename);
+        QImage image =reader->read();
+        QPixmap map=QPixmap::fromImage(image);
+
+        label->setPixmap(map);
+        label->setVisible(true);
+        text->setVisible(false);
+    } else if (model->getTextures().value(pos)->getType() == Texture::MOV) {
+        label->raise();
+        Texture* t = model->getTextures().value(pos);
+        TextureMOV* tmov = (TextureMOV*) t;
+
+        QImageReader *reader = new QImageReader();
+        reader->setFileName("../img/video.png");
         QImage image =reader->read();
         QPixmap map=QPixmap::fromImage(image);
 
