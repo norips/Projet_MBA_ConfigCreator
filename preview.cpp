@@ -69,7 +69,7 @@ void Preview:: on_pushButton_clicked(){
 }
 
 
-QLabel* Preview::create_pixmap(Model *model, int position)
+QWidget* Preview::create_pixmap(Model *model, int position)
 {
     int pos =0;
     if (position >=0){
@@ -139,7 +139,7 @@ QLabel* Preview::create_pixmap(Model *model, int position)
             return NULL;
         }
 
-        int flags = Qt::TextWordWrap; //more flags if needed
+        int flags = Qt::TextWrapAnywhere | Qt::AlignLeft | Qt::AlignTop ; //more flags if needed
 
         int fontSize = 1;
         while( true )
@@ -152,14 +152,22 @@ QLabel* Preview::create_pixmap(Model *model, int position)
             else
                 break;
         }
-
+        fontSize--;
         font.setPixelSize(fontSize);
+        QRect r = QFontMetrics(font).boundingRect(cRect,flags, text->toPlainText() );
+        text->setFont(font);
+
+
+
+
         text->setFont(font);
 
 
         label->setVisible(false);
         text->setVisible(true);
         videoWidget->setVisible(false);
+
+        return text;
 
     } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
         label->raise();
@@ -176,6 +184,7 @@ QLabel* Preview::create_pixmap(Model *model, int position)
         label->setVisible(true);
         text->setVisible(false);
         videoWidget->setVisible(false);
+        return label;
     } else if (model->getTextures().value(pos)->getType() == Texture::MOV) {
         videoWidget->raise();
         Texture* t = model->getTextures().value(pos);
@@ -198,8 +207,8 @@ QLabel* Preview::create_pixmap(Model *model, int position)
         videoWidget->setVisible(true);
         label->setVisible(false);
         text->setVisible(false);
+        return videoWidget;
     }
-    return label;
 }
 
 void Preview::plus_texture()
@@ -207,13 +216,13 @@ void Preview::plus_texture()
     QVector<Model*> items = canva->getItems();
     i=i+1;
 
-    for(int indLb = 0; indLb < arrLab.size(); i++) {
-        QLabel* del = arrLab.at(indLb);
+    for(int indLb = 0; indLb < arrLab.size(); indLb++) {
+        QWidget* del = arrLab.at(indLb);
         arrLab.remove(indLb);
         delete del;
     }
     for(int j = 0; j < items.size();j++) {
-        QLabel *tmp = create_pixmap(canva->getItems().value(j), i);
+        QWidget *tmp = create_pixmap(canva->getItems().value(j), i);
         if(tmp != NULL){
             arrLab.append(tmp);
         }
@@ -226,14 +235,14 @@ void Preview::moins_texture()
     QVector<Model*> items = canva->getItems();
     i=i-1;
 
-    for(int indLb = 0; indLb < arrLab.size(); i++) {
-        QLabel* del = arrLab.at(indLb);
+    for(int indLb = 0; indLb < arrLab.size(); indLb++) {
+        QWidget* del = arrLab.at(indLb);
         arrLab.remove(indLb);
         delete del;
     }
 
     for(int j = 0; j < items.size();j++) {
-        QLabel *tmp = create_pixmap(canva->getItems().value(j), i);
+        QWidget *tmp = create_pixmap(canva->getItems().value(j), i);
         if(tmp != NULL){
             arrLab.append(tmp);
         }

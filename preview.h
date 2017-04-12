@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QVector>
 #include <QLabel>
+#include <QWidget>
 #include "Config/canva.h"
 #include "Config/model.h"
 #include "Config/texture.h"
@@ -21,7 +22,7 @@ public:
     ~Preview();
 
 private slots:
-    QLabel* create_pixmap(Model * m, int pos);
+    QWidget* create_pixmap(Model * m, int pos);
     void plus_texture();
     void moins_texture();
     void on_pushButton_clicked();
@@ -30,7 +31,7 @@ private:
     Ui::Preview *ui;
     Canva *canva;
     Texture *t;
-    QVector<QLabel *> arrLab;
+    QVector<QWidget *> arrLab;
 
     bool first;
     double ratioX;
