@@ -131,47 +131,38 @@ void DialogModel::openFileVideo()
         TextureMOV* tMovie = new TextureMOV();
         tMovie->setLocalPath(fileName);
 
+        /*IMAGE REPRESENTANT UNE VIDEO*
         QImageReader *reader = new QImageReader();
         reader->setFileName("../img/video.png");
         QImage image =reader->read();
         QPixmap map=QPixmap::fromImage(image);
+        ui->widgetSelect->getLabel()->setPixmap(map);*/
 
         /*GIF *
 
         movie = new QMovie(fileName);
-        model->getTextures().insert(pos_to_suppress,tMovie);
-        ui->lePathMOV->insert(fileName);
-        model->setModified(true);
-
         ui->widgetSelect->getLabel()->setPixmap(map);
         ui->widgetSelect->getLabel()->setMovie(movie);
-        movie->start();
+        movie->start();*/
 
-        *VIDEO QUI MARCHE PAS ENCORE*
-        QMediaPlayer * player = new QMediaPlayer();
 
-        QMediaPlaylist *playlist = new QMediaPlaylist(player);
+        QMediaPlaylist *playlist = new QMediaPlaylist(this);
         playlist->addMedia(QUrl::fromLocalFile(fileName));
+        playlist->setPlaybackMode(QMediaPlaylist::Loop);
 
-        QVideoWidget *videoWidget = new QVideoWidget(this);
-        player->setVideoOutput(videoWidget);
+        QMediaPlayer *player = new QMediaPlayer(this);
+        player->setPlaylist(playlist);
 
-        videoWidget->raise();
-        videoWidget->show();
-        playlist->setCurrentIndex(1);
-        player->play();*/
-
-
-        QMediaPlayer *player = new QMediaPlayer(ui->widgetSelect);
-        player->setMedia(QUrl::fromLocalFile(fileName));
         player->setVideoOutput(ui->widgetSelect->getVideo());
         ui->widgetSelect->getVideo()->show();
         player->play();
 
+        model->getTextures().insert(pos_to_suppress,tMovie);
+        ui->lePathMOV->insert(fileName);
+        model->setModified(true);
 
 
-        //Load pixmap
-        //ui->widgetSelect->getLabel()->setPixmap(map);
+        //View Video
         ui->widgetSelect->getVideo()->setVisible(true);
         ui->widgetSelect->getLabel()->setVisible(false);
         ui->widgetSelect->getTextEdit()->setVisible(false);
