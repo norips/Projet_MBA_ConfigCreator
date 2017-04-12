@@ -61,6 +61,11 @@ Preview::~Preview()
     delete ui;
 }
 
+void Preview:: on_pushButton_clicked(){
+    this->hide();
+}
+
+
 QLabel* Preview::create_pixmap(Model *model, int position)
 {
     int pos =0;

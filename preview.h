@@ -24,6 +24,7 @@ private slots:
     QLabel* create_pixmap(Model * m, int pos);
     void plus_texture();
     void moins_texture();
+    void on_pushButton_clicked();
 
 private:
     Ui::Preview *ui;
