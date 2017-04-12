@@ -18,7 +18,7 @@
 #include <QVBoxLayout>
 #include <QUrl>
 #define UNUSED(x) (void)(x)
-#define MAX_LOOP_TIMES 10
+
 DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     QDialog(parent),
     ui(new Ui::DialogModel)

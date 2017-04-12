@@ -6,8 +6,8 @@
 #include <QGroupBox>
 #include <QMenu>
 #include <QRubberBand>
-#include <QtMultimediaWidgets/QVideoWidget>
-#include <QtMultimedia/QMediaPlayer>
+#include <QVideoWidget>
+#include <QMediaPlayer>
 #include "../textedit.h"
 #include "mainwindow.h"
 

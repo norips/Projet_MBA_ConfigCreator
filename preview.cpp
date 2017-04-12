@@ -10,6 +10,9 @@
 #include <QFont>
 #include <QAbstractButton>
 #include <QPushButton>
+#include <QMediaPlayer>
+#include <QVideoWidget>
+#include <QMediaPlaylist>
 
 Preview::Preview(QWidget *parent, Canva *c) :
     QDialog(parent),
@@ -86,6 +89,9 @@ QLabel* Preview::create_pixmap(Model *model, int position)
     label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     label->setWordWrap(true);
 
+    QVideoWidget * videoWidget = new QVideoWidget(this);
+    videoWidget->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
+
     if( !model->tlc.isEmpty() && !model->trc.isEmpty() && !model->blc.isEmpty() && !model->brc.isEmpty()) {
         QStringList lTLC = model->tlc.split(",");
         double tlcX = lTLC.at(0).toDouble() / ratioX;
@@ -112,6 +118,7 @@ QLabel* Preview::create_pixmap(Model *model, int position)
 
         label->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
         text->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
+        videoWidget->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
     }
 
     if (model->getTextures().value(pos)->getType() == Texture::TEXT){
@@ -152,6 +159,7 @@ QLabel* Preview::create_pixmap(Model *model, int position)
 
         label->setVisible(false);
         text->setVisible(true);
+        videoWidget->setVisible(false);
 
     } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
         label->raise();
@@ -167,18 +175,28 @@ QLabel* Preview::create_pixmap(Model *model, int position)
         label->setPixmap(map);
         label->setVisible(true);
         text->setVisible(false);
+        videoWidget->setVisible(false);
     } else if (model->getTextures().value(pos)->getType() == Texture::MOV) {
-        label->raise();
+        videoWidget->raise();
         Texture* t = model->getTextures().value(pos);
         TextureMOV* tmov = (TextureMOV*) t;
 
-        QImageReader *reader = new QImageReader();
-        reader->setFileName("../img/video.png");
-        QImage image =reader->read();
-        QPixmap map=QPixmap::fromImage(image);
+        qDebug() << "Video texture = " << tmov->getLocalPath() << endl;
 
-        label->setPixmap(map);
-        label->setVisible(true);
+        QMediaPlaylist *playlist = new QMediaPlaylist(this);
+        playlist->addMedia(QUrl::fromLocalFile(tmov->getLocalPath()));
+        playlist->setPlaybackMode(QMediaPlaylist::Loop);
+
+        QMediaPlayer *player = new QMediaPlayer(this);
+        player->setPlaylist(playlist);
+
+        player->setVideoOutput(videoWidget);
+        videoWidget->show();
+        player->play();
+
+
+        videoWidget->setVisible(true);
+        label->setVisible(false);
         text->setVisible(false);
     }
     return label;
