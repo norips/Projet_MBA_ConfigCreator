@@ -35,7 +35,7 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     QVector<Model*> items = canva->getItems();
     qDebug() << "Item size " << items.size();
     for(int i = 1; i < items.size()+1;i++) {
-       ui->ModelList->addItem("Zone " + QString::number(i));
+        ui->ModelList->addItem("Zone " + QString::number(i));
     }
 
     bool landscape = canva->getPix().width() > canva->getPix().height();
@@ -150,7 +150,7 @@ void DialogModel::buttonPlus()
 
     QVector<Texture*> items = model->getTextures();
     for(int i = 1; i < items.size()+1; i++) {
-       ui->TextureList->addItem("Page " + QString::number(i));
+        ui->TextureList->addItem("Page " + QString::number(i));
     }
     qDebug() << "SIZE ITEM" << items.size();
 
@@ -172,7 +172,7 @@ void DialogModel::buttonMoins(){
     ui->TextureList->clear();
     QVector<Texture*> items = model->getTextures();
     for(int i = 1; i < items.size()+1; i++) {
-       ui->TextureList->addItem("Page " + QString::number(i));
+        ui->TextureList->addItem("Page " + QString::number(i));
     }
     if(model->getTextures().size()<1) {
         ui->cbTextureType->setEnabled(false);
@@ -262,7 +262,7 @@ void DialogModel::buttonPlus1(){
 
     QVector<Model*> items = canva->getItems();
     for(int i = 1; i < items.size()+1; i++) {
-       ui->ModelList->addItem("Zone " + QString::number(i));
+        ui->ModelList->addItem("Zone " + QString::number(i));
     }
 
     if(items.size() == 1){
@@ -279,29 +279,31 @@ void DialogModel::buttonPlus1(){
 
 void DialogModel::buttonMoins1(){
 
-    if(ui->ModelList->selectedItems().size()<1) return;
+    if(ui->ModelList->selectedItems().size()<1)
+        return;
 
-       int pos_to_suppress = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
-       canva->getItems().remove(pos_to_suppress);
-       ui->ModelList->clear();
+    int pos_to_suppress = ui->ModelList->selectionModel()->selectedIndexes().at(0).row();
+    canva->getItems().remove(pos_to_suppress);
+    ui->ModelList->clear();
 
-       QVector<Model*> items = canva->getItems();
-       for(int i = 1; i < items.size()+1; i++) {
-          ui->ModelList->addItem("Zone " + QString::number(i));
-       }
+    QVector<Model*> items = canva->getItems();
+    for(int i = 1; i < items.size()+1; i++) {
+        ui->ModelList->addItem("Zone " + QString::number(i));
+    }
 
-       if(items.size()<=1) {
-           ui->cbTextureType->setEnabled(false);
-           ui->stackedWidget->setEnabled(false);
-           ui->gbText->setEnabled(false);
-           ui->pbSaveZone->setEnabled(false);
-           ui->gbModele->setEnabled(true);
-           ui->buttonBox->setEnabled(true);
-           ui->pbRemoveZone->setEnabled(false);
-           return;
-       } else {
-           ui->TextureList->setCurrentRow(items.size()-1);
-       }
+    if(items.size()<=1) {
+        ui->cbTextureType->setEnabled(false);
+        ui->stackedWidget->setEnabled(false);
+        ui->gbText->setEnabled(false);
+        ui->pbSaveZone->setEnabled(false);
+        ui->gbModele->setEnabled(true);
+        ui->buttonBox->setEnabled(true);
+        ui->pbRemoveZone->setEnabled(false);
+        ui->pbAddZone->setEnabled(true);
+        return;
+    } else {
+        ui->TextureList->setCurrentRow(items.size()-1);
+    }
 
 }
 
@@ -312,7 +314,7 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
     ui->stackedWidget->setEnabled(false);
     ui->pbSaveZone->setEnabled(false);
     ui->widgetSelect->getLabel()->setVisible(false);
-     ui->widgetSelect->getTextEdit()->setVisible(false);
+    ui->widgetSelect->getTextEdit()->setVisible(false);
     ui->gbText->setEnabled(true);
 
 
@@ -337,7 +339,7 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
         tlcY = -tlcY;
 
         QStringList lTRC = model->trc.split(",");
-       // double trcX = lTRC.at(0).toDouble() / ratioX;
+        // double trcX = lTRC.at(0).toDouble() / ratioX;
         double trcY = lTRC.at(1).toDouble() / ratioY;
         trcY = -trcY;
 
@@ -393,26 +395,26 @@ void DialogModel::changetext(){
     QRect lRect = ui->widgetSelect->getLabel()->contentsRect();
 
     if( ui->widgetSelect->getTextEdit()->toPlainText().isEmpty() )
-            return;
+        return;
 
     int flags = Qt::TextWordWrap; //more flags if needed
 
-         int fontSize = 1;
-          qDebug() << "content size:" << cRect.width() << "," << cRect.height() << endl;
-          qDebug() << "label size:" << lRect.width() << "," << lRect.height() << endl;
-          while( true )
-          {
-                      QFont f(font);
-                           f.setPixelSize( fontSize );
-                      QRect r = QFontMetrics(f).boundingRect(cRect,flags, ui->widgetSelect->getTextEdit()->toPlainText() );
-                      if (r.height() <= cRect.height() )
-                            fontSize++;
-                      else
-                            break;
-          }
+    int fontSize = 1;
+    qDebug() << "content size:" << cRect.width() << "," << cRect.height() << endl;
+    qDebug() << "label size:" << lRect.width() << "," << lRect.height() << endl;
+    while( true )
+    {
+        QFont f(font);
+        f.setPixelSize( fontSize );
+        QRect r = QFontMetrics(f).boundingRect(cRect,flags, ui->widgetSelect->getTextEdit()->toPlainText() );
+        if (r.height() <= cRect.height() )
+            fontSize++;
+        else
+            break;
+    }
 
-         font.setPixelSize(fontSize);
-         ui->widgetSelect->getTextEdit()->setFont(font);
+    font.setPixelSize(fontSize);
+    ui->widgetSelect->getTextEdit()->setFont(font);
 
 
 }
@@ -548,7 +550,7 @@ void DialogModel::on_pbUpTexture_clicked()
 
     QVector<Texture*> items = model->getTextures();
     for(int i = 1; i < items.size()+1; i++) {
-       ui->TextureList->addItem("Page " + QString::number(i));
+        ui->TextureList->addItem("Page " + QString::number(i));
     }
 
 }
@@ -576,6 +578,6 @@ void DialogModel::on_pbDownTexture_clicked()
 
     QVector<Texture*> items = model->getTextures();
     for(int i = 1; i < items.size()+1; i++) {
-       ui->TextureList->addItem("Page " + QString::number(i));
+        ui->TextureList->addItem("Page " + QString::number(i));
     }
 }
