@@ -9,8 +9,8 @@
 #include <QGraphicsView>
 #include <QGraphicsOpacityEffect>
 #include <QVBoxLayout>
-#include <QtMultimediaWidgets/QVideoWidget>
-#include <QtMultimedia/QMediaPlayer>
+#include <QVideoWidget>
+#include <QMediaPlayer>
 
 WidgetSelection::WidgetSelection(QWidget *parent)
     : QWidget(parent)
@@ -34,6 +34,8 @@ WidgetSelection::WidgetSelection(QWidget *parent)
 
     videoWidget = new QVideoWidget(this);
     videoWidget->setVisible(false);
+    videoWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
 
 }
 

@@ -12,9 +12,9 @@
 #include <QImageReader>
 #include <QPainter>
 #include <QMovie>
-#include <QtMultimedia/QMediaPlayer>
-#include <QtMultimedia/QMediaPlaylist>
-#include <QtMultimediaWidgets/QVideoWidget>
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
+#include <QVideoWidget>
 #include <QVBoxLayout>
 #include <QUrl>
 #define UNUSED(x) (void)(x)
