@@ -69,6 +69,7 @@ void WidgetSelection::mouseMoveEvent(QMouseEvent *e)
         rubberBand->move(e->pos() - rubberBand_offset);
         labelWid->move(e->pos() - rubberBand_offset);
         teWid->move(e->pos() - rubberBand_offset);
+        videoWidget->move(e->pos() - rubberBand_offset);
      } else
         if(selection_start){
             rubberBand->setGeometry(QRect(origin,e->pos()));
