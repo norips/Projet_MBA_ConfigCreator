@@ -51,7 +51,7 @@ Preview::Preview(QWidget *parent, Canva *c) :
 
     QVector<Model*> items = canva->getItems();
     for(int j = 0; j < items.size();j++) {
-       arrLab.append(create_pixmap(canva->getItems().value(j), i));
+        arrLab.append(create_pixmap(canva->getItems().value(j), i));
     }
 
 }
@@ -129,20 +129,20 @@ QLabel* Preview::create_pixmap(Model *model, int position)
 
         int flags = Qt::TextWordWrap; //more flags if needed
 
-             int fontSize = 1;
-              while( true )
-              {
-                          QFont f(font);
-                               f.setPixelSize( fontSize );
-                          QRect r = QFontMetrics(f).boundingRect(cRect,flags, text->toPlainText() );
-                          if (r.height() <= cRect.height() )
-                                fontSize++;
-                          else
-                                break;
-              }
+        int fontSize = 1;
+        while( true )
+        {
+            QFont f(font);
+            f.setPixelSize( fontSize );
+            QRect r = QFontMetrics(f).boundingRect(cRect,flags, text->toPlainText() );
+            if (r.height() <= cRect.height() )
+                fontSize++;
+            else
+                break;
+        }
 
-             font.setPixelSize(fontSize);
-             text->setFont(font);
+        font.setPixelSize(fontSize);
+        text->setFont(font);
 
 
         label->setVisible(false);
@@ -190,10 +190,10 @@ void Preview::plus_texture()
         delete del;
     }
     for(int j = 0; j < items.size();j++) {
-       QLabel *tmp = create_pixmap(canva->getItems().value(j), i);
-       if(tmp != NULL){
-           arrLab.append(tmp);
-       }
+        QLabel *tmp = create_pixmap(canva->getItems().value(j), i);
+        if(tmp != NULL){
+            arrLab.append(tmp);
+        }
     }
 
 }
@@ -210,10 +210,10 @@ void Preview::moins_texture()
     }
 
     for(int j = 0; j < items.size();j++) {
-       QLabel *tmp = create_pixmap(canva->getItems().value(j), i);
-       if(tmp != NULL){
-           arrLab.append(tmp);
-       }
+        QLabel *tmp = create_pixmap(canva->getItems().value(j), i);
+        if(tmp != NULL){
+            arrLab.append(tmp);
+        }
     }
 
 }
