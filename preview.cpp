@@ -48,9 +48,10 @@ Preview::Preview(QWidget *parent, Canva *c) :
     ratioX = (double) 100.0/displayedWidth;
     ratioY = (double) 100.0/displayedHeight;
 
+
     QVector<Model*> items = canva->getItems();
     for(int j = 0; j < items.size();j++) {
-       create_pixmap(canva->getItems().value(j), i);
+       arrLab.append(create_pixmap(canva->getItems().value(j), i));
     }
 
 }
@@ -60,7 +61,7 @@ Preview::~Preview()
     delete ui;
 }
 
-void Preview::create_pixmap(Model *model, int position)
+QLabel* Preview::create_pixmap(Model *model, int position)
 {
     int pos =0;
     if (position >=0){
@@ -74,6 +75,7 @@ void Preview::create_pixmap(Model *model, int position)
     TextEdit * text = new TextEdit("",this);
 
     QLabel * label = new QLabel(this);
+
     label->setScaledContents(true);
     label->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
     label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -120,8 +122,10 @@ void Preview::create_pixmap(Model *model, int position)
 
         QRect cRect = text->contentsRect();
 
-        if(text->toPlainText().isEmpty() )
-                return;
+        if(text->toPlainText().isEmpty() ) {
+            delete label;
+            return NULL;
+        }
 
         int flags = Qt::TextWordWrap; //more flags if needed
 
@@ -172,14 +176,24 @@ void Preview::create_pixmap(Model *model, int position)
         label->setVisible(true);
         text->setVisible(false);
     }
+    return label;
 }
 
 void Preview::plus_texture()
 {
     QVector<Model*> items = canva->getItems();
     i=i+1;
+
+    for(int indLb = 0; indLb < arrLab.size(); i++) {
+        QLabel* del = arrLab.at(indLb);
+        arrLab.remove(indLb);
+        delete del;
+    }
     for(int j = 0; j < items.size();j++) {
-       create_pixmap(canva->getItems().value(j), i);
+       QLabel *tmp = create_pixmap(canva->getItems().value(j), i);
+       if(tmp != NULL){
+           arrLab.append(tmp);
+       }
     }
 
 }
@@ -188,8 +202,18 @@ void Preview::moins_texture()
 {
     QVector<Model*> items = canva->getItems();
     i=i-1;
+
+    for(int indLb = 0; indLb < arrLab.size(); i++) {
+        QLabel* del = arrLab.at(indLb);
+        arrLab.remove(indLb);
+        delete del;
+    }
+
     for(int j = 0; j < items.size();j++) {
-       create_pixmap(canva->getItems().value(j), i);
+       QLabel *tmp = create_pixmap(canva->getItems().value(j), i);
+       if(tmp != NULL){
+           arrLab.append(tmp);
+       }
     }
 
 }

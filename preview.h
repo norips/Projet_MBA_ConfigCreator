@@ -2,6 +2,8 @@
 #define PREVIEW_H
 
 #include <QDialog>
+#include <QVector>
+#include <QLabel>
 #include "Config/canva.h"
 #include "Config/model.h"
 #include "Config/texture.h"
@@ -19,7 +21,7 @@ public:
     ~Preview();
 
 private slots:
-    void create_pixmap(Model * m, int pos);
+    QLabel* create_pixmap(Model * m, int pos);
     void plus_texture();
     void moins_texture();
 
@@ -27,6 +29,7 @@ private:
     Ui::Preview *ui;
     Canva *canva;
     Texture *t;
+    QVector<QLabel *> arrLab;
 
     bool first;
     double ratioX;
