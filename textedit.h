@@ -21,7 +21,8 @@ public:
 
         // wrap anywhere, adjust minimum height on the fly
         setLineWrapMode(QTextEdit::WidgetWidth);
-        setWordWrapMode(QTextOption::WrapAnywhere);
+        setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+        document()->setDocumentMargin(0);
         /*QObject::connect(document()->documentLayout(),
             SIGNAL(documentSizeChanged(QSizeF)),
             this, SLOT(adjustMinimumSize(QSizeF)));*/
