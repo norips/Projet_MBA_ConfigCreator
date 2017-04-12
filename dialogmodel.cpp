@@ -77,6 +77,7 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     posWidg.setWidth(1);
     ui->widgetSelect->getLabel()->setGeometry(posWidg);
     ui->widgetSelect->getTextEdit()->setGeometry(posWidg);
+    ui->widgetSelect->getVideo()->setGeometry(posWidg);
     ui->widgetSelect->raise();
 }
 
@@ -116,13 +117,14 @@ void DialogModel::openFile()
         //Load pixmap
         ui->widgetSelect->getLabel()->setPixmap(map);
         ui->widgetSelect->getLabel()->setVisible(true);
+        ui->widgetSelect->getVideo()->setVisible(false);
         ui->widgetSelect->getTextEdit()->setVisible(false);
     }
 }
 
 void DialogModel::openFileVideo()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une vidéo"),"/",tr("Image Files (*.mp4 *.gif)"));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une vidéo"),"/",tr("Image Files (*.mp4)"));
 
     if (fileName != NULL){
 
@@ -227,8 +229,9 @@ void DialogModel::itemActivated(QListWidgetItem* i){
     ui->cbTextureType->setEnabled(true);
     ui->stackedWidget->setEnabled(true);
     ui->pbSaveZone->setEnabled(true);
-    ui->widgetSelect->getLabel()->setVisible(true);
+    ui->widgetSelect->getLabel()->setVisible(false);
     ui->widgetSelect->getTextEdit()->setVisible(false);
+    ui->widgetSelect->getVideo()->setVisible(false);
 
 
     int pos = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
@@ -244,8 +247,6 @@ void DialogModel::itemActivated(QListWidgetItem* i){
 
         ui->widgetSelect->getTextEdit()->setText(textTexture);
         ui->widgetSelect->getTextEdit()->setVisible(true);
-        ui->widgetSelect->getLabel()->setVisible(false);
-        //ui->gbModele->setEnabled(true);
     } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
         Texture* t = model->getTextures().value(pos);
         TextureIMG* test = (TextureIMG*) t;
@@ -262,7 +263,6 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         ui->cbTextureType->setCurrentIndex(1);
         ui->widgetSelect->getLabel()->setPixmap(map);
         ui->widgetSelect->getLabel()->setVisible(true);
-        ui->widgetSelect->getTextEdit()->setVisible(false);
         ui->gbModele->setEnabled(true);
     } else if (model->getTextures().value(pos)->getType() == Texture::MOV) {
         Texture* t = model->getTextures().value(pos);
@@ -272,13 +272,19 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         ui->lePathMOV->setText(tmov->getLocalPath());
         ui->gbModele->setEnabled(true);
 
-        QImageReader *reader = new QImageReader();
-        reader->setFileName("../img/video.png");
-        QImage image =reader->read();
-        QPixmap map=QPixmap::fromImage(image);
-        ui->widgetSelect->getLabel()->setPixmap(map);
-        ui->widgetSelect->getLabel()->setVisible(true);
-        ui->widgetSelect->getTextEdit()->setVisible(false);
+        QMediaPlaylist *playlist = new QMediaPlaylist(this);
+        playlist->addMedia(QUrl::fromLocalFile(tmov->getLocalPath()));
+        playlist->setPlaybackMode(QMediaPlaylist::Loop);
+
+        QMediaPlayer *player = new QMediaPlayer(this);
+        player->setPlaylist(playlist);
+
+        player->setVideoOutput(ui->widgetSelect->getVideo());
+        ui->widgetSelect->getVideo()->show();
+        player->play();
+
+
+        ui->widgetSelect->getVideo()->setVisible(true);
     }
 
 }
@@ -345,6 +351,7 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
     ui->pbSaveZone->setEnabled(false);
     ui->widgetSelect->getLabel()->setVisible(false);
     ui->widgetSelect->getTextEdit()->setVisible(false);
+    ui->widgetSelect->getVideo()->setVisible(false);
     ui->gbText->setEnabled(true);
 
 
@@ -392,6 +399,7 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
         brcY += (ui->lbpixmap->y() + ui->lbpixmap->height());
         ui->widgetSelect->getRubberBand()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
         ui->widgetSelect->getLabel()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
+        ui->widgetSelect->getVideo()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
         ui->widgetSelect->getTextEdit()->setGeometry(QRect(QPoint(tlcX,tlcY),QPoint(brcX,brcY)));
         ui->widgetSelect->getRubberBand()->show();
         ui->buttonBox->setEnabled(true);
@@ -416,6 +424,7 @@ void DialogModel::changetext(){
 
 
     ui->widgetSelect->getLabel()->setVisible(false);
+    ui->widgetSelect->getTextEdit()->setVisible(false);
     ui->widgetSelect->getTextEdit()->setText(text);
     ui->widgetSelect->getTextEdit()->setVisible(true);
 
@@ -571,8 +580,6 @@ void DialogModel::on_pbUpTexture_clicked()
 
     t= model->getTextures().value(pos);
 
-
-
     model->getTextures().remove(pos);
     model->getTextures().insert(pos-1,t);
 
@@ -596,10 +603,6 @@ void DialogModel::on_pbDownTexture_clicked()
         return;
 
     t= model->getTextures().value(pos);
-
-
-
-
 
     model->getTextures().remove(pos);
     model->getTextures().insert(pos+1,t);
