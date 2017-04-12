@@ -35,6 +35,7 @@ WidgetSelection::WidgetSelection(QWidget *parent)
     videoWidget = new QVideoWidget(this);
     videoWidget->setVisible(false);
     videoWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    videoWidget->setAspectRatioMode(Qt::IgnoreAspectRatio);
 
 
 }
@@ -72,6 +73,9 @@ void WidgetSelection::mouseMoveEvent(QMouseEvent *e)
         labelWid->move(e->pos() - rubberBand_offset);
         teWid->move(e->pos() - rubberBand_offset);
         videoWidget->move(e->pos() - rubberBand_offset);
+        labelWid->raise();
+        teWid->raise();
+        videoWidget->raise();
      } else
         if(selection_start){
             rubberBand->setGeometry(QRect(origin,e->pos()));
@@ -79,10 +83,10 @@ void WidgetSelection::mouseMoveEvent(QMouseEvent *e)
             teWid->setGeometry(QRect(origin,e->pos()));
             videoWidget->setGeometry(QRect(origin,e->pos()));
             rubberBand->show();
+            labelWid->raise();
+            teWid->raise();
+            videoWidget->raise();
         }
-    labelWid->raise();
-    teWid->raise();
-    videoWidget->raise();
 
 }
 

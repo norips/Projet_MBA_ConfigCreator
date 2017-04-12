@@ -436,23 +436,25 @@ void DialogModel::changetext(){
     if( ui->widgetSelect->getTextEdit()->toPlainText().isEmpty() )
         return;
 
-    int flags = Qt::TextWordWrap; //more flags if needed
+    int flags = Qt::TextWrapAnywhere | Qt::AlignLeft | Qt::AlignTop ; //more flags if needed
 
     int fontSize = 1;
-    qDebug() << "content size:" << cRect.width() << "," << cRect.height() << endl;
     qDebug() << "label size:" << lRect.width() << "," << lRect.height() << endl;
     while( true )
     {
         QFont f(font);
         f.setPixelSize( fontSize );
         QRect r = QFontMetrics(f).boundingRect(cRect,flags, ui->widgetSelect->getTextEdit()->toPlainText() );
+        qDebug() << "Boundingrect size:" << r.width() << "," << r.height() << endl;
         if (r.height() <= cRect.height() )
             fontSize++;
         else
             break;
     }
-
+    fontSize--;
     font.setPixelSize(fontSize);
+    QRect r = QFontMetrics(font).boundingRect(cRect,flags, ui->widgetSelect->getTextEdit()->toPlainText() );
+    qDebug() << "Boundingrect size:" << r.width() << "," << r.height() << endl;
     ui->widgetSelect->getTextEdit()->setFont(font);
 
 
