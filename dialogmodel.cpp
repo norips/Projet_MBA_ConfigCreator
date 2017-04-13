@@ -397,7 +397,7 @@ void DialogModel::changetext(){
     if( ui->widgetSelect->getTextEdit()->toPlainText().isEmpty() )
         return;
 
-    int flags = Qt::TextWordWrap; //more flags if needed
+    int flags = Qt::TextWrapAnywhere | Qt::AlignLeft | Qt::AlignTop ;
 
     int fontSize = 1;
     qDebug() << "content size:" << cRect.width() << "," << cRect.height() << endl;
@@ -412,7 +412,7 @@ void DialogModel::changetext(){
         else
             break;
     }
-
+    fontSize--;
     font.setPixelSize(fontSize);
     ui->widgetSelect->getTextEdit()->setFont(font);
 
