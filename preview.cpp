@@ -91,6 +91,7 @@ QWidget* Preview::create_pixmap(Model *model, int position)
 
     QVideoWidget * videoWidget = new QVideoWidget(this);
     videoWidget->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
+    videoWidget->setAspectRatioMode(Qt::IgnoreAspectRatio);
 
     if( !model->tlc.isEmpty() && !model->trc.isEmpty() && !model->blc.isEmpty() && !model->brc.isEmpty()) {
         QStringList lTLC = model->tlc.split(",");

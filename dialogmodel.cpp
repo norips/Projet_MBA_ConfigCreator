@@ -285,7 +285,6 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         ui->widgetSelect->getVideo()->show();
         player->play();
 
-
         ui->widgetSelect->getVideo()->setVisible(true);
     }
 
