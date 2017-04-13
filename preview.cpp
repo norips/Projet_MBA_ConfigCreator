@@ -197,6 +197,7 @@ QWidget* Preview::create_pixmap(Model *model, int position)
         playlist->setPlaybackMode(QMediaPlaylist::Loop);
 
         QMediaPlayer *player = new QMediaPlayer(this);
+        player->setMuted(true);
         player->setPlaylist(playlist);
 
         player->setVideoOutput(videoWidget);

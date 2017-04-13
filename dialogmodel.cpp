@@ -96,7 +96,7 @@ void DialogModel::on_buttonBox_accepted()
 
 void DialogModel::openFile()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),"/",tr("Image Files (*.png  *.jpg *.bmp *.jpeg)"));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une image"),QDir::currentPath(),tr("Image Files (*.png  *.jpg *.bmp *.jpeg)"));
 
     if (fileName != NULL){
 
@@ -124,7 +124,7 @@ void DialogModel::openFile()
 
 void DialogModel::openFileVideo()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une vidéo"),"/",tr("Image Files (*.mp4)"));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Ouvrir une vidéo"),QDir::currentPath(),tr("Image Files (*.mp4)"));
 
     if (fileName != NULL){
 
@@ -153,6 +153,7 @@ void DialogModel::openFileVideo()
         playlist->setPlaybackMode(QMediaPlaylist::Loop);
 
         QMediaPlayer *player = new QMediaPlayer(this);
+        player->setMuted(true);
         player->setPlaylist(playlist);
 
         player->setVideoOutput(ui->widgetSelect->getVideo());
@@ -277,6 +278,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         playlist->setPlaybackMode(QMediaPlaylist::Loop);
 
         QMediaPlayer *player = new QMediaPlayer(this);
+        player->setMuted(true);
         player->setPlaylist(playlist);
 
         player->setVideoOutput(ui->widgetSelect->getVideo());
