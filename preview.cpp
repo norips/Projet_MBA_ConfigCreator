@@ -155,7 +155,7 @@ QWidget* Preview::create_pixmap(Model *model, int position)
         }
         fontSize--;
         font.setPixelSize(fontSize);
-        QRect r = QFontMetrics(font).boundingRect(cRect,flags, text->toPlainText() );
+        //QRect r = QFontMetrics(font).boundingRect(cRect,flags, text->toPlainText() );
         text->setFont(font);
 
 
@@ -211,6 +211,7 @@ QWidget* Preview::create_pixmap(Model *model, int position)
         text->setVisible(false);
         return videoWidget;
     }
+    return NULL;
 }
 
 void Preview::plus_texture()
@@ -218,7 +219,7 @@ void Preview::plus_texture()
     QVector<Model*> items = canva->getItems();
     i=i+1;
 
-    for(int indLb = 0; indLb < arrLab.size(); indLb++) {
+    for(int indLb = arrLab.size()-1; indLb >= 0; indLb--) {
         QWidget* del = arrLab.at(indLb);
         arrLab.remove(indLb);
         delete del;
@@ -237,7 +238,7 @@ void Preview::moins_texture()
     QVector<Model*> items = canva->getItems();
     i=i-1;
 
-    for(int indLb = 0; indLb < arrLab.size(); indLb++) {
+    for(int indLb = arrLab.size()-1; indLb >= 0; indLb--) {
         QWidget* del = arrLab.at(indLb);
         arrLab.remove(indLb);
         delete del;
