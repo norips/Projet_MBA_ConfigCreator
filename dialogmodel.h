@@ -47,7 +47,6 @@ private:
     QMovie *movie;
     double ratioX;
     double ratioY;
-    int firstload;
 };
 
 #endif // DIALOGMODEL_H

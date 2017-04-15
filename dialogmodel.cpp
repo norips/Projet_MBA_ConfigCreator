@@ -413,15 +413,15 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
 void DialogModel::changetext(){
     QString text = ui->teText->toPlainText();
 
-    if(firstload){
-        firstload=0;
-    } else {
+   // if(firstload){
+   //     firstload=0;
+   // } else {
         TextureTXT * ttext = new TextureTXT(text);
         int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
         model->getTextures().remove(pos_to_suppress);
         model->getTextures().insert(pos_to_suppress,ttext);
         model->setModified(true);
-    }
+  //  }
 
 
     ui->widgetSelect->getLabel()->setVisible(false);
