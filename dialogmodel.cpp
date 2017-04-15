@@ -25,7 +25,6 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
 {
     ui->setupUi(this);
     UNUSED(item);
-    firstload = 1;
     connect(ui->ModelList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(itemActivated1(QListWidgetItem*)));
     connect(ui->pbAddPage,SIGNAL(pressed()),this,SLOT(buttonPlus()));
     connect(ui->pbRemovePage,SIGNAL(pressed()),this,SLOT(buttonMoins()));
@@ -242,7 +241,6 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         QString textTexture = test->getData();
         qDebug() << "Texte texture = " << textTexture << endl;
         ui->teText->setText(textTexture);
-        firstload = 1;
         ui->stackedWidget->setCurrentIndex(0);
         ui->cbTextureType->setCurrentIndex(0);
 
@@ -413,15 +411,11 @@ void DialogModel::itemActivated1(QListWidgetItem* i){
 void DialogModel::changetext(){
     QString text = ui->teText->toPlainText();
 
-   // if(firstload){
-   //     firstload=0;
-   // } else {
-        TextureTXT * ttext = new TextureTXT(text);
-        int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
-        model->getTextures().remove(pos_to_suppress);
-        model->getTextures().insert(pos_to_suppress,ttext);
-        model->setModified(true);
-  //  }
+    TextureTXT * ttext = new TextureTXT(text);
+    int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+    model->getTextures().remove(pos_to_suppress);
+    model->getTextures().insert(pos_to_suppress,ttext);
+    model->setModified(true);
 
 
     ui->widgetSelect->getLabel()->setVisible(false);
