@@ -402,6 +402,22 @@ void ConfigHolder::ExportToJSONFile(QString &filepath,ConfigExporter *cex) {
     canvasRoot[QString("canvas")] = canvas;
     doc.setObject(canvasRoot);
     file.write(doc.toJson());
+    file.close();
+    QFile fileR(filepath);
+    fileR.open(QIODevice::ReadOnly | QIODevice::Text);
+    QCryptographicHash hash(QCryptographicHash::Md5);
+    QByteArray strHash;
+    if (hash.addData(&fileR)) {
+        strHash = hash.result();
+    }
+    fileR.seek(0);
+    QString file_url = cex->upload(QString(strHash.toHex() + ".json"),fileR.readAll());
+    QFile fileURL(filepath + ".url");
+    fileURL.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&fileURL);
+    out << file_url; //Write url to .url file
+    fileURL.close();
+    fileR.close();
     int NO_ERROR = 0;
     emit configExported(NO_ERROR);
 }
