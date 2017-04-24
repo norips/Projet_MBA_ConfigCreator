@@ -38,7 +38,7 @@ Preview::Preview(QWidget *parent, Canva *c) :
         ui->tableau->setFixedHeight(displayedHeight);
         ui->tableau->setFixedWidth(displayedWidth);
         ui->tableau->setPixmap(canva->getPix().scaled(ui->tableau->maximumWidth(),displayedHeight,Qt::KeepAspectRatio));
-        geo.translate(0,displayedHeight);
+
     } else {
         displayedHeight = ui->tableau->height();
         displayedWidth =  ui->tableau->width() * canva->getPix().width()/canva->getPix().height();

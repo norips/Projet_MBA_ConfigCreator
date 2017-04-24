@@ -56,7 +56,7 @@ DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
         ui->lbpixmap->setFixedHeight(displayedHeight);
         ui->lbpixmap->setFixedWidth(displayedWidth);
         ui->lbpixmap->setPixmap(canva->getPix().scaled(ui->lbpixmap->maximumWidth(),displayedHeight,Qt::KeepAspectRatio));
-        geo.translate(0,displayedHeight);
+
     } else {
         displayedHeight = ui->lbpixmap->height();
         displayedWidth =  ui->lbpixmap->width() * canva->getPix().width()/canva->getPix().height();
