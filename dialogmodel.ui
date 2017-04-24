@@ -353,6 +353,11 @@
               <string>Video</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>Vide</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>
@@ -389,7 +394,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="page">
            <widget class="QTextEdit" name="teText">
@@ -459,6 +464,21 @@
               <width>381</width>
               <height>21</height>
              </rect>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="page_4">
+           <widget class="QPushButton" name="pbEmpty">
+            <property name="geometry">
+             <rect>
+              <x>140</x>
+              <y>50</y>
+              <width>151</width>
+              <height>22</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Ajouter page vide</string>
             </property>
            </widget>
           </widget>

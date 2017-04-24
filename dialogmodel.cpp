@@ -18,6 +18,7 @@
 #include <QVBoxLayout>
 #include <QUrl>
 #define UNUSED(x) (void)(x)
+#define EMPTY_IMG "../img/empty.png"
 
 DialogModel::DialogModel(QWidget *parent, canvaItem *item, Canva *c) :
     QDialog(parent),
@@ -246,6 +247,8 @@ void DialogModel::itemActivated(QListWidgetItem* i){
 
         ui->widgetSelect->getTextEdit()->setText(textTexture);
         ui->widgetSelect->getTextEdit()->setVisible(true);
+        ui->widgetSelect->getTextEdit()->raise();
+
     } else if(model->getTextures().value(pos)->getType() == Texture::IMG) {
         Texture* t = model->getTextures().value(pos);
         TextureIMG* test = (TextureIMG*) t;
@@ -263,6 +266,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         ui->widgetSelect->getLabel()->setPixmap(map);
         ui->widgetSelect->getLabel()->setVisible(true);
         ui->gbModele->setEnabled(true);
+        ui->widgetSelect->getLabel()->raise();
     } else if (model->getTextures().value(pos)->getType() == Texture::MOV) {
         Texture* t = model->getTextures().value(pos);
         TextureMOV* tmov = (TextureMOV*) t;
@@ -284,6 +288,7 @@ void DialogModel::itemActivated(QListWidgetItem* i){
         player->play();
 
         ui->widgetSelect->getVideo()->setVisible(true);
+        ui->widgetSelect->getVideo()->raise();
     }
 
 }
@@ -610,4 +615,28 @@ void DialogModel::on_pbDownTexture_clicked()
     for(int i = 1; i < items.size()+1; i++) {
         ui->TextureList->addItem("Page " + QString::number(i));
     }
+}
+
+void DialogModel::on_pbEmpty_released()
+{
+
+    int pos_to_suppress = ui->TextureList->selectionModel()->selectedIndexes().at(0).row();
+    model->getTextures().remove(pos_to_suppress);
+
+    QImageReader *reader = new QImageReader();
+    reader->setFileName(EMPTY_IMG);
+    QImage image =reader->read();
+    QPixmap map=QPixmap::fromImage(image);
+    TextureIMG* tImage = new TextureIMG(map);
+    tImage->setLocalPath(EMPTY_IMG);
+
+    model->getTextures().insert(pos_to_suppress,tImage);
+    ui->lePathIMG->insert(EMPTY_IMG);
+    model->setModified(true);
+
+    //Load pixmap
+    ui->widgetSelect->getLabel()->setPixmap(map);
+    ui->widgetSelect->getLabel()->setVisible(true);
+    ui->widgetSelect->getVideo()->setVisible(false);
+    ui->widgetSelect->getTextEdit()->setVisible(false);
 }
