@@ -133,3 +133,8 @@ void MainWindow::on_pbSupCanva_released()
     ui->lvTableaux->repaint();
 
 }
+
+void MainWindow::on_erase_leSearch_released()
+{
+    ui->leSearch->setText("");
+}

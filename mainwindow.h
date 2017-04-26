@@ -25,6 +25,8 @@ private slots:
 
     void on_pbSupCanva_released();
 
+    void on_erase_leSearch_released();
+
 private:
     Ui::MainWindow *ui;
 
