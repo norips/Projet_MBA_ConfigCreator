@@ -19,3 +19,8 @@ Please set your dropbox API key in bin/dropboxapi.key
 
 `./ConfigCreator`
 
+# Demo
+Click on picture to launch youtube.
+
+
+[![Everything Is AWESOME](https://img.youtube.com/vi/pwucdDwguB0/0.jpg)](https://www.youtube.com/watch?v=pwucdDwguB0 "Demo config app")
